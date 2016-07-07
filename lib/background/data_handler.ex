@@ -1,6 +1,8 @@
 defmodule Krihelinator.Background.DataHandler do
   use GenServer
   require Logger
+  alias Krihelinator.Repo
+  alias Krihelinator.GithubRepo
 
   @moduledoc """
   The sink of the pipeline. Handles new maps, filter them, and persist.
@@ -36,9 +38,7 @@ defmodule Krihelinator.Background.DataHandler do
 
   def handle_cast({:process, repo_map}, %{threshold: threshold}=state) do
     if Krihelinator.Krihelimeter.calculate(repo_map) >= threshold do
-      repo_map
-      |> inspect |> Logger.debug  # TODO Remove
-      # |> save_to_db
+      save_to_db(repo_map)
     end
     {:noreply, state}
   end
@@ -47,8 +47,19 @@ defmodule Krihelinator.Background.DataHandler do
     {:noreply, %{state | threshold: new_threshold}}
   end
 
-  def save_to_db(repo_map) do
-    
+  @doc """
+  Persist the repo params to the DB. If the repo is already there, update it!
+  """
+  def save_to_db(params) do
+    changeset = GithubRepo.changeset(%GithubRepo{}, params)
+    case Repo.insert(changeset) do
+      {:ok, _model} -> :ok
+      {:error, _changeset} ->
+        Logger.info "#{params.user}/#{params.repo} already exists. Updating"
+        Repo.get_by(GithubRepo, user: params.user, repo: params.repo)
+        |> GithubRepo.changeset(params)
+        |> Repo.update!
+    end
   end
 
 end

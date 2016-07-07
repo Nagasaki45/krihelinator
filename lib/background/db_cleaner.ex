@@ -3,6 +3,7 @@ defmodule Krihelinator.Background.DBCleaner do
   require Logger
 
   # Copied from http://stackoverflow.com/a/32097971/1224456
+  # TODO make it work!
 
   def start_link do
     GenServer.start_link(__MODULE__, [])
