@@ -21,6 +21,7 @@ defmodule Krihelinator.Background.DataHandler do
   Set new Krihelimeter threshold for things that go into the DB.
   """
   def set_threshold(new_threshold) do
+    Logger.info("New threshold set to #{new_threshold}")
     GenServer.cast(__MODULE__, {:set_threshold, new_threshold})
   end
 
