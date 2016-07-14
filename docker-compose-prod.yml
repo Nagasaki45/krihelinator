@@ -1,0 +1,10 @@
+web:
+  build: .
+  ports:
+    - 80:80
+  links:
+    - db
+  env_file: ./secrets
+
+db:
+  image: postgres
