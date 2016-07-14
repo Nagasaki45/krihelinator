@@ -27,10 +27,9 @@ defmodule Krihelinator.Background.DataHandler do
 
   # GenServer internals
 
-  @initial_threshold Application.fetch_env!(:krihelinator, :initial_threshold)
-
   def start_link do
-    GenServer.start_link(__MODULE__, [@initial_threshold], name: __MODULE__)
+    initial_threshold = Application.fetch_env!(:krihelinator, :initial_threshold)
+    GenServer.start_link(__MODULE__, [initial_threshold], name: __MODULE__)
   end
 
   def init([initial_threshold]) do

@@ -18,12 +18,10 @@ defmodule Krihelinator.Background.DBCleaner do
     {:ok, :nil}
   end
 
-  @max_repos_to_keep Application.fetch_env!(:krihelinator, :max_repos_to_keep)
-
   def handle_info(:clean_db, state) do
     Logger.info "DBCleaner kicked in!"
     count = Repo.one(from r in GithubRepo, select: count(r.id))
-    if count > @max_repos_to_keep do
+    if count > Application.fetch_env!(:krihelinator, :max_repos_to_keep) do
       clean_db()
       update_threshold()
     end
@@ -31,16 +29,14 @@ defmodule Krihelinator.Background.DBCleaner do
     {:noreply, state}
   end
 
-  @period Application.fetch_env!(:krihelinator, :db_cleaner_period)
-
   defp schedule_work do
-    Process.send_after(self(), :clean_db, @period)
+    Process.send_after(self(), :clean_db, Application.fetch_env!(:krihelinator, :db_cleaner_period))
   end
 
   def clean_db do
     Repo.all(GithubRepo)
     |> Enum.sort_by(&Krihelimeter.calculate/1, &>=/2)  # Descending
-    |> Enum.drop(@max_repos_to_keep)
+    |> Enum.drop(Application.fetch_env!(:krihelinator, :max_repos_to_keep))
     |> Enum.each(&Repo.delete!/1)
   end
 

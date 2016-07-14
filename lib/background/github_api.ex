@@ -24,11 +24,10 @@ defmodule Krihelinator.Background.GithubAPI do
     RateLimiter.apply(__MODULE__, :get, [url], @rate_limit)
   end
 
-  @token Application.fetch_env!(:krihelinator, :github_token)
-
   def process_url(url) do
+    token = Application.fetch_env!(:krihelinator, :github_token)
     seperator = if String.contains?(url, "?"), do: "&", else: "?"
-    "https://api.github.com/#{url}#{seperator}access_token=#{@token}"
+    "https://api.github.com/#{url}#{seperator}access_token=#{token}"
   end
 
   def process_response_body(body) do
