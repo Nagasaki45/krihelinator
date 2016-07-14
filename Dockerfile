@@ -8,9 +8,9 @@ ENV PORT 80
 ENV MIX_ENV prod
 
 # Setup dependencies, auto-acknowledge
-RUN npm install
 RUN yes | mix deps.get --only prod
 RUN yes | mix compile
+RUN npm install
 
 # Compile assets
 RUN node_modules/brunch/bin/brunch build --production
