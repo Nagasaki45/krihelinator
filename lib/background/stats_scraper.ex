@@ -1,28 +1,39 @@
 defmodule Krihelinator.Background.StatsScraper do
+  use GenServer
   alias Krihelinator.Background
   require Logger
 
   @moduledoc """
-  Fire up a new task to process statistics for each new repo. Than, push
+  Poolboy worker that scrape statistics for each new repo. Than, push
   the info down to the `DataHandler` sink GenServer.
   """
 
+  def start_link(state) do
+    GenServer.start_link(__MODULE__, [])
+  end
+
   @doc """
-  Starts a new task to fetch statistics about a repository and send it
+  Fetch statistics about a repository, using pool workers, and send it
   down to the persistance layer.
   """
   def process(repo_name) do
-    Task.start(fn ->
-      case HTTPoison.get("https://github.com/#{repo_name}/pulse") do
-        {:ok, %{body: body, status_code: 200}} ->
-          body
-          |> parse
-          |> Map.put(:name, repo_name)
-          |> Background.DataHandler.process
+    :poolboy.transaction(
+      :scrapers_pool,
+      fn pid -> GenServer.call(pid, {:process, repo_name}) end
+    )
+  end
+
+  def handle_call({:process, repo_name}, _from, state) do
+    case HTTPoison.get("https://github.com/#{repo_name}/pulse") do
+      {:ok, %{body: body, status_code: 200}} ->
+        body
+        |> parse
+        |> Map.put(:name, repo_name)
+        |> Background.DataHandler.process
         otherwise ->
           handle_failure(otherwise, repo_name)
-      end
-    end)
+    end
+    {:reply, :ok, state}
   end
 
   @to_parse [

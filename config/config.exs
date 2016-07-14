@@ -11,7 +11,8 @@ config :krihelinator,
   github_token: System.get_env("GITHUB_TOKEN"),
   initial_threshold: 5,
   db_cleaner_period: 10 * 60 * 1000,  # 10 minutes
-  max_repos_to_keep: 500
+  max_repos_to_keep: 500,
+  scrapers_pool_size: 32
 
 # Configures the endpoint
 config :krihelinator, Krihelinator.Endpoint,

@@ -41,7 +41,8 @@ defmodule Krihelinator.Mixfile do
      {:httpoison, "~> 0.9.0"},
      {:poison, "~> 2.2"},
      {:floki, "~> 0.9.0"},
-     {:ex_rated, "~> 1.2"}]
+     {:ex_rated, "~> 1.2"},
+     {:poolboy, "~> 1.5"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

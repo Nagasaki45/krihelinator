@@ -10,14 +10,22 @@ defmodule Krihelinator.Background.Supervisor do
 
   def start_link do
       Supervisor.start_link(__MODULE__, [])
-    end
+  end
 
-    def init([]) do
-      children = [
-        worker(Background.Poller, []),
-        worker(Background.DataHandler, []),
-        worker(Background.DBCleaner, []),
-      ]
-      supervise(children, strategy: :one_for_one)
-    end
+  def init([]) do
+
+    scrapers_poolboy_config = [
+      name: {:local, :scrapers_pool},
+      worker_module: Krihelinator.Background.StatsScraper,
+      size: Application.fetch_env!(:krihelinator, :scrapers_pool_size),
+    ]
+
+    children = [
+      worker(Background.Poller, []),
+      :poolboy.child_spec(:scrapers_pool, scrapers_poolboy_config, []),
+      worker(Background.DataHandler, []),
+      worker(Background.DBCleaner, []),
+    ]
+    supervise(children, strategy: :one_for_one)
+  end
 end
