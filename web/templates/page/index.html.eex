@@ -21,7 +21,7 @@
       <td><%= repo.proposed_pull_requests %></td>
       <td><%= repo.closed_issues %></td>
       <td><%= repo.new_issues %></td>
-      <td><%= krihelimeter(repo) %></td>
+      <td><%= repo.krihelimeter %></td>
     </tr>
   <%= end %>
 </table>

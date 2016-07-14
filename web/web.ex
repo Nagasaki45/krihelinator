@@ -23,6 +23,8 @@ defmodule Krihelinator.Web do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
+
+      alias Krihelinator.Krihelimeter
     end
   end
 
