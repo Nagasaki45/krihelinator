@@ -32,8 +32,6 @@ defmodule Krihelinator.Background.Poller do
   def process_repo(repo) do
     repo
     |> Map.get("full_name")
-    |> String.split("/")
-    |> List.to_tuple
     |> Background.StatsScraper.process
   end
 

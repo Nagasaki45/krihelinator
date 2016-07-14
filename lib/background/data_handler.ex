@@ -55,8 +55,8 @@ defmodule Krihelinator.Background.DataHandler do
     case Repo.insert(changeset) do
       {:ok, _model} -> :ok
       {:error, _changeset} ->
-        Logger.info "#{params.user}/#{params.repo} already exists. Updating"
-        Repo.get_by(GithubRepo, user: params.user, repo: params.repo)
+        Logger.info "#{params.name} already exists. Updating"
+        Repo.get_by(GithubRepo, name: params.name)
         |> GithubRepo.changeset(params)
         |> Repo.update!
     end

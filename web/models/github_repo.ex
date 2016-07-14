@@ -2,8 +2,7 @@ defmodule Krihelinator.GithubRepo do
   use Krihelinator.Web, :model
 
   schema "repos" do
-    field :user, :string
-    field :repo, :string
+    field :name, :string
     field :merged_pull_requests, :integer
     field :proposed_pull_requests, :integer
     field :closed_issues, :integer
@@ -13,7 +12,7 @@ defmodule Krihelinator.GithubRepo do
     timestamps()
   end
 
-  @required_params ~w(user repo merged_pull_requests proposed_pull_requests
+  @required_params ~w(name merged_pull_requests proposed_pull_requests
                       closed_issues new_issues commits)
 
   @doc """
@@ -22,6 +21,6 @@ defmodule Krihelinator.GithubRepo do
   def changeset(struct, params \\ :empty) do
     struct
     |> cast(params, @required_params, [])
-    |> unique_constraint(:whatever, name: :user_repo)
+    |> unique_constraint(:name)
   end
 end

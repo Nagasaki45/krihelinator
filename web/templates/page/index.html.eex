@@ -15,7 +15,7 @@
   </tr>
   <%= for repo <- @repos do %>
     <tr>
-      <td><%= link "#{repo.user}/#{repo.repo}", to: "http://github.com/#{repo.user}/#{repo.repo}" %></td>
+      <td><%= link "#{repo.name}", to: "http://github.com/#{repo.name}" %></td>
       <td><%= repo.commits %></td>
       <td><%= repo.merged_pull_requests %></td>
       <td><%= repo.proposed_pull_requests %></td>

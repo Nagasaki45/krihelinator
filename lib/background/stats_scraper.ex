@@ -11,28 +11,18 @@ defmodule Krihelinator.Background.StatsScraper do
   Starts a new task to fetch statistics about a repository and send it
   down to the persistance layer.
   """
-  def process({user, repo}) do
+  def process(repo_name) do
     Task.start(fn ->
-      path = build_path(user, repo)
-      case HTTPoison.get(path) do
+      case HTTPoison.get("https://github.com/#{repo_name}/pulse") do
         {:ok, %{body: body, status_code: 200}} ->
           body
           |> parse
-          |> Map.merge(%{user: user, repo: repo})
+          |> Map.put(:name, repo_name)
           |> Background.DataHandler.process
         otherwise ->
-          handle_failure(otherwise, user, repo)
+          handle_failure(otherwise, repo_name)
       end
     end)
-  end
-
-  @host "https://github.com"
-
-  @doc """
-  The path to the github pulse page.
-  """
-  def build_path(user, repo) do
-    @host <> "/#{user}/#{repo}/pulse"
   end
 
   @to_parse [
@@ -90,7 +80,7 @@ defmodule Krihelinator.Background.StatsScraper do
   @doc """
   When HTTPoison fails, log the failure in the most indicative way.
   """
-  def handle_failure(httpoison_response, user, repo) do
+  def handle_failure(httpoison_response, repo_name) do
     msg = case httpoison_response do
       {:ok, %{status_code: 404}} ->
         "Page not found (404)"
@@ -99,7 +89,7 @@ defmodule Krihelinator.Background.StatsScraper do
       {:error, httpoison_error} ->
         inspect(httpoison_error)
     end
-    Logger.warn "Failed to scrape #{user}/#{repo}: #{msg}"
+    Logger.warn "Failed to scrape #{repo_name}: #{msg}"
   end
 
 end
