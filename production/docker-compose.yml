@@ -1,10 +1,12 @@
 web:
-  build: .
+  image: nagasaki45/krihelinator_web
   ports:
     - 80:80
   links:
     - db
   env_file: ./secrets
+  restart: always
 
 db:
   image: postgres
+  restart: always

@@ -1,0 +1,5 @@
+secrets
+_build
+.git
+deps
+node_modules
