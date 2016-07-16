@@ -8,7 +8,7 @@ defmodule Krihelinator.Background.StatsScraper do
   the info down to the `DataHandler` sink GenServer.
   """
 
-  def start_link(state) do
+  def start_link([]) do
     GenServer.start_link(__MODULE__, [])
   end
 

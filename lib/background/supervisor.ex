@@ -3,7 +3,7 @@ defmodule Krihelinator.Background.Supervisor do
   alias Krihelinator.Background
 
   @moduledoc """
-  Supervisor for the background system that responsible for polling
+  Supervisor for the background system that is responsible for polling
   repositories from github, fetch their pulse statistics, and push it
   to the DB.
   """

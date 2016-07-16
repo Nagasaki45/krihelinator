@@ -7,7 +7,7 @@ defmodule Krihelinator.Background.Poller do
   and send jobs to the `StatsScraper`.
 
   When there are no more repos to fetch, it simply dies, and the supervisor
-  restart it.
+  restarts it.
   """
 
   def start_link do

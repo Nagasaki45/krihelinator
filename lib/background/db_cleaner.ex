@@ -6,8 +6,15 @@ defmodule Krihelinator.Background.DBCleaner do
   alias Krihelinator.GithubRepo
   alias Krihelinator.Krihelimeter
 
-  # Copied from http://stackoverflow.com/a/32097971/1224456
-  # TODO make it work!
+  @moduledoc """
+  Every `:db_cleaner_period` milliseconds do the following:
+
+  1. Sorted by krihelimeter, keep only the first `:max_repos_to_keep` rows.
+  2. Update the krihelimeter threshold of the DataHandler to the new minimum
+     value.
+
+  Based on http://stackoverflow.com/a/32097971/1224456
+  """
 
   def start_link do
     GenServer.start_link(__MODULE__, [])

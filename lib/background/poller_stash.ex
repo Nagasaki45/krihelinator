@@ -2,8 +2,9 @@ defmodule Krihelinator.Background.PollerStash do
 
   @moduledoc """
   Keep the state of the poller to allow it to fail and restore state
-  automatically.
+  automatically. Naive stash implementation, using an elixir Agent.
   """
+
   def start_link do
     Agent.start_link(fn -> "repositories" end, name: __MODULE__)
   end
