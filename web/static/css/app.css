@@ -1,1 +1,7 @@
-/* This file is for your main application css. */
+.repo-description {
+  padding-top: 10px;
+}
+
+.label-merged-pull-request {
+  background-color: #6E5494;
+}

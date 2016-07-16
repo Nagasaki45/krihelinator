@@ -4,25 +4,27 @@
   <p>- Meir Kriheli</p>
 </blockquote>
 
-<table class="table">
-  <tr>
-    <th></th>
-    <th>Commits</th>
-    <th>Merged Pull Requests</th>
-    <th>Proposed Pull Requests</th>
-    <th>Closed issues</th>
-    <th>New issues</th>
-    <th>Krihelimeter</th>
-  </tr>
+
+<ul class="list-group">
   <%= for repo <- @repos do %>
-    <tr>
-      <td><%= link "#{repo.name}", to: "http://github.com/#{repo.name}" %></td>
-      <td><%= repo.commits %></td>
-      <td><%= repo.merged_pull_requests %></td>
-      <td><%= repo.proposed_pull_requests %></td>
-      <td><%= repo.closed_issues %></td>
-      <td><%= repo.new_issues %></td>
-      <td><%= repo.krihelimeter %></td>
-    </tr>
+    <li class="list-group-item">
+
+      <h3>
+        <a href="http://github.com/<%= repo.name %>"><%= repo.name %></a>
+        <button data-toggle="collapse" class="pull-right btn btn-danger" data-target="#<%= repo.id %>">
+          Krihelimeter <span class="badge"><%= repo.krihelimeter %></span>
+        </button>
+      </h3>
+
+      <p class="repo-description"><%= repo.description %></p>
+
+      <div id="<%= repo.id %>" class="collapse">
+        <span class="label label-default"><%= repo.commits %> Commits</span>
+        <span class="label label-merged-pull-request"><%= repo.merged_pull_requests %> Merged Pull Requests</span>
+        <span class="label label-success"><%= repo.proposed_pull_requests %> Proposed Pull Requests</span>
+        <span class="label label-danger"><%= repo.closed_issues %> Closed Issues</span>
+        <span class="label label-success"><%= repo.new_issues %> New Issues</span>
+      </div>
+    </li>
   <%= end %>
-</table>
+</ul>
