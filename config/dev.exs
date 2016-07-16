@@ -1,5 +1,12 @@
 use Mix.Config
 
+# Get the GITHUB_TOKEN from the secrets file.
+config :krihelinator,
+  github_token: File.read!("secrets")
+                |> String.trim
+                |> String.split("=")
+                |> List.last
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

@@ -8,7 +8,6 @@ use Mix.Config
 # General application configuration
 config :krihelinator,
   ecto_repos: [Krihelinator.Repo],
-  github_token: System.get_env("GITHUB_TOKEN"),
   initial_threshold: 5,
   db_cleaner_period: 10 * 60 * 1000,  # 10 minutes
   max_repos_to_keep: 500,
