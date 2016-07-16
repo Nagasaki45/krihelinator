@@ -1,7 +1,7 @@
 FROM mrrooijen/phoenix
 RUN apk --no-cache add postgresql-client nodejs
 
-ADD .. /cwd/
+ADD . /cwd/
 
 # Environment
 ENV PORT 80
