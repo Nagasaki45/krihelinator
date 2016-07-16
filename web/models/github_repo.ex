@@ -3,6 +3,7 @@ defmodule Krihelinator.GithubRepo do
 
   schema "repos" do
     field :name, :string
+    field :description, :string
     field :merged_pull_requests, :integer
     field :proposed_pull_requests, :integer
     field :closed_issues, :integer
@@ -13,15 +14,18 @@ defmodule Krihelinator.GithubRepo do
     timestamps()
   end
 
-  @optional_params ~w(name merged_pull_requests proposed_pull_requests
-                      closed_issues new_issues commits)
+  @allowed ~w(name description merged_pull_requests proposed_pull_requests
+              closed_issues new_issues commits)a
+  @required ~w(name merged_pull_requests proposed_pull_requests
+               closed_issues new_issues commits)a
 
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [], @optional_params)
+    |> cast(params, @allowed)
+    |> validate_required(@required)
     |> unique_constraint(:name)
     |> set_krihelimeter
   end

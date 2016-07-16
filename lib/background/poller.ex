@@ -36,9 +36,10 @@ defmodule Krihelinator.Background.Poller do
   end
 
   def process_repo(repo) do
-    repo
-    |> Map.get("full_name")
-    |> Background.StatsScraper.process
+    Background.StatsScraper.process(%{
+      name: Map.get(repo, "full_name"),
+      description: Map.get(repo, "description")
+    })
   end
 
   def next_path(repos) do

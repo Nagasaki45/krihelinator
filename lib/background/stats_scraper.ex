@@ -16,22 +16,22 @@ defmodule Krihelinator.Background.StatsScraper do
   Fetch statistics about a repository, using pool workers, and send it
   down to the persistance layer.
   """
-  def process(repo_name) do
+  def process(repo) do
     :poolboy.transaction(
       :scrapers_pool,
-      fn pid -> GenServer.call(pid, {:process, repo_name}) end
+      fn pid -> GenServer.call(pid, {:process, repo}) end
     )
   end
 
-  def handle_call({:process, repo_name}, _from, state) do
-    case HTTPoison.get("https://github.com/#{repo_name}/pulse") do
+  def handle_call({:process, repo}, _from, state) do
+    case HTTPoison.get("https://github.com/#{repo.name}/pulse") do
       {:ok, %{body: body, status_code: 200}} ->
         body
         |> parse
-        |> Map.put(:name, repo_name)
+        |> Map.merge(repo)
         |> Background.DataHandler.process
         otherwise ->
-          handle_failure(otherwise, repo_name)
+          handle_failure(otherwise, repo.name)
     end
     {:reply, :ok, state}
   end
