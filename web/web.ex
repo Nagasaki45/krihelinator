@@ -33,6 +33,7 @@ defmodule Krihelinator.Web do
       use Phoenix.Controller
 
       alias Krihelinator.Repo
+      alias Krihelinator.GithubRepo
       import Ecto
       import Ecto.Query
 
