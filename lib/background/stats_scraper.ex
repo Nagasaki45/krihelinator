@@ -95,6 +95,8 @@ defmodule Krihelinator.Background.StatsScraper do
     msg = case httpoison_response do
       {:ok, %{status_code: 404}} ->
         "Page not found (404)"
+      {:ok, %{status_code: 451}} ->
+        "Repository unavailable due to DMCA takedown"
       {:ok, %{body: body, status_code: status_code}} ->
         "Status code: #{status_code}\n#{Floki.text(body)}"
       {:error, httpoison_error} ->
