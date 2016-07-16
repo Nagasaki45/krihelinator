@@ -28,6 +28,7 @@ defmodule Krihelinator.GithubRepo do
     |> validate_required(@required)
     |> unique_constraint(:name)
     |> set_krihelimeter
+    |> trim_description(max_length: 255)
   end
 
   @doc """
@@ -37,5 +38,22 @@ defmodule Krihelinator.GithubRepo do
   def set_krihelimeter(%{data: data, changes: changes}=changeset) do
     new_data = Map.merge(data, changes)
     put_change(changeset, :krihelimeter, Krihelimeter.calculate(new_data))
+  end
+
+  @doc """
+  Trim the description string to `max_length` chars.
+  """
+  def trim_description(%{changes: %{description: description}}=changeset,
+                       max_length: max_length) do
+    description = if String.length(description) > max_length do
+      String.slice(description, 0, 255 - 1 - 3) <> "..."
+    else
+      description
+    end
+    put_change(changeset, :description, description)
+  end
+
+  def trim_description(changeset, _opts) do
+    changeset
   end
 end
