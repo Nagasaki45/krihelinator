@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>Krihelinator.GithubRepo – krihelinator v0.0.1</title>
+    <title>Krihelinator.Background.TrendingPoller – krihelinator v0.0.1</title>
     <link rel="stylesheet" href="dist/app-9c1e3d5aa2.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -60,11 +60,17 @@
 
       <h1>
         <small class="visible-xs">krihelinator v0.0.1</small>
-        Krihelinator.GithubRepo
+        Krihelinator.Background.TrendingPoller
         
         
       </h1>
 
+      
+        <section id="moduledoc" class="docstring">
+          <p>Every <code class="inline">:trending_poller_period</code>, scrape the github trending page for
+interesting, active, projects.</p>
+
+        </section>
       
 
       
@@ -84,30 +90,44 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#changeset/2">changeset(struct, params \\ %{})</a>
+    <a href="#parse_description/1">parse_description(floki_item)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Builds a changeset based on the <code class="inline">struct</code> and <code class="inline">params</code></p>
+    <div class="summary-synopsis"><p>Parse the repo description from the floki item, or <code class="inline">:nil</code> if doesn’t exist</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#set_krihelimeter/1">set_krihelimeter(changeset)</a>
+    <a href="#parse_item/1">parse_item(floki_item)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Use the existing data, and the expected changes, to calculate and set the
-krihelimeter</p>
+    <div class="summary-synopsis"><p>Parse single floki item repo to “name” and “description”</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#trim_description/2">trim_description(changeset, arg2)</a>
+    <a href="#parse_name/1">parse_name(floki_item)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Trim the description string to <code class="inline">max_length</code> chars</p>
+    <div class="summary-synopsis"><p>Parse the repo name (user/repo) from the repo floki item</p>
 </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#poll/0">poll()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Poll the github trending page, send each project to the scrapers to process</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#start_link/0">start_link()</a>
+  </div>
   
 </div>
 
@@ -131,50 +151,78 @@ krihelimeter</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="changeset/2">
+          <div class="detail" id="parse_description/1">
   <div class="detail-header">
-    <a href="#changeset/2" class="detail-link" title="Link to this function">
+    <a href="#parse_description/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">changeset(struct, params \\ %{})</span>
+    <span class="signature">parse_description(floki_item)</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Builds a changeset based on the <code class="inline">struct</code> and <code class="inline">params</code>.</p>
+    <p>Parse the repo description from the floki item, or <code class="inline">:nil</code> if doesn’t exist.</p>
 
   </section>
 </div>
-<div class="detail" id="set_krihelimeter/1">
+<div class="detail" id="parse_item/1">
   <div class="detail-header">
-    <a href="#set_krihelimeter/1" class="detail-link" title="Link to this function">
+    <a href="#parse_item/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">set_krihelimeter(changeset)</span>
+    <span class="signature">parse_item(floki_item)</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Use the existing data, and the expected changes, to calculate and set the
-krihelimeter.</p>
+    <p>Parse single floki item repo to “name” and “description”.</p>
 
   </section>
 </div>
-<div class="detail" id="trim_description/2">
+<div class="detail" id="parse_name/1">
   <div class="detail-header">
-    <a href="#trim_description/2" class="detail-link" title="Link to this function">
+    <a href="#parse_name/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">trim_description(changeset, arg2)</span>
+    <span class="signature">parse_name(floki_item)</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Trim the description string to <code class="inline">max_length</code> chars.</p>
+    <p>Parse the repo name (user/repo) from the repo floki item.</p>
 
+  </section>
+</div>
+<div class="detail" id="poll/0">
+  <div class="detail-header">
+    <a href="#poll/0" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">poll()</span>
+    
+    
+  </div>
+  
+  <section class="docstring">
+    <p>Poll the github trending page, send each project to the scrapers to process.</p>
+
+  </section>
+</div>
+<div class="detail" id="start_link/0">
+  <div class="detail-header">
+    <a href="#start_link/0" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">start_link()</span>
+    
+    
+  </div>
+  
+  <section class="docstring">
+    
   </section>
 </div>
 
