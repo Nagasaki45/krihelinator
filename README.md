@@ -47,4 +47,4 @@ I use `docker` and `docker-compose` in production, so make sure you have them on
     # Spin up the new version
     docker-compose run --rm web mix ecto.migrate
     docker-compose run --rm web mix run priv/repo/update_krihelimeter.exs  # Optionally
-    docker-compose run --rm web mix phoenix.server
+    docker-compose up -d
