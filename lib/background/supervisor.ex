@@ -23,7 +23,7 @@ defmodule Krihelinator.Background.Supervisor do
     children = [
       worker(Background.PollerStash, []),
       worker(Background.Poller, []),
-      worker(Background.TrendingPoller, []),
+      worker(Background.PeriodicPoller, []),
       :poolboy.child_spec(:scrapers_pool, scrapers_poolboy_config, []),
       worker(Background.DataHandler, []),
       worker(Background.DBCleaner, []),

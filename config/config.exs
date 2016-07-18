@@ -9,7 +9,7 @@ use Mix.Config
 config :krihelinator,
   ecto_repos: [Krihelinator.Repo],
   initial_threshold: 5,
-  trending_poller_period: 6 * 60 * 60 * 1000,  # 6 hours
+  periodic_poller_period: 6 * 60 * 60 * 1000,  # 6 hours
   db_cleaner_period: 10 * 60 * 1000,  # 10 minutes
   max_repos_to_keep: 500,
   scrapers_pool_size: 32
