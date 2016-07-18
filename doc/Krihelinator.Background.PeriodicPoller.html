@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>Krihelinator.Background.TrendingPoller – krihelinator v0.0.1</title>
+    <title>Krihelinator.Background.PeriodicPoller – krihelinator v0.0.1</title>
     <link rel="stylesheet" href="dist/app-9c1e3d5aa2.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -60,15 +60,16 @@
 
       <h1>
         <small class="visible-xs">krihelinator v0.0.1</small>
-        Krihelinator.Background.TrendingPoller
+        Krihelinator.Background.PeriodicPoller
         
         
       </h1>
 
       
         <section id="moduledoc" class="docstring">
-          <p>Every <code class="inline">:trending_poller_period</code>, scrape the github trending page for
-interesting, active, projects.</p>
+          <p>Every <code class="inline">:periodic_poller_period</code>, scrape the github trending page for
+interesting, active, projects. Then pass all of the repos from the DB through
+the parser again, to update stats.</p>
 
         </section>
       
@@ -90,37 +91,16 @@ interesting, active, projects.</p>
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#parse_description/1">parse_description(floki_item)</a>
+    <a href="#poll_self/0">poll_self()</a>
   </div>
-  
-    <div class="summary-synopsis"><p>Parse the repo description from the floki item, or <code class="inline">:nil</code> if doesn’t exist</p>
-</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#parse_item/1">parse_item(floki_item)</a>
+    <a href="#scrape_trending/0">scrape_trending()</a>
   </div>
   
-    <div class="summary-synopsis"><p>Parse single floki item repo to “name” and “description”</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#parse_name/1">parse_name(floki_item)</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Parse the repo name (user/repo) from the repo floki item</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#poll/0">poll()</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Poll the github trending page, send each project to the scrapers to process</p>
+    <div class="summary-synopsis"><p>Scrape the github trending page, send each project to the scrapers to process</p>
 </div>
   
 </div>
@@ -151,63 +131,32 @@ interesting, active, projects.</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="parse_description/1">
+          <div class="detail" id="poll_self/0">
   <div class="detail-header">
-    <a href="#parse_description/1" class="detail-link" title="Link to this function">
+    <a href="#poll_self/0" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">parse_description(floki_item)</span>
+    <span class="signature">poll_self()</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Parse the repo description from the floki item, or <code class="inline">:nil</code> if doesn’t exist.</p>
-
+    
   </section>
 </div>
-<div class="detail" id="parse_item/1">
+<div class="detail" id="scrape_trending/0">
   <div class="detail-header">
-    <a href="#parse_item/1" class="detail-link" title="Link to this function">
+    <a href="#scrape_trending/0" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">parse_item(floki_item)</span>
+    <span class="signature">scrape_trending()</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Parse single floki item repo to “name” and “description”.</p>
-
-  </section>
-</div>
-<div class="detail" id="parse_name/1">
-  <div class="detail-header">
-    <a href="#parse_name/1" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">parse_name(floki_item)</span>
-    
-    
-  </div>
-  
-  <section class="docstring">
-    <p>Parse the repo name (user/repo) from the repo floki item.</p>
-
-  </section>
-</div>
-<div class="detail" id="poll/0">
-  <div class="detail-header">
-    <a href="#poll/0" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">poll()</span>
-    
-    
-  </div>
-  
-  <section class="docstring">
-    <p>Poll the github trending page, send each project to the scrapers to process.</p>
+    <p>Scrape the github trending page, send each project to the scrapers to process.</p>
 
   </section>
 </div>
