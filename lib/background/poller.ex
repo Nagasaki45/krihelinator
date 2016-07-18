@@ -15,7 +15,7 @@ defmodule Krihelinator.Background.Poller do
   end
 
   @doc """
-  Fetch repos with the github API, and send them to the `StatsGetter`.
+  Fetch repos with the github API, and all but forks to the `StatsGetter`.
   """
   def process_repos(:url_from_stash) do
     url = Background.PollerStash.get()
@@ -28,7 +28,9 @@ defmodule Krihelinator.Background.Poller do
     {:ok, resp} = Background.GithubAPI.limited_get(url)
     %{body: repos, status_code: 200} = resp
 
-    Enum.each(repos, &process_repo/1)
+    repos
+    |> Stream.filter(fn repo -> not Map.get(repo, "fork") end)
+    |> Enum.each(&process_repo/1)
 
     repos
     |> next_path

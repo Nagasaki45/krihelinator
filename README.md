@@ -19,10 +19,11 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 ## Scripts
 
-If you messed up the krihelimeter or the repos descriptions (both are saved in the DB), you can run the following to fix them:
+If you messed things up, you can run the following to fix them:
 
     mix run priv/repo/update_krihelimeter.exs
     mix run priv/repo/update_description.exs
+    mix run priv/repo/delete_forks.exs
 
 ## Running in production
 
