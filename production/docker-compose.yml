@@ -4,9 +4,14 @@ web:
     - 80:80
   links:
     - db
+    - stash
   env_file: ./secrets
   restart: always
 
 db:
   image: postgres
+  restart: always
+
+stash:
+  image: redis
   restart: always

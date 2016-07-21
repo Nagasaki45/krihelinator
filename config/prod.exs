@@ -32,6 +32,10 @@ config :krihelinator, Krihelinator.Repo,
   hostname: "db",
   pool_size: 20
 
+# Redis configuration
+config :exredis,
+  host: "stash",
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

@@ -2,3 +2,8 @@ db:
   image: postgres
   ports:
     - 5432:5432
+
+stash:
+  image: redis
+  ports:
+    - 6379:6379

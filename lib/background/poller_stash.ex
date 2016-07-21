@@ -1,19 +1,26 @@
 defmodule Krihelinator.Background.PollerStash do
 
   @moduledoc """
-  Keep the state of the poller to allow it to fail and restore state
-  automatically. Naive stash implementation, using an elixir Agent.
+  Keep the state of the poller in redis to allow it to fail and restore state
+  automatically, even between deploys / restarts.
   """
 
-  def start_link do
-    Agent.start_link(fn -> "repositories" end, name: __MODULE__)
-  end
+  @initial_state "repositories"
+  @key "poller_stash"
 
   def get do
-    Agent.get(__MODULE__, fn state -> state end)
+    {:ok, client} = Exredis.start_link
+    case Exredis.query(client, ["GET", @key]) do
+      :undefined ->
+        Exredis.query client, ["SET", @key, @initial_state]
+        @initial_state
+      otherwise ->
+        otherwise
+    end
   end
 
   def put(new_state) do
-    Agent.update(__MODULE__, fn _old_state -> new_state end)
+    {:ok, client} = Exredis.start_link
+    Exredis.query client, ["SET", "poller_stash", new_state]
   end
 end
