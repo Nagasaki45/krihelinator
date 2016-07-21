@@ -65,6 +65,7 @@ defmodule Krihelinator.Background.StatsScraper do
            |> Floki.find(css_selector)
            |> Floki.text
            |> to_one_line
+           |> String.replace(",", "")  # Numbers are comma separated
     case Regex.named_captures(regex_pattern, text) do
       %{"value" => value} -> String.to_integer(value)
       _ -> 0
