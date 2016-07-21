@@ -9,15 +9,16 @@ defmodule Krihelinator.GithubRepo do
     field :closed_issues, :integer
     field :new_issues, :integer
     field :commits, :integer
+    field :authors, :integer
     field :krihelimeter, :integer
 
     timestamps()
   end
 
   @allowed ~w(name description merged_pull_requests proposed_pull_requests
-              closed_issues new_issues commits)a
+              closed_issues new_issues commits authors)a
   @required ~w(name merged_pull_requests proposed_pull_requests
-               closed_issues new_issues commits)a
+               closed_issues new_issues commits authors)a
 
   @doc """
   Builds a changeset based on the `struct` and `params`.

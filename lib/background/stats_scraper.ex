@@ -26,12 +26,11 @@ defmodule Krihelinator.Background.StatsScraper do
   def handle_call({:process, repo}, _from, state) do
     case HTTPoison.get("https://github.com/#{repo.name}/pulse") do
       {:ok, %{body: body, status_code: 200}} ->
-        body
-        |> parse
-        |> Map.merge(repo)
+        repo
+        |> Map.merge(parse(body))
         |> Background.DataHandler.process
-        otherwise ->
-          handle_failure(otherwise, repo.name)
+      otherwise ->
+        handle_failure(otherwise, repo.name)
     end
     {:reply, :ok, state}
   end
@@ -42,6 +41,7 @@ defmodule Krihelinator.Background.StatsScraper do
     {:closed_issues, ~s{a[href="#closed-issues"]}, ~r/(?<value>\d+) Closed Issues/},
     {:new_issues, ~s{a[href="#new-issues"]}, ~r/(?<value>\d+) New Issues/},
     {:commits, "div.section.diffstat-summary", ~r/(?<value>\d+) commits to all branches/},
+    {:authors, "div.section.diffstat-summary", ~r/(?<value>\d+) author/},
   ]
 
   @doc """
