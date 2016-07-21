@@ -19,6 +19,7 @@
       <p class="repo-description"><%= repo.description %></p>
 
       <div id="<%= repo.id %>" class="collapse">
+        <span class="label label-info"><%= repo.authors %> Authors</span>
         <span class="label label-default"><%= repo.commits %> Commits</span>
         <span class="label label-merged-pull-request"><%= repo.merged_pull_requests %> Merged Pull Requests</span>
         <span class="label label-success"><%= repo.proposed_pull_requests %> Proposed Pull Requests</span>
