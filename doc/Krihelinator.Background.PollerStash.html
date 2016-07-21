@@ -67,8 +67,8 @@
 
       
         <section id="moduledoc" class="docstring">
-          <p>Keep the state of the poller to allow it to fail and restore state
-automatically. Naive stash implementation, using an elixir Agent.</p>
+          <p>Keep the state of the poller in redis to allow it to fail and restore state
+automatically, even between deploys / restarts.</p>
 
         </section>
       
@@ -97,12 +97,6 @@ automatically. Naive stash implementation, using an elixir Agent.</p>
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#put/1">put(new_state)</a>
-  </div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#start_link/0">start_link()</a>
   </div>
   
 </div>
@@ -147,20 +141,6 @@ automatically. Naive stash implementation, using an elixir Agent.</p>
       <i class="icon-link"></i>
     </a>
     <span class="signature">put(new_state)</span>
-    
-    
-  </div>
-  
-  <section class="docstring">
-    
-  </section>
-</div>
-<div class="detail" id="start_link/0">
-  <div class="detail-header">
-    <a href="#start_link/0" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">start_link()</span>
     
     
   </div>
