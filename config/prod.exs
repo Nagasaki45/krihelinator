@@ -34,7 +34,7 @@ config :krihelinator, Krihelinator.Repo,
 
 # Redis configuration
 config :exredis,
-  host: "stash",
+  host: "stash"
 
 # ## SSL Support
 #
