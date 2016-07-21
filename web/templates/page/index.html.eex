@@ -1,10 +1,3 @@
-<h2>The Krihelinator</h2>
-<blockquote>
-  <p><i>"Trendiness of OSS should be assessed by contribution rate, not by stars"</i></p>
-  <p>- Meir Kriheli</p>
-</blockquote>
-
-
 <ul class="list-group">
   <%= for repo <- @repos do %>
     <li class="list-group-item">

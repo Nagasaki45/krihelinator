@@ -1,0 +1,30 @@
+<p class="lead">
+  This project proposes an alternative to <%= link "github's trending page", to: "https://www.github.com/trending" %>,
+  by exposing projects with high contribution rate, instead of daily stars (similarly to github's pulse page).
+  The krihelimeter of each repository is calculated using the number of
+  authors, commits, pull requests, and issues of that project, from the past week.
+
+  <table align="center">
+    <tr>
+      <td>Krihelimeter =&nbsp;</td>
+      <td>20</td>
+      <td>&nbsp;* authors</td>
+    <tr>
+    <tr>
+      <td></td>
+      <td>8</td>
+      <td>&nbsp;* merged and proposed pull requests</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>8</td>
+      <td>&nbsp;* new and closed issues</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>1</td>
+      <td>&nbsp;* commits</td>
+    </tr>
+  <table>
+</p>
+<%= link "<- Back home", to: page_path(@conn, :index) %>

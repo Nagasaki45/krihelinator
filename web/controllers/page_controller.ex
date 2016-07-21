@@ -6,4 +6,8 @@ defmodule Krihelinator.PageController do
     repos = Repo.all(query)
     render conn, "index.html", repos: repos
   end
+
+  def about(conn, _params) do
+    render conn, "about.html"
+  end
 end
