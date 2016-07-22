@@ -1,9 +1,7 @@
 # Run this script when there is a need to re-fetch the repos descriptions from
 # github.
 
-alias Krihelinator.Repo
-alias Krihelinator.GithubRepo
-alias Krihelinator.Background.GithubAPI
+alias Krihelinator.{Repo, GithubRepo}
 
 repos = Repo.all(GithubRepo)
 for repo <- repos do

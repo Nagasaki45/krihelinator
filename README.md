@@ -19,11 +19,12 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 ## Scripts
 
-If you messed things up, you can run the following to fix them:
+If you messed things up there are several usefull scripts in `priv/scripts`:
 
-    mix run priv/repo/update_krihelimeter.exs
-    mix run priv/repo/update_description.exs
-    mix run priv/repo/delete_forks.exs
+    mix run priv/scripts/update_krihelimeter.exs
+    mix run priv/scripts/update_description.exs
+    mix run priv/scripts/delete_forks.exs
+    mix run priv/scripts/delete_not_enough_contributors.exs
 
 ## Running in production
 

@@ -1,6 +1,4 @@
-alias Krihelinator.Repo
-alias Krihelinator.GithubRepo
-alias Krihelinator.Background.GithubAPI
+alias Krihelinator.{Repo, GithubRepo}
 
 for repo <- Repo.all(GithubRepo) do
   url = "repos/#{repo.name}"

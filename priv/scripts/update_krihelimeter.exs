@@ -2,8 +2,7 @@
 # on all of the repos in the DB. For example: after changing the krihelimeter
 # calculation.
 
-alias Krihelinator.Repo
-alias Krihelinator.GithubRepo
+alias Krihelinator.{Repo, GithubRepo}
 
 repos = Repo.all(GithubRepo)
 for repo <- repos do
