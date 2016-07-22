@@ -27,4 +27,12 @@
     <td>&nbsp;* commits</td>
   </tr>
 <table>
+
+<p class="lead">
+  During the development of this project I found out that people use github as a
+  backup service, automating hundreds of commits per week. Therefor, to filter
+  these projects out, only projects with more than 5 active authors enters the
+  Krihelinator DB.
+</p>
+
 <%= link "<- Back home", to: page_path(@conn, :index) %>

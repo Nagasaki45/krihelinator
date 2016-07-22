@@ -9,13 +9,15 @@ defmodule Krihelinator.Pipeline.PostScraperProcess do
   """
 
   def init([]) do
-    {:producer_consumer, Application.fetch_env!(:krihelinator, :initial_threshold)}
+    {:producer_consumer, :nil}
   end
 
-  def handle_events(repos, _from, threshold) do
+  def handle_events(repos, _from, state) do
     repos =
       repos
-      |> Enum.filter(fn r -> Krihelimeter.calculate(r) > threshold end)
-    {:noreply, repos, threshold}
+      |> Stream.filter(fn r -> r.authors > 5 end)
+      |> Stream.filter(fn r -> Krihelimeter.calculate(r) > 30 end)
+      |> Enum.to_list
+    {:noreply, repos, state}
   end
 end
