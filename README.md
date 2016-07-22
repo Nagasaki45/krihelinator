@@ -24,7 +24,7 @@ If you messed things up there are several usefull scripts in `priv/scripts`:
     mix run priv/scripts/update_krihelimeter.exs
     mix run priv/scripts/update_description.exs
     mix run priv/scripts/delete_forks.exs
-    mix run priv/scripts/delete_not_enough_contributors.exs
+    mix run priv/scripts/delete_single_author_repos.exs
 
 ## Running in production
 
