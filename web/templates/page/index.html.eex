@@ -1,3 +1,11 @@
+<p class="lead">
+  This project proposes an alternative to <%= link "github's trending page", to: "https://www.github.com/trending" %>,
+  by exposing projects with high contribution rate, instead of daily stars (similarly to github's pulse page).
+  The krihelimeter of each repository is calculated using the number of
+  authors, commits, pull requests, and issues of that project, from the past week.
+  <%= link "Read more...", to: page_path(@conn, :about) %>
+</p>
+
 <ul class="list-group">
   <%= for repo <- @repos do %>
     <li class="list-group-item">
