@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>Krihelinator.Background.StatsScraper – krihelinator v0.0.1</title>
+    <title>Krihelinator.Periodic.TrendingParser – krihelinator v0.0.1</title>
     <link rel="stylesheet" href="dist/app-9c1e3d5aa2.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -60,15 +60,14 @@
 
       <h1>
         <small class="visible-xs">krihelinator v0.0.1</small>
-        Krihelinator.Background.StatsScraper
+        Krihelinator.Periodic.TrendingParser
         
         
       </h1>
 
       
         <section id="moduledoc" class="docstring">
-          <p>Poolboy worker that scrape statistics for each new repo. Than, push
-the info down to the <code class="inline">DataHandler</code> sink GenServer.</p>
+          <p>Helper module for parsing the github trending page.</p>
 
         </section>
       
@@ -90,55 +89,38 @@ the info down to the <code class="inline">DataHandler</code> sink GenServer.</p>
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#general_extractor/3">general_extractor(floki, css_selector, regex_pattern)</a>
+    <a href="#parse/1">parse(html)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Extracts information from the “floki-parsed” html using css selectors and
-regex matching on the resulting text</p>
+    <div class="summary-synopsis"><p>Parse the github trending page. Returns a list of maps with name and
+description</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#handle_failure/2">handle_failure(httpoison_response, repo_name)</a>
+    <a href="#parse_description/1">parse_description(floki_item)</a>
   </div>
   
-    <div class="summary-synopsis"><p>When HTTPoison fails, log the failure in the most indicative way</p>
+    <div class="summary-synopsis"><p>Parse the repo description from the floki item, or <code class="inline">:nil</code> if doesn’t exist</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#parse/1">parse(body)</a>
+    <a href="#parse_item/1">parse_item(floki_item)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Use <a href="https://github.com/philss/floki">floki</a> to parse the page and return
-a map for that repo</p>
+    <div class="summary-synopsis"><p>Parse single floki item repo to “name” and “description”</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#process/1">process(repo)</a>
+    <a href="#parse_name/1">parse_name(floki_item)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Fetch statistics about a repository, using pool workers, and send it
-down to the persistance layer</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#start_link/1">start_link(list)</a>
-  </div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#to_one_line/1">to_one_line(text)</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Remove new lines and extra spaces from strings</p>
+    <div class="summary-synopsis"><p>Parse the repo name (user/repo) from the repo floki item</p>
 </div>
   
 </div>
@@ -163,101 +145,64 @@ down to the persistance layer</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="general_extractor/3">
-  <div class="detail-header">
-    <a href="#general_extractor/3" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">general_extractor(floki, css_selector, regex_pattern)</span>
-    
-    
-  </div>
-  
-  <section class="docstring">
-    <p>Extracts information from the “floki-parsed” html using css selectors and
-regex matching on the resulting text.</p>
-
-  </section>
-</div>
-<div class="detail" id="handle_failure/2">
-  <div class="detail-header">
-    <a href="#handle_failure/2" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">handle_failure(httpoison_response, repo_name)</span>
-    
-    
-  </div>
-  
-  <section class="docstring">
-    <p>When HTTPoison fails, log the failure in the most indicative way.</p>
-
-  </section>
-</div>
-<div class="detail" id="parse/1">
+          <div class="detail" id="parse/1">
   <div class="detail-header">
     <a href="#parse/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">parse(body)</span>
+    <span class="signature">parse(html)</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Use <a href="https://github.com/philss/floki">floki</a> to parse the page and return
-a map for that repo.</p>
+    <p>Parse the github trending page. Returns a list of maps with name and
+description.</p>
 
   </section>
 </div>
-<div class="detail" id="process/1">
+<div class="detail" id="parse_description/1">
   <div class="detail-header">
-    <a href="#process/1" class="detail-link" title="Link to this function">
+    <a href="#parse_description/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">process(repo)</span>
+    <span class="signature">parse_description(floki_item)</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Fetch statistics about a repository, using pool workers, and send it
-down to the persistance layer.</p>
+    <p>Parse the repo description from the floki item, or <code class="inline">:nil</code> if doesn’t exist.</p>
 
   </section>
 </div>
-<div class="detail" id="start_link/1">
+<div class="detail" id="parse_item/1">
   <div class="detail-header">
-    <a href="#start_link/1" class="detail-link" title="Link to this function">
+    <a href="#parse_item/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">start_link(list)</span>
+    <span class="signature">parse_item(floki_item)</span>
     
     
   </div>
   
   <section class="docstring">
-    
+    <p>Parse single floki item repo to “name” and “description”.</p>
+
   </section>
 </div>
-<div class="detail" id="to_one_line/1">
+<div class="detail" id="parse_name/1">
   <div class="detail-header">
-    <a href="#to_one_line/1" class="detail-link" title="Link to this function">
+    <a href="#parse_name/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">to_one_line(text)</span>
+    <span class="signature">parse_name(floki_item)</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Remove new lines and extra spaces from strings.</p>
-<p>Example:</p>
-<p>  iex&gt; import Krihelinator.Background.StatsScraper, only: [to_one_line: 1]
-  iex&gt; to_one_line(“hello\nworld”)
-  “hello world”
-  iex&gt; to_one_line(“   too\n many    spaces “)
-  “too many spaces”</p>
+    <p>Parse the repo name (user/repo) from the repo floki item.</p>
 
   </section>
 </div>

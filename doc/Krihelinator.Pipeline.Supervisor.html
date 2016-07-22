@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>Krihelinator.Background.DBCleaner – krihelinator v0.0.1</title>
+    <title>Krihelinator.Pipeline.Supervisor – krihelinator v0.0.1</title>
     <link rel="stylesheet" href="dist/app-9c1e3d5aa2.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -60,22 +60,16 @@
 
       <h1>
         <small class="visible-xs">krihelinator v0.0.1</small>
-        Krihelinator.Background.DBCleaner
+        Krihelinator.Pipeline.Supervisor
         
         
       </h1>
 
       
         <section id="moduledoc" class="docstring">
-          <p>Every <code class="inline">:db_cleaner_period</code> milliseconds do the following:</p>
-<ol>
-<li>Sorted by krihelimeter, keep only the first <code class="inline">:max_repos_to_keep</code> rows.
-</li>
-<li>Update the krihelimeter threshold of the DataHandler to the new minimum
-   value.
-</li>
-</ol>
-<p>Based on <a href="http://stackoverflow.com/a/32097971/1224456">http://stackoverflow.com/a/32097971/1224456</a></p>
+          <p>Supervisor for the background pipeline that is responsible for polling
+repositories from github, fetch their pulse statistics, and push them
+to the DB.</p>
 
         </section>
       
@@ -97,19 +91,16 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#clean_db/0">clean_db()</a>
+    <a href="#init/1">init(list)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Callback implementation for <code class="inline">c:Supervisor.init/1</code></p>
+</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#start_link/0">start_link()</a>
-  </div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#update_threshold/0">update_threshold()</a>
   </div>
   
 </div>
@@ -134,18 +125,19 @@
             </a>
             Functions
           </h1>
-          <div class="detail" id="clean_db/0">
+          <div class="detail" id="init/1">
   <div class="detail-header">
-    <a href="#clean_db/0" class="detail-link" title="Link to this function">
+    <a href="#init/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">clean_db()</span>
+    <span class="signature">init(list)</span>
     
     
   </div>
   
   <section class="docstring">
-    
+    <p>Callback implementation for <code class="inline">c:Supervisor.init/1</code>.</p>
+
   </section>
 </div>
 <div class="detail" id="start_link/0">
@@ -154,20 +146,6 @@
       <i class="icon-link"></i>
     </a>
     <span class="signature">start_link()</span>
-    
-    
-  </div>
-  
-  <section class="docstring">
-    
-  </section>
-</div>
-<div class="detail" id="update_threshold/0">
-  <div class="detail-header">
-    <a href="#update_threshold/0" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">update_threshold()</span>
     
     
   </div>

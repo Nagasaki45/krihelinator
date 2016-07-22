@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>Krihelinator.Background.TrendingParser – krihelinator v0.0.1</title>
+    <title>Krihelinator.Pipeline – krihelinator v0.0.1</title>
     <link rel="stylesheet" href="dist/app-9c1e3d5aa2.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -60,14 +60,19 @@
 
       <h1>
         <small class="visible-xs">krihelinator v0.0.1</small>
-        Krihelinator.Background.TrendingParser
+        Krihelinator.Pipeline
         
         
       </h1>
 
       
         <section id="moduledoc" class="docstring">
-          <p>Helper module for parsing the github trending page.</p>
+          <p>Until I find a better way to connect the pipeline I do it here.</p>
+<p>Here is how the pipeline looks like:</p>
+<pre><code class="elixir">                               StatsScraper
+                            /      ...       Poller -&gt; PreScraperProcess -&gt; StatsScraper -&gt; PostScraperProcess -&gt; Sink
+                                  ...       /
+                               StatsScraper</code></pre>
 
         </section>
       
@@ -89,39 +94,20 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#parse/1">parse(html)</a>
+    <a href="#create_scrapers/0">create_scrapers()</a>
   </div>
-  
-    <div class="summary-synopsis"><p>Parse the github trending page. Returns a list of maps with name and
-description</p>
-</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#parse_description/1">parse_description(floki_item)</a>
+    <a href="#start_link/0">start_link()</a>
   </div>
-  
-    <div class="summary-synopsis"><p>Parse the repo description from the floki item, or <code class="inline">:nil</code> if doesn’t exist</p>
-</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#parse_item/1">parse_item(floki_item)</a>
+    <a href="#start_pipeline/0">start_pipeline()</a>
   </div>
-  
-    <div class="summary-synopsis"><p>Parse single floki item repo to “name” and “description”</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#parse_name/1">parse_name(floki_item)</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Parse the repo name (user/repo) from the repo floki item</p>
-</div>
   
 </div>
 
@@ -145,65 +131,46 @@ description</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="parse/1">
+          <div class="detail" id="create_scrapers/0">
   <div class="detail-header">
-    <a href="#parse/1" class="detail-link" title="Link to this function">
+    <a href="#create_scrapers/0" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">parse(html)</span>
+    <span class="signature">create_scrapers()</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Parse the github trending page. Returns a list of maps with name and
-description.</p>
-
+    
   </section>
 </div>
-<div class="detail" id="parse_description/1">
+<div class="detail" id="start_link/0">
   <div class="detail-header">
-    <a href="#parse_description/1" class="detail-link" title="Link to this function">
+    <a href="#start_link/0" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">parse_description(floki_item)</span>
+    <span class="signature">start_link()</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Parse the repo description from the floki item, or <code class="inline">:nil</code> if doesn’t exist.</p>
-
+    
   </section>
 </div>
-<div class="detail" id="parse_item/1">
+<div class="detail" id="start_pipeline/0">
   <div class="detail-header">
-    <a href="#parse_item/1" class="detail-link" title="Link to this function">
+    <a href="#start_pipeline/0" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">parse_item(floki_item)</span>
+    <span class="signature">start_pipeline()</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Parse single floki item repo to “name” and “description”.</p>
-
-  </section>
-</div>
-<div class="detail" id="parse_name/1">
-  <div class="detail-header">
-    <a href="#parse_name/1" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">parse_name(floki_item)</span>
     
-    
-  </div>
-  
-  <section class="docstring">
-    <p>Parse the repo name (user/repo) from the repo floki item.</p>
-
   </section>
 </div>
 

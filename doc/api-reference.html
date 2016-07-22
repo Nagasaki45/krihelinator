@@ -75,84 +75,21 @@
       <h1 class="section-heading">Modules</h1>
       <div class="summary">
         <div class="summary-row">
-  <div class="summary-signature"><a href="Krihelinator.html">Krihelinator</a></div>
+  <div class="summary-signature"><a href="DebuggingConsumer.html">DebuggingConsumer</a></div>
   
-</div>
-<div class="summary-row">
-  <div class="summary-signature"><a href="Krihelinator.Background.DBCleaner.html">Krihelinator.Background.DBCleaner</a></div>
-  
-    <div class="summary-synopsis"><p>Every <code class="inline">:db_cleaner_period</code> milliseconds do the following</p>
+    <div class="summary-synopsis"><p>GenStage for debugging porpuses. Use it as the final consumer</p>
 </div>
   
 </div>
 <div class="summary-row">
-  <div class="summary-signature"><a href="Krihelinator.Background.DataHandler.html">Krihelinator.Background.DataHandler</a></div>
-  
-    <div class="summary-synopsis"><p>The sink of the pipeline. Handles new maps, filter them, and persist</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature"><a href="Krihelinator.Background.GithubAPI.html">Krihelinator.Background.GithubAPI</a></div>
+  <div class="summary-signature"><a href="GithubAPI.html">GithubAPI</a></div>
   
     <div class="summary-synopsis"><p>Wrapper around HTTPoison.Base, that</p>
 </div>
   
 </div>
 <div class="summary-row">
-  <div class="summary-signature"><a href="Krihelinator.Background.PeriodicPoller.html">Krihelinator.Background.PeriodicPoller</a></div>
-  
-    <div class="summary-synopsis"><p>Every <code class="inline">:periodic_poller_period</code>, scrape the github trending page for
-interesting, active, projects. Then pass all of the repos from the DB through
-the parser again, to update stats</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature"><a href="Krihelinator.Background.Poller.html">Krihelinator.Background.Poller</a></div>
-  
-    <div class="summary-synopsis"><p>A task that loop through all github repositories, using the github API,
-and send jobs to the <code class="inline">StatsScraper</code></p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature"><a href="Krihelinator.Background.PollerStash.html">Krihelinator.Background.PollerStash</a></div>
-  
-    <div class="summary-synopsis"><p>Keep the state of the poller in redis to allow it to fail and restore state
-automatically, even between deploys / restarts</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature"><a href="Krihelinator.Background.RateLimiter.html">Krihelinator.Background.RateLimiter</a></div>
-  
-    <div class="summary-synopsis"><p>Use me to rate limit calls to functions</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature"><a href="Krihelinator.Background.StatsScraper.html">Krihelinator.Background.StatsScraper</a></div>
-  
-    <div class="summary-synopsis"><p>Poolboy worker that scrape statistics for each new repo. Than, push
-the info down to the <code class="inline">DataHandler</code> sink GenServer</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature"><a href="Krihelinator.Background.Supervisor.html">Krihelinator.Background.Supervisor</a></div>
-  
-    <div class="summary-synopsis"><p>Supervisor for the background system that is responsible for polling
-repositories from github, fetch their pulse statistics, and push it
-to the DB</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature"><a href="Krihelinator.Background.TrendingParser.html">Krihelinator.Background.TrendingParser</a></div>
-  
-    <div class="summary-synopsis"><p>Helper module for parsing the github trending page</p>
-</div>
+  <div class="summary-signature"><a href="Krihelinator.html">Krihelinator</a></div>
   
 </div>
 <div class="summary-row">
@@ -201,6 +138,79 @@ to the DB</p>
   
 </div>
 <div class="summary-row">
+  <div class="summary-signature"><a href="Krihelinator.Periodic.html">Krihelinator.Periodic</a></div>
+  
+    <div class="summary-synopsis"><p>Every <code class="inline">:periodic_schedule</code> do the following</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Krihelinator.Periodic.TrendingParser.html">Krihelinator.Periodic.TrendingParser</a></div>
+  
+    <div class="summary-synopsis"><p>Helper module for parsing the github trending page</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Krihelinator.Pipeline.html">Krihelinator.Pipeline</a></div>
+  
+    <div class="summary-synopsis"><p>Until I find a better way to connect the pipeline I do it here</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Krihelinator.Pipeline.DataHandler.html">Krihelinator.Pipeline.DataHandler</a></div>
+  
+    <div class="summary-synopsis"><p>The sink of the pipeline. Persist new maps</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Krihelinator.Pipeline.Poller.html">Krihelinator.Pipeline.Poller</a></div>
+  
+    <div class="summary-synopsis"><p>A GenStage producer that emits github repos as event, using the github API</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Krihelinator.Pipeline.PollerStash.html">Krihelinator.Pipeline.PollerStash</a></div>
+  
+    <div class="summary-synopsis"><p>Keep the state of the poller in redis to allow it to fail and restore state
+automatically, even between deploys / restarts</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Krihelinator.Pipeline.PostScraperProcess.html">Krihelinator.Pipeline.PostScraperProcess</a></div>
+  
+    <div class="summary-synopsis"><p>Filter out projects below statistics thresholds</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Krihelinator.Pipeline.PreScraperProcess.html">Krihelinator.Pipeline.PreScraperProcess</a></div>
+  
+    <div class="summary-synopsis"><p>Filter out forks and rearrange the Map for further processing</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Krihelinator.Pipeline.StatsScraper.html">Krihelinator.Pipeline.StatsScraper</a></div>
+  
+    <div class="summary-synopsis"><p>GenStage that scrape statistics for each new repo</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="Krihelinator.Pipeline.Supervisor.html">Krihelinator.Pipeline.Supervisor</a></div>
+  
+    <div class="summary-synopsis"><p>Supervisor for the background pipeline that is responsible for polling
+repositories from github, fetch their pulse statistics, and push them
+to the DB</p>
+</div>
+  
+</div>
+<div class="summary-row">
   <div class="summary-signature"><a href="Krihelinator.Repo.html">Krihelinator.Repo</a></div>
   
 </div>
@@ -224,6 +234,13 @@ to the DB</p>
   
     <div class="summary-synopsis"><p>A module that keeps using definitions for controllers,
 views and so on</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature"><a href="RateLimiter.html">RateLimiter</a></div>
+  
+    <div class="summary-synopsis"><p>Use me to rate limit calls to functions</p>
 </div>
   
 </div>

@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>Krihelinator.Background.PollerStash – krihelinator v0.0.1</title>
+    <title>Krihelinator.Pipeline.PostScraperProcess – krihelinator v0.0.1</title>
     <link rel="stylesheet" href="dist/app-9c1e3d5aa2.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -60,15 +60,14 @@
 
       <h1>
         <small class="visible-xs">krihelinator v0.0.1</small>
-        Krihelinator.Background.PollerStash
+        Krihelinator.Pipeline.PostScraperProcess
         
         
       </h1>
 
       
         <section id="moduledoc" class="docstring">
-          <p>Keep the state of the poller in redis to allow it to fail and restore state
-automatically, even between deploys / restarts.</p>
+          <p>Filter out projects below statistics thresholds.</p>
 
         </section>
       
@@ -90,14 +89,17 @@ automatically, even between deploys / restarts.</p>
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#get/0">get()</a>
+    <a href="#handle_events/3">handle_events(repos, from, state)</a>
   </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#put/1">put(new_state)</a>
+    <a href="#init/1">init(list)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Callback implementation for <code class="inline">c:GenServer.init/1</code></p>
+</div>
   
 </div>
 
@@ -121,12 +123,12 @@ automatically, even between deploys / restarts.</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="get/0">
+          <div class="detail" id="handle_events/3">
   <div class="detail-header">
-    <a href="#get/0" class="detail-link" title="Link to this function">
+    <a href="#handle_events/3" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">get()</span>
+    <span class="signature">handle_events(repos, from, state)</span>
     
     
   </div>
@@ -135,18 +137,19 @@ automatically, even between deploys / restarts.</p>
     
   </section>
 </div>
-<div class="detail" id="put/1">
+<div class="detail" id="init/1">
   <div class="detail-header">
-    <a href="#put/1" class="detail-link" title="Link to this function">
+    <a href="#init/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">put(new_state)</span>
+    <span class="signature">init(list)</span>
     
     
   </div>
   
   <section class="docstring">
-    
+    <p>Callback implementation for <code class="inline">c:GenServer.init/1</code>.</p>
+
   </section>
 </div>
 

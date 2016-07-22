@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>Krihelinator.Background.Supervisor – krihelinator v0.0.1</title>
+    <title>Krihelinator.Pipeline.PreScraperProcess – krihelinator v0.0.1</title>
     <link rel="stylesheet" href="dist/app-9c1e3d5aa2.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -60,16 +60,14 @@
 
       <h1>
         <small class="visible-xs">krihelinator v0.0.1</small>
-        Krihelinator.Background.Supervisor
+        Krihelinator.Pipeline.PreScraperProcess
         
         
       </h1>
 
       
         <section id="moduledoc" class="docstring">
-          <p>Supervisor for the background system that is responsible for polling
-repositories from github, fetch their pulse statistics, and push it
-to the DB.</p>
+          <p>Filter out forks and rearrange the Map for further processing.</p>
 
         </section>
       
@@ -91,16 +89,22 @@ to the DB.</p>
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
+    <a href="#handle_events/3">handle_events(repos, from, state)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#init/1">init(list)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Callback implementation for <code class="inline">c:Supervisor.init/1</code></p>
+    <div class="summary-synopsis"><p>Callback implementation for <code class="inline">c:GenServer.init/1</code></p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#start_link/0">start_link()</a>
+    <a href="#rearrange_map/1">rearrange_map(repo)</a>
   </div>
   
 </div>
@@ -125,7 +129,21 @@ to the DB.</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="init/1">
+          <div class="detail" id="handle_events/3">
+  <div class="detail-header">
+    <a href="#handle_events/3" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">handle_events(repos, from, state)</span>
+    
+    
+  </div>
+  
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="init/1">
   <div class="detail-header">
     <a href="#init/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
@@ -136,16 +154,16 @@ to the DB.</p>
   </div>
   
   <section class="docstring">
-    <p>Callback implementation for <code class="inline">c:Supervisor.init/1</code>.</p>
+    <p>Callback implementation for <code class="inline">c:GenServer.init/1</code>.</p>
 
   </section>
 </div>
-<div class="detail" id="start_link/0">
+<div class="detail" id="rearrange_map/1">
   <div class="detail-header">
-    <a href="#start_link/0" class="detail-link" title="Link to this function">
+    <a href="#rearrange_map/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">start_link()</span>
+    <span class="signature">rearrange_map(repo)</span>
     
     
   </div>

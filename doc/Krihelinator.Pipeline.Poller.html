@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>Krihelinator.Background.DataHandler – krihelinator v0.0.1</title>
+    <title>Krihelinator.Pipeline.Poller – krihelinator v0.0.1</title>
     <link rel="stylesheet" href="dist/app-9c1e3d5aa2.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -60,14 +60,14 @@
 
       <h1>
         <small class="visible-xs">krihelinator v0.0.1</small>
-        Krihelinator.Background.DataHandler
+        Krihelinator.Pipeline.Poller
         
         
       </h1>
 
       
         <section id="moduledoc" class="docstring">
-          <p>The sink of the pipeline. Handles new maps, filter them, and persist.</p>
+          <p>A GenStage producer that emits github repos as event, using the github API.</p>
 
         </section>
       
@@ -89,34 +89,22 @@
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#process/1">process(repo_map)</a>
+    <a href="#handle_demand/2">handle_demand(demand, state)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Send new repo map for processing by casting it to the process</p>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#init/1">init(list)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Callback implementation for <code class="inline">c:GenServer.init/1</code></p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#save_to_db/1">save_to_db(params)</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Persist the repo params to the DB. If the repo is already there, update it!</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#set_threshold/1">set_threshold(new_threshold)</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Set new Krihelimeter threshold for things that go into the DB</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#start_link/0">start_link()</a>
+    <a href="#next_path/1">next_path(repos)</a>
   </div>
   
 </div>
@@ -141,57 +129,41 @@
             </a>
             Functions
           </h1>
-          <div class="detail" id="process/1">
+          <div class="detail" id="handle_demand/2">
   <div class="detail-header">
-    <a href="#process/1" class="detail-link" title="Link to this function">
+    <a href="#handle_demand/2" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">process(repo_map)</span>
+    <span class="signature">handle_demand(demand, state)</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Send new repo map for processing by casting it to the process.</p>
-
+    
   </section>
 </div>
-<div class="detail" id="save_to_db/1">
+<div class="detail" id="init/1">
   <div class="detail-header">
-    <a href="#save_to_db/1" class="detail-link" title="Link to this function">
+    <a href="#init/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">save_to_db(params)</span>
+    <span class="signature">init(list)</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>Persist the repo params to the DB. If the repo is already there, update it!</p>
+    <p>Callback implementation for <code class="inline">c:GenServer.init/1</code>.</p>
 
   </section>
 </div>
-<div class="detail" id="set_threshold/1">
+<div class="detail" id="next_path/1">
   <div class="detail-header">
-    <a href="#set_threshold/1" class="detail-link" title="Link to this function">
+    <a href="#next_path/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">set_threshold(new_threshold)</span>
-    
-    
-  </div>
-  
-  <section class="docstring">
-    <p>Set new Krihelimeter threshold for things that go into the DB.</p>
-
-  </section>
-</div>
-<div class="detail" id="start_link/0">
-  <div class="detail-header">
-    <a href="#start_link/0" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">start_link()</span>
+    <span class="signature">next_path(repos)</span>
     
     
   </div>

@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>Krihelinator.Background.PeriodicPoller – krihelinator v0.0.1</title>
+    <title>Krihelinator.Periodic – krihelinator v0.0.1</title>
     <link rel="stylesheet" href="dist/app-9c1e3d5aa2.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -60,16 +60,22 @@
 
       <h1>
         <small class="visible-xs">krihelinator v0.0.1</small>
-        Krihelinator.Background.PeriodicPoller
+        Krihelinator.Periodic
         
         
       </h1>
 
       
         <section id="moduledoc" class="docstring">
-          <p>Every <code class="inline">:periodic_poller_period</code>, scrape the github trending page for
-interesting, active, projects. Then pass all of the repos from the DB through
-the parser again, to update stats.</p>
+          <p>Every <code class="inline">:periodic_schedule</code> do the following:</p>
+<ul>
+<li>Scrape the github trending page for interesting, active, projects.
+</li>
+<li>Run the DB cleaner.
+</li>
+<li>Pass all of the repos from the DB through the parser again, to update stats.
+</li>
+</ul>
 
         </section>
       
@@ -91,8 +97,29 @@ the parser again, to update stats.</p>
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#poll_self/0">poll_self()</a>
+    <a href="#clean_db/0">clean_db()</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Keep only the top :max_repos_to_keep in the DB. Delete the rest</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#reanalyse_existing_repos/0">reanalyse_existing_repos()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Re-analyse each project in the DB</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#scrape_and_persist_repos/1">scrape_and_persist_repos(repos)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Helper to stream repos through <code class="inline">Pipeline.StatsScraper</code> -&gt; <code class="inline">Pipeline.DataHandler</code></p>
+</div>
   
 </div>
 <div class="summary-row">
@@ -100,7 +127,8 @@ the parser again, to update stats.</p>
     <a href="#scrape_trending/0">scrape_trending()</a>
   </div>
   
-    <div class="summary-synopsis"><p>Scrape the github trending page, send each project to the scrapers to process</p>
+    <div class="summary-synopsis"><p>Scrape the github trending page, scrape the pulse page for each project and
+persist</p>
 </div>
   
 </div>
@@ -131,18 +159,49 @@ the parser again, to update stats.</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="poll_self/0">
+          <div class="detail" id="clean_db/0">
   <div class="detail-header">
-    <a href="#poll_self/0" class="detail-link" title="Link to this function">
+    <a href="#clean_db/0" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">poll_self()</span>
+    <span class="signature">clean_db()</span>
     
     
   </div>
   
   <section class="docstring">
+    <p>Keep only the top :max_repos_to_keep in the DB. Delete the rest.</p>
+
+  </section>
+</div>
+<div class="detail" id="reanalyse_existing_repos/0">
+  <div class="detail-header">
+    <a href="#reanalyse_existing_repos/0" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">reanalyse_existing_repos()</span>
     
+    
+  </div>
+  
+  <section class="docstring">
+    <p>Re-analyse each project in the DB.</p>
+
+  </section>
+</div>
+<div class="detail" id="scrape_and_persist_repos/1">
+  <div class="detail-header">
+    <a href="#scrape_and_persist_repos/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">scrape_and_persist_repos(repos)</span>
+    
+    
+  </div>
+  
+  <section class="docstring">
+    <p>Helper to stream repos through <code class="inline">Pipeline.StatsScraper</code> -&gt; <code class="inline">Pipeline.DataHandler</code>.</p>
+
   </section>
 </div>
 <div class="detail" id="scrape_trending/0">
@@ -156,7 +215,8 @@ the parser again, to update stats.</p>
   </div>
   
   <section class="docstring">
-    <p>Scrape the github trending page, send each project to the scrapers to process.</p>
+    <p>Scrape the github trending page, scrape the pulse page for each project and
+persist.</p>
 
   </section>
 </div>
