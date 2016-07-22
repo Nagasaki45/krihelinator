@@ -43,9 +43,12 @@ defmodule Krihelinator.Periodic do
   persist.
   """
   def scrape_trending do
+    Repo.update_all(GithubRepo, set: [trending: false])
+
     %{body: body, status_code: 200} = HTTPoison.get!("https://github.com/trending")
     body
     |> Periodic.TrendingParser.parse
+    |> Stream.map(fn repo -> Map.put(repo, :trending, true) end)
     |> scrape_and_persist_repos
   end
 

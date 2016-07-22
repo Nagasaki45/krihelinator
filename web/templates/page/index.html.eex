@@ -17,6 +17,10 @@
         </button>
       </h3>
 
+      <%= if repo.trending do %>
+        <div class="label label-warning">Trending on github!</div>
+      <%= end %>
+
       <p class="repo-description"><%= repo.description %></p>
 
       <div id="<%= repo.id %>" class="collapse">

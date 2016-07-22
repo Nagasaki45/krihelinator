@@ -11,12 +11,13 @@ defmodule Krihelinator.GithubRepo do
     field :commits, :integer
     field :authors, :integer
     field :krihelimeter, :integer
+    field :trending, :boolean, default: false
 
     timestamps()
   end
 
   @allowed ~w(name description merged_pull_requests proposed_pull_requests
-              closed_issues new_issues commits authors)a
+              closed_issues new_issues commits authors trending)a
   @required ~w(name merged_pull_requests proposed_pull_requests
                closed_issues new_issues commits authors)a
 
