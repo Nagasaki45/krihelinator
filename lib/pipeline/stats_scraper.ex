@@ -76,7 +76,7 @@ defmodule Krihelinator.Pipeline.StatsScraper do
 
   Example:
 
-    iex> import Krihelinator.Background.StatsScraper, only: [to_one_line: 1]
+    iex> import Krihelinator.Pipeline.StatsScraper, only: [to_one_line: 1]
     iex> to_one_line("hello\\nworld")
     "hello world"
     iex> to_one_line("   too\\n many    spaces ")

@@ -1,6 +1,6 @@
-defmodule Krihelinator.Background.StatsScraperTest do
+defmodule Krihelinator.Pipeline.StatsScraperTest do
   use ExUnit.Case
-  alias Krihelinator.Background.StatsScraper
+  alias Krihelinator.Pipeline.StatsScraper
   doctest StatsScraper
 
   test "parsing numbers with comma, larger than 999" do

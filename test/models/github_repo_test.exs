@@ -4,7 +4,7 @@ defmodule Krihelinator.GithubRepoTest do
   alias Krihelinator.GithubRepo
 
   @valid_attrs %{closed_issues: 42, commits: 42, merged_pull_requests: 42,
-                 new_issues: 42, proposed_pull_requests: 42,
+                 new_issues: 42, proposed_pull_requests: 42, authors: 42,
                  name: "some content"}
 
   test "changeset with valid attributes" do
