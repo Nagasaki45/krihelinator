@@ -1,6 +1,5 @@
-defmodule Krihelinator.Background.GithubAPI do
+defmodule GithubAPI do
   use HTTPoison.Base
-  alias Krihelinator.Background.RateLimiter
 
   @moduledoc """
   Wrapper around HTTPoison.Base, that:

@@ -1,4 +1,4 @@
-defmodule Krihelinator.Background.PollerStash do
+defmodule Krihelinator.Pipeline.PollerStash do
 
   @moduledoc """
   Keep the state of the poller in redis to allow it to fail and restore state

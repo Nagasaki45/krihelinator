@@ -1,4 +1,4 @@
-defmodule Krihelinator.Background.RateLimiter do
+defmodule RateLimiter do
 
   @moduledoc """
   Use me to rate limit calls to functions.

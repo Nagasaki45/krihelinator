@@ -1,4 +1,4 @@
-defmodule Krihelinator.Background.TrendingParser do
+defmodule Krihelinator.Periodic.TrendingParser do
 
   @moduledoc """
   Helper module for parsing the github trending page.

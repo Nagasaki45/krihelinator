@@ -1,38 +1,37 @@
-defmodule Krihelinator.Background.StatsScraper do
-  use GenServer
-  alias Krihelinator.Background
+alias Experimental.GenStage
+
+defmodule Krihelinator.Pipeline.StatsScraper do
+  use GenStage
   require Logger
 
   @moduledoc """
-  Poolboy worker that scrape statistics for each new repo. Than, push
-  the info down to the `DataHandler` sink GenServer.
+  GenStage that scrape statistics for each new repo.
   """
 
-  def start_link([]) do
-    GenServer.start_link(__MODULE__, [])
+  def init([]) do
+    {:producer_consumer, :nil}
+  end
+
+  def handle_events(repos, _from, state) do
+    repos =
+      repos
+      |> Stream.map(&scrape/1)
+      |> Enum.filter(fn repo -> repo != :error end)
+    {:noreply, repos, state}
   end
 
   @doc """
-  Fetch statistics about a repository, using pool workers, and send it
-  down to the persistance layer.
+  Scrape statistics about a repository from github's pulse page.
   """
-  def process(repo) do
-    :poolboy.transaction(
-      :scrapers_pool,
-      fn pid -> GenServer.call(pid, {:process, repo}) end
-    )
-  end
-
-  def handle_call({:process, repo}, _from, state) do
+  def scrape(repo) do
     case HTTPoison.get("https://github.com/#{repo.name}/pulse") do
       {:ok, %{body: body, status_code: 200}} ->
         repo
         |> Map.merge(parse(body))
-        |> Background.DataHandler.process
       otherwise ->
         handle_failure(otherwise, repo.name)
+        :error  # Filter them later
     end
-    {:reply, :ok, state}
   end
 
   @to_parse [

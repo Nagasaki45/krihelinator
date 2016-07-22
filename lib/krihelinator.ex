@@ -12,8 +12,10 @@ defmodule Krihelinator do
       supervisor(Krihelinator.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Krihelinator.Endpoint, []),
-      # Start the background polling system
-      supervisor(Krihelinator.Background.Supervisor, []),
+      # Start the background polling pipeline
+      supervisor(Krihelinator.Pipeline.Supervisor, []),
+      # Start the background periodic process
+      worker(Krihelinator.Periodic, []),
       # Start your own worker by calling: Krihelinator.Worker.start_link(arg1, arg2, arg3)
       # worker(Krihelinator.Worker, [arg1, arg2, arg3]),
     ]
