@@ -89,7 +89,8 @@ defmodule Krihelinator.Pipeline.StatsScraper do
   end
 
   @doc """
-  When HTTPoison fails, log the failure in the most indicative way.
+  Several failures are ignorable. Log them for debugging and let the process
+  crash otherwise.
   """
   def handle_failure(httpoison_response, repo_name) do
     msg = case httpoison_response do
@@ -97,12 +98,8 @@ defmodule Krihelinator.Pipeline.StatsScraper do
         "Page not found (404)"
       {:ok, %{status_code: 451}} ->
         "Repository unavailable due to DMCA takedown"
-      {:ok, %{body: body, status_code: status_code}} ->
-        "Status code: #{status_code}\n#{Floki.text(body)}"
-      {:error, httpoison_error} ->
-        inspect(httpoison_error)
     end
-    Logger.warn "Failed to scrape #{repo_name}: #{msg}"
+    Logger.debug "Failed to scrape #{repo_name}: #{msg}"
   end
 
 end
