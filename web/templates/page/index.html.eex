@@ -6,31 +6,29 @@
   <%= link "Read more...", to: page_path(@conn, :about) %>
 </p>
 
-<ul class="list-group">
-  <%= for repo <- @repos do %>
-    <li class="list-group-item">
+<div id="app">
+  <ul class="list-group">
+    <li v-for="repo in repos" class="list-group-item">
 
       <h3>
-        <a href="http://github.com/<%= repo.name %>"><%= repo.name %></a>
-        <button data-toggle="collapse" class="pull-right btn btn-danger" data-target="#<%= repo.id %>">
-          Krihelimeter <span class="badge"><%= repo.krihelimeter %></span>
+        <a href="http://github.com/{{ repo.name }}">{{ repo.name }}</a>
+        <button data-toggle="collapse" class="pull-right btn btn-danger" data-target="#{{ repo.id }}">
+          Krihelimeter <span class="badge">{{ repo.krihelimeter }}</span>
         </button>
       </h3>
 
-      <%= if repo.trending do %>
-        <div class="label label-warning">Trending on github!</div>
-      <%= end %>
+      <div v-if="repo.trending" class="label label-warning">Trending on github!</div>
 
-      <p class="repo-description"><%= repo.description %></p>
+      <p class="repo-description">{{ repo.description }}</p>
 
-      <div id="<%= repo.id %>" class="collapse">
-        <span class="label label-info"><%= repo.authors %> Authors</span>
-        <span class="label label-default"><%= repo.commits %> Commits</span>
-        <span class="label label-merged-pull-request"><%= repo.merged_pull_requests %> Merged Pull Requests</span>
-        <span class="label label-success"><%= repo.proposed_pull_requests %> Proposed Pull Requests</span>
-        <span class="label label-danger"><%= repo.closed_issues %> Closed Issues</span>
-        <span class="label label-success"><%= repo.new_issues %> New Issues</span>
+      <div id="{{ repo.id }}" class="collapse">
+        <span class="label label-info">{{ repo.authors }} Authors</span>
+        <span class="label label-default">{{ repo.commits }} Commits</span>
+        <span class="label label-merged-pull-request">{{ repo.merged_pull_requests }} Merged Pull Requests</span>
+        <span class="label label-success">{{ repo.proposed_pull_requests }} Proposed Pull Requests</span>
+        <span class="label label-danger">{{ repo.closed_issues }} Closed Issues</span>
+        <span class="label label-success">{{ repo.new_issues }} New Issues</span>
       </div>
     </li>
-  <%= end %>
-</ul>
+  </ul>
+</div>
