@@ -105,10 +105,12 @@ regex matching on the resulting text</p>
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#handle_failure/2">handle_failure(httpoison_response, repo_name)</a>
+    <a href="#handle_response/1">handle_response(arg)</a>
   </div>
   
-    <div class="summary-synopsis"><p>When HTTPoison fails, log the failure in the most indicative way</p>
+    <div class="summary-synopsis"><p>Analyze the HTTPoison response, returns a map to update the repo with.
+Several errors are ignorable, collect them, the callers will have to decide
+what to do with them</p>
 </div>
   
 </div>
@@ -200,18 +202,20 @@ regex matching on the resulting text.</p>
     
   </section>
 </div>
-<div class="detail" id="handle_failure/2">
+<div class="detail" id="handle_response/1">
   <div class="detail-header">
-    <a href="#handle_failure/2" class="detail-link" title="Link to this function">
+    <a href="#handle_response/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">handle_failure(httpoison_response, repo_name)</span>
+    <span class="signature">handle_response(arg)</span>
     
     
   </div>
   
   <section class="docstring">
-    <p>When HTTPoison fails, log the failure in the most indicative way.</p>
+    <p>Analyze the HTTPoison response, returns a map to update the repo with.
+Several errors are ignorable, collect them, the callers will have to decide
+what to do with them.</p>
 
   </section>
 </div>
