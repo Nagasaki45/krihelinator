@@ -50,7 +50,7 @@ defmodule Krihelinator.Pipeline.StatsScraper do
     {:proposed_pull_requests, ~s{a[href="#proposed-pull-requests"]}, ~r/(?<value>\d+) Proposed Pull Requests/},
     {:closed_issues, ~s{a[href="#closed-issues"]}, ~r/(?<value>\d+) Closed Issues/},
     {:new_issues, ~s{a[href="#new-issues"]}, ~r/(?<value>\d+) New Issues/},
-    {:commits, "div.section.diffstat-summary", ~r/(?<value>\d+) commits to all branches/},
+    {:commits, "div.section.diffstat-summary", ~r/pushed (?<value>\d+) commits to/},
     {:authors, "div.section.diffstat-summary", ~r/(?<value>\d+) author/},
   ]
 
