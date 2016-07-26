@@ -28,22 +28,11 @@ defmodule Krihelinator.Pipeline.Poller do
     {:ok, %{body: repos, status_code: 200}} = GithubAPI.limited_get(next_path)
     new_next_path = next_path(repos)
     PollerStash.put(new_next_path)
-    repos =
-      repos
-      |> Stream.filter(fn repo -> not Map.get(repo, "fork") end)
-      |> Enum.map(&rearrange_map/1)
     handle_demand(demand, %{buffer: buffer ++ repos, next_path: new_next_path})
   end
 
   def next_path(repos) do
     last_id = repos |> List.last |> Map.get("id")
     "repositories?since=#{last_id}"
-  end
-
-  def rearrange_map(repo) do
-    %{
-      name: Map.get(repo, "full_name"),
-      description: Map.get(repo, "description"),
-    }
   end
 end

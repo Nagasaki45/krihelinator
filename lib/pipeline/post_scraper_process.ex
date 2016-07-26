@@ -1,6 +1,6 @@
 alias Experimental.GenStage
 
-defmodule Krihelinator.Pipeline.Filter do
+defmodule Krihelinator.Pipeline.PostScraperProcess do
   use GenStage
   alias Krihelinator.Krihelimeter
 
