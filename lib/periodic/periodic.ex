@@ -17,30 +17,25 @@ defmodule Krihelinator.Periodic do
   end
 
   def init([]) do
-    schedule_work()
+    handle_info(:run, :nil)
     {:ok, :nil}
   end
 
   def handle_info(:run, state) do
     Logger.info "Periodic process kicked in!"
-    Logger.info "Scraping trending..."
-    scrape_trending()
     Logger.info "Running DB cleaner..."
     clean_db()
-    Logger.info "Re-analysing existing repos..."
-    reanalyse_existing_repos()
+    Logger.info "Scraping repos (trending + existing)..."
+    Stream.concat(scrape_trending(), existing_repos_to_scrape())
+    |> Stream.map(&Pipeline.StatsScraper.scrape/1)
+    |> Enum.each(&handle_scraped/1)
     Logger.info "Periodic process finished successfully!"
-    schedule_work()
+    Process.send_after(self(), :run, Application.fetch_env!(:krihelinator, :periodic_schedule))
     {:noreply, state}
   end
 
-  defp schedule_work do
-    Process.send_after(self(), :run, Application.fetch_env!(:krihelinator, :periodic_schedule))
-  end
-
   @doc """
-  Scrape the github trending page, scrape the pulse page for each project and
-  persist.
+  Scrape the github trending page and return stream of repos to scrape.
   """
   def scrape_trending do
     Repo.update_all(GithubRepo, set: [trending: false])
@@ -49,16 +44,6 @@ defmodule Krihelinator.Periodic do
     body
     |> Periodic.TrendingParser.parse
     |> Stream.map(fn repo -> Map.put(repo, :trending, true) end)
-    |> scrape_and_persist_repos
-  end
-
-  @doc """
-  Re-analyse each project in the DB.
-  """
-  def reanalyse_existing_repos do
-    Repo.all(GithubRepo)
-    |> Stream.map(&Map.from_struct/1)
-    |> scrape_and_persist_repos
   end
 
   @doc """
@@ -76,13 +61,26 @@ defmodule Krihelinator.Periodic do
     end
   end
 
+  def existing_repos_to_scrape do
+    GithubRepo
+    |> Repo.all
+    |> Stream.map(&Map.from_struct/1)
+  end
+
   @doc """
-  Helper to stream repos through `Pipeline.StatsScraper` -> `Pipeline.DataHandler`.
+  Decide what to do with the scraped data. Specific errors might trigger save,
+  other deletes, or ignores.
   """
-  def scrape_and_persist_repos(repos) do
-    repos
-    |> Stream.map(&Pipeline.StatsScraper.scrape/1)
-    |> Stream.filter(fn repo -> repo != :error end)
-    |> Enum.each(&Pipeline.DataHandler.save_to_db/1)
+  def handle_scraped(%{error: :nil}=repo) do
+    Pipeline.DataHandler.save_to_db(repo)
+  end
+
+  def handle_scraped(%{error: :dmca_takedown}=repo) do
+    (from r in GithubRepo, where: r.name == ^repo.name)
+    |> Repo.delete_all
+  end
+
+  def handle_scraped(%{error: error}=repo) do
+    Logger.info "Failed to scrape #{repo.name} due to #{error}. No stats updated"
   end
 end

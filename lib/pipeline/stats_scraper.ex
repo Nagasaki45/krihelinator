@@ -16,7 +16,7 @@ defmodule Krihelinator.Pipeline.StatsScraper do
     repos =
       repos
       |> Stream.map(&scrape/1)
-      |> Enum.filter(fn repo -> repo != :error end)
+      |> Enum.filter(fn repo -> is_nil(repo.error) end)
     {:noreply, repos, state}
   end
 
@@ -24,15 +24,25 @@ defmodule Krihelinator.Pipeline.StatsScraper do
   Scrape statistics about a repository from github's pulse page.
   """
   def scrape(repo) do
-    case HTTPoison.get("https://github.com/#{repo.name}/pulse") do
-      {:ok, %{body: body, status_code: 200}} ->
-        repo
-        |> Map.merge(parse(body))
-      otherwise ->
-        handle_failure(otherwise, repo.name)
-        :error  # Filter them later
-    end
+    result =
+      HTTPoison.get("https://github.com/#{repo.name}/pulse")
+      |> handle_response
+
+    Map.merge(repo, result)
   end
+
+  @doc """
+  Analyze the HTTPoison response, returns a map to update the repo with.
+  Several errors are ignorable, collect them, the callers will have to decide
+  what to do with them.
+  """
+  def handle_response({:ok, %{body: body, status_code: 200}}) do
+    body
+    |> parse
+    |> Map.put(:error, :nil)
+  end
+  def handle_response({:ok, %{status_code: 404}}), do: %{error: :page_not_found}
+  def handle_response({:ok, %{status_code: 451}}), do: %{error: :dmca_takedown}
 
   @to_parse [
     {:merged_pull_requests, ~s{a[href="#merged-pull-requests"]}, ~r/(?<value>\d+) Merged Pull Requests/},
@@ -87,19 +97,4 @@ defmodule Krihelinator.Pipeline.StatsScraper do
     |> String.split
     |> Enum.join(" ")
   end
-
-  @doc """
-  Several failures are ignorable. Log them for debugging and let the process
-  crash otherwise.
-  """
-  def handle_failure(httpoison_response, repo_name) do
-    msg = case httpoison_response do
-      {:ok, %{status_code: 404}} ->
-        "Page not found (404)"
-      {:ok, %{status_code: 451}} ->
-        "Repository unavailable due to DMCA takedown"
-    end
-    Logger.debug "Failed to scrape #{repo_name}: #{msg}"
-  end
-
 end
