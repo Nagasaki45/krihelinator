@@ -43,6 +43,7 @@ defmodule Krihelinator.Pipeline.StatsScraper do
   end
   def handle_response({:ok, %{status_code: 404}}), do: %{error: :page_not_found}
   def handle_response({:ok, %{status_code: 451}}), do: %{error: :dmca_takedown}
+  def handle_response({:error, %{reason: :timeout}}), do: %{error: :timeout}
 
   @to_parse [
     {:merged_pull_requests, ~s{a[href="#merged-pull-requests"]}, ~r/(?<value>\d+) Merged Pull Requests/},
