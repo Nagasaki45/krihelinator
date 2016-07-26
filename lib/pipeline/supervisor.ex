@@ -30,11 +30,11 @@ defmodule Krihelinator.Pipeline do
 
   Here is how the pipeline looks like:
   ```
-                                 StatsScraper
-                              /      ...       \
-  Poller -> PreScraperProcess -> StatsScraper -> PostScraperProcess -> Sink
-                              \      ...       /
-                                 StatsScraper
+            StatsScraper
+         /      ...       \
+  Poller -> StatsScraper -> Filter -> DataHandler
+         \      ...       /
+            StatsScraper
   ```
   """
 
@@ -44,16 +44,14 @@ defmodule Krihelinator.Pipeline do
 
   def start_pipeline do
     {:ok, poller} = GenStage.start_link(Pipeline.Poller, [])
-    {:ok, pre_process} = GenStage.start_link(Pipeline.PreScraperProcess, [])
-    {:ok, post_process} = GenStage.start_link(Pipeline.PostScraperProcess, [])
+    {:ok, filter} = GenStage.start_link(Pipeline.Filter, [])
     {:ok, sink} = GenStage.start_link(Pipeline.DataHandler, [])
 
-    GenStage.sync_subscribe(sink, to: post_process)
+    GenStage.sync_subscribe(sink, to: filter)
     for scraper <- create_scrapers() do
-      GenStage.sync_subscribe(post_process, to: scraper)
-      GenStage.sync_subscribe(scraper, to: pre_process)
+      GenStage.sync_subscribe(filter, to: scraper)
+      GenStage.sync_subscribe(scraper, to: poller)
     end
-    GenStage.sync_subscribe(pre_process, to: poller)
 
     Process.sleep(:infinity)
   end
