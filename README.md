@@ -25,6 +25,7 @@ If you messed things up there are several usefull scripts in `priv/scripts`:
     mix run priv/scripts/update_description.exs
     mix run priv/scripts/delete_forks.exs
     mix run priv/scripts/delete_single_author_repos.exs
+    mix run priv/scripts/delete_zero_commits_repos.exs
 
 ## Running in production
 
