@@ -21,7 +21,9 @@ defmodule Krihelinator.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", Krihelinator do
-  #   pipe_through :api
-  # end
+  scope "/api/v1", Krihelinator do
+    pipe_through :api
+
+    get "/repositories", APIController, :index
+  end
 end
