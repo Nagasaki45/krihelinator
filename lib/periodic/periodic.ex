@@ -27,6 +27,7 @@ defmodule Krihelinator.Periodic do
     clean_db()
     Logger.info "Scraping repos (trending + existing)..."
     Stream.concat(scrape_trending(), existing_repos_to_scrape())
+    |> Stream.uniq(fn repo -> repo.name end)
     |> Stream.map(&Pipeline.StatsScraper.scrape/1)
     |> Enum.each(&handle_scraped/1)
     Logger.info "Periodic process finished successfully!"
