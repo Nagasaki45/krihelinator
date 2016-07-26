@@ -53,11 +53,15 @@ defmodule Krihelinator.Periodic do
     count = Repo.one(from r in GithubRepo, select: count(r.id))
     keep = Application.fetch_env!(:krihelinator, :max_repos_to_keep)
     if count > keep do
+      threshold = Repo.one(from r in GithubRepo,
+                           order_by: [desc: r.krihelimeter],
+                           offset: ^keep,
+                           limit: 1,
+                           select: r.krihelimeter)
       Logger.info "There are #{count} repos in the DB, keeping only #{keep}"
-      (from GithubRepo, order_by: [desc: :krihelimeter], limit: 50)
-      |> Repo.all
-      |> Enum.drop(keep)
-      |> Enum.each(&Repo.delete!/1)
+      Logger.info "(above krihelimeter #{threshold})"
+      from(r in GithubRepo, where: r.krihelimeter < ^threshold)
+      |> Repo.delete_all
     end
   end
 
