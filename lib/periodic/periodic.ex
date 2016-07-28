@@ -54,7 +54,8 @@ defmodule Krihelinator.Periodic do
     count = Repo.one(from r in GithubRepo, select: count(r.id))
     keep = Application.fetch_env!(:krihelinator, :max_repos_to_keep)
     if count > keep do
-      threshold = Repo.one(from r in GithubRepo,
+      non_user_requested = from(r in GithubRepo, where: not r.user_requested)
+      threshold = Repo.one(from r in non_user_requested,
                            order_by: [desc: r.krihelimeter],
                            offset: ^keep,
                            limit: 1,
@@ -64,7 +65,7 @@ defmodule Krihelinator.Periodic do
        "new minimum krihelimeter is #{threshold}"]
       |> Enum.join(", ")
       |> Logger.info
-      from(r in GithubRepo, where: r.krihelimeter < ^threshold)
+      from(r in non_user_requested, where: r.krihelimeter < ^threshold)
       |> Repo.delete_all
     end
   end
