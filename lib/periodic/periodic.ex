@@ -59,8 +59,11 @@ defmodule Krihelinator.Periodic do
                            offset: ^keep,
                            limit: 1,
                            select: r.krihelimeter)
-      Logger.info "There are #{count} repos in the DB, keeping only #{keep}"
-      Logger.info "(above krihelimeter #{threshold})"
+      ["There are #{count} repos in the DB",
+       "keeping only #{keep}",
+       "new minimum krihelimeter is #{threshold}"]
+      |> Enum.join(", ")
+      |> Logger.info
       from(r in GithubRepo, where: r.krihelimeter < ^threshold)
       |> Repo.delete_all
     end
