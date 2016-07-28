@@ -7,6 +7,9 @@
 </p>
 
 <div id="app">
+
+  <%= render("claim_badge.html", conn: @conn) %>
+
   <ul class="list-group">
     <li v-for="repo in repos" class="list-group-item">
 
