@@ -16,6 +16,7 @@ defmodule Krihelinator.Pipeline.Supervisor do
 
   def init([]) do
     children = [
+      worker(Pipeline.PollerStash, []),
       worker(Pipeline, []),
     ]
     supervise(children, strategy: :one_for_one)

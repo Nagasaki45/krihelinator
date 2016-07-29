@@ -8,11 +8,16 @@ defmodule Krihelinator.Pipeline.PollerStash do
   @initial_state "repositories"
   @key "poller_stash"
 
+  def start_link do
+    {:ok, client} = Exredis.start_link()
+    true = Process.register(client, __MODULE__)
+    {:ok, client}
+  end
+
   def get do
-    {:ok, client} = Exredis.start_link
-    case Exredis.query(client, ["GET", @key]) do
+    case Exredis.query(__MODULE__, ["GET", @key]) do
       :undefined ->
-        Exredis.query client, ["SET", @key, @initial_state]
+        Exredis.query __MODULE__, ["SET", @key, @initial_state]
         @initial_state
       otherwise ->
         otherwise
@@ -20,7 +25,6 @@ defmodule Krihelinator.Pipeline.PollerStash do
   end
 
   def put(new_state) do
-    {:ok, client} = Exredis.start_link
-    Exredis.query client, ["SET", "poller_stash", new_state]
+    Exredis.query __MODULE__, ["SET", "poller_stash", new_state]
   end
 end
