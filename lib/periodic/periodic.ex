@@ -91,12 +91,13 @@ defmodule Krihelinator.Periodic do
     Pipeline.DataHandler.save_to_db(repo)
   end
 
-  def handle_scraped(%{error: :dmca_takedown}=repo) do
-    (from r in GithubRepo, where: r.name == ^repo.name)
-    |> Repo.delete_all
+  def handle_scraped(%{error: :timeout}=repo) do
+    Logger.info "Scraping #{repo.name} timed out. No stats updated"
   end
 
   def handle_scraped(%{error: error}=repo) do
-    Logger.info "Failed to scrape #{repo.name} due to #{error}. No stats updated"
+    Logger.info "Failed to scrape #{repo.name} du to #{error}. Deleting!"
+    (from r in GithubRepo, where: r.name == ^repo.name)
+    |> Repo.delete_all
   end
 end
