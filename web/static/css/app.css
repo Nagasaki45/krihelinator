@@ -2,6 +2,20 @@
   padding-top: 10px;
 }
 
-.label-merged-pull-request {
-  background-color: #6E5494;
+.stat-block {
+  border: 1px solid #eee;
+  text-align: center;
+  padding: 20px;
+}
+
+.stat-block:hover {
+  background-color: #f9f9f9;
+}
+
+.stat-block-text {
+  color: #767676;
+}
+
+.list-group-item {
+  padding-bottom: 0px
 }
