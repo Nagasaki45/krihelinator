@@ -17,7 +17,7 @@ defmodule Krihelinator.Periodic do
   end
 
   def init([]) do
-    handle_info(:run, :nil)
+    reschedule_work()
     {:ok, :nil}
   end
 
@@ -31,8 +31,15 @@ defmodule Krihelinator.Periodic do
     |> Stream.map(&Pipeline.StatsScraper.scrape/1)
     |> Enum.each(&handle_scraped/1)
     Logger.info "Periodic process finished successfully!"
-    Process.send_after(self(), :run, Application.fetch_env!(:krihelinator, :periodic_schedule))
+    reschedule_work()
     {:noreply, state}
+  end
+
+  @doc """
+  Schedule the next run in `:periodic_schedule` milliseconds.
+  """
+  def reschedule_work do
+    Process.send_after(self(), :run, Application.fetch_env!(:krihelinator, :periodic_schedule))
   end
 
   @doc """
