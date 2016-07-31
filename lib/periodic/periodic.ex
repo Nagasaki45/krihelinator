@@ -51,16 +51,16 @@ defmodule Krihelinator.Periodic do
   Keep only the top :max_repos_to_keep in the DB. Delete the rest.
   """
   def clean_db do
-    count = Repo.one(from r in GithubRepo, select: count(r.id))
+    non_user_requested = from(r in GithubRepo, where: not r.user_requested)
+    count = Repo.one(from r in non_user_requested, select: count(r.id))
     keep = Application.fetch_env!(:krihelinator, :max_repos_to_keep)
     if count > keep do
-      non_user_requested = from(r in GithubRepo, where: not r.user_requested)
       threshold = Repo.one(from r in non_user_requested,
                            order_by: [desc: r.krihelimeter],
                            offset: ^keep,
                            limit: 1,
                            select: r.krihelimeter)
-      ["There are #{count} repos in the DB",
+      ["There are #{count} repos (excluding user requested) in the DB",
        "keeping only #{keep}",
        "new minimum krihelimeter is #{threshold}"]
       |> Enum.join(", ")
