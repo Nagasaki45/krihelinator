@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.13.0">
-    <title>Krihelinator.Pipeline.PollerStash – krihelinator v0.0.1</title>
+    <title>Krihelinator.BadgeController – krihelinator v0.0.1</title>
     <link rel="stylesheet" href="dist/app-9c1e3d5aa2.css" />
     
     <script src="dist/sidebar_items.js"></script>
@@ -60,17 +60,11 @@
 
       <h1>
         <small class="visible-xs">krihelinator v0.0.1</small>
-        Krihelinator.Pipeline.PollerStash
+        Krihelinator.BadgeController
         
         
       </h1>
 
-      
-        <section id="moduledoc" class="docstring">
-          <p>Keep the state of the poller in redis to allow it to fail and restore state
-automatically, even between deploys / restarts.</p>
-
-        </section>
       
 
       
@@ -90,19 +84,13 @@ automatically, even between deploys / restarts.</p>
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#get/0">get()</a>
+    <a href="#badge/2">badge(conn, map)</a>
   </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#put/1">put(new_state)</a>
-  </div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#start_link/0">start_link()</a>
+    <a href="#get_from_db_or_scrape/1">get_from_db_or_scrape(name)</a>
   </div>
   
 </div>
@@ -127,12 +115,12 @@ automatically, even between deploys / restarts.</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="get/0">
+          <div class="detail" id="badge/2">
   <div class="detail-header">
-    <a href="#get/0" class="detail-link" title="Link to this function">
+    <a href="#badge/2" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">get()</span>
+    <span class="signature">badge(conn, map)</span>
     
     
   </div>
@@ -141,26 +129,12 @@ automatically, even between deploys / restarts.</p>
     
   </section>
 </div>
-<div class="detail" id="put/1">
+<div class="detail" id="get_from_db_or_scrape/1">
   <div class="detail-header">
-    <a href="#put/1" class="detail-link" title="Link to this function">
+    <a href="#get_from_db_or_scrape/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">put(new_state)</span>
-    
-    
-  </div>
-  
-  <section class="docstring">
-    
-  </section>
-</div>
-<div class="detail" id="start_link/0">
-  <div class="detail-header">
-    <a href="#start_link/0" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">start_link()</span>
+    <span class="signature">get_from_db_or_scrape(name)</span>
     
     
   </div>
