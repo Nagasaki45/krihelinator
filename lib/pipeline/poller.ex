@@ -31,6 +31,11 @@ defmodule Krihelinator.Pipeline.Poller do
     handle_demand(demand, %{buffer: buffer ++ repos, next_path: new_next_path})
   end
 
+  def next_path([]) do
+    Logger.info "End of Github! Leaping back to start a new loop"
+    "repositories"
+  end
+
   def next_path(repos) do
     last_id = repos |> List.last |> Map.get("id")
     "repositories?since=#{last_id}"
