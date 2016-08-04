@@ -96,7 +96,7 @@ defmodule Krihelinator.Periodic do
   end
 
   def handle_scraped(%{error: error}=repo) do
-    Logger.info "Failed to scrape #{repo.name} du to #{error}. Deleting!"
+    Logger.info "Failed to scrape #{repo.name} due to #{error}. Deleting!"
     (from r in GithubRepo, where: r.name == ^repo.name)
     |> Repo.delete_all
   end
