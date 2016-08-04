@@ -53,6 +53,7 @@ defmodule Krihelinator.Pipeline.StatsScraper do
     {:new_issues, ~s{a[href="#new-issues"]}, ~r/(?<value>\d+) New Issues/},
     {:commits, "div.section.diffstat-summary", ~r/pushed (?<value>\d+) commits to/},
     {:authors, "div.section.diffstat-summary", ~r/(?<value>\d+) author/},
+    {:forks, "ul.pagehead-actions", ~r/Fork (?<value>\d+)/},
   ]
 
   @doc """

@@ -17,6 +17,7 @@ defmodule Krihelinator.Pipeline.PostScraperProcess do
       repos
       |> Stream.filter(fn r -> r.authors > 1 end)
       |> Stream.filter(fn r -> r.commits > 0 end)
+      |> Stream.filter(fn r -> r.forks >= 10 end)
       |> Stream.filter(fn r -> Krihelimeter.calculate(r) > 30 end)
       |> Enum.to_list
     {:noreply, repos, state}
