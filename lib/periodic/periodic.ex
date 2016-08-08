@@ -29,6 +29,7 @@ defmodule Krihelinator.Periodic do
     Stream.concat(scrape_trending(), existing_repos_to_scrape())
     |> Stream.uniq(fn repo -> repo.name end)
     |> Stream.map(&Pipeline.StatsScraper.scrape/1)
+    |> Stream.map(&add_api_only_updates/1)
     |> Enum.each(&handle_scraped/1)
     Logger.info "Periodic process finished successfully!"
     reschedule_work()
@@ -84,6 +85,27 @@ defmodule Krihelinator.Periodic do
   end
 
   @doc """
+  Some data is not available on the pulse page but available on the API.
+  Get it and update the repo.
+  """
+  def add_api_only_updates(repo) do
+    updates =
+      GithubAPI.limited_get("repos/#{repo.name}")
+      |> handle_api_call
+
+    Map.merge(repo, updates)
+  end
+
+  @api_only_fields ~w(language description)a
+
+  def handle_api_call({:ok, %{body: map, status_code: 200}}) do
+    for key <- @api_only_fields, into: %{} do
+      {key, Map.get(map, Atom.to_string(key))}
+    end
+  end
+  def handle_api_call(_otherwise), do: %{error: :api_error}
+
+  @doc """
   Decide what to do with the scraped data. Specific errors might trigger save,
   other deletes, or ignores.
   """
@@ -91,12 +113,14 @@ defmodule Krihelinator.Periodic do
     Pipeline.DataHandler.save_to_db(repo)
   end
 
-  def handle_scraped(%{error: :timeout}=repo) do
-    Logger.info "Scraping #{repo.name} timed out. No stats updated"
+  @ignorable_errors ~w(timeout api_error)a
+
+  def handle_scraped(%{error: error}=repo) when error in @ignorable_errors do
+    Logger.info "Failed to process #{repo.name} due to #{error}. No update done"
   end
 
   def handle_scraped(%{error: error}=repo) do
-    Logger.info "Failed to scrape #{repo.name} due to #{error}. Deleting!"
+    Logger.info "Failed to process #{repo.name} due to #{error}. Deleting!"
     (from r in GithubRepo, where: r.name == ^repo.name)
     |> Repo.delete_all
   end

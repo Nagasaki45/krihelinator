@@ -4,6 +4,7 @@ defmodule Krihelinator.GithubRepo do
   schema "repos" do
     field :name, :string
     field :description, :string
+    field :language, :string
     field :merged_pull_requests, :integer
     field :proposed_pull_requests, :integer
     field :closed_issues, :integer
@@ -17,8 +18,9 @@ defmodule Krihelinator.GithubRepo do
     timestamps()
   end
 
-  @allowed ~w(name description merged_pull_requests proposed_pull_requests
-              closed_issues new_issues commits authors trending user_requested)a
+  @allowed ~w(name description language merged_pull_requests
+              proposed_pull_requests closed_issues new_issues commits authors
+              trending user_requested)a
   @required ~w(name merged_pull_requests proposed_pull_requests
                closed_issues new_issues commits authors)a
 
