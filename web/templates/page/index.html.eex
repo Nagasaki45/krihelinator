@@ -20,6 +20,7 @@
         </button>
       </h3>
 
+      <div v-if="repo.language" class="label label-default">{{ repo.language }}</div>
       <div v-if="repo.trending" class="label label-warning">Trending on github!</div>
 
       <p class="repo-description">{{ repo.description }}</p>
