@@ -19,3 +19,9 @@
 .list-group-item {
   padding-bottom: 0px
 }
+
+.btn-group > button {
+  margin-right: 6px;
+  margin-bottom: 4px;
+  border-radius: 3px !important;
+}

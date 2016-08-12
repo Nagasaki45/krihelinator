@@ -1,18 +1,27 @@
-$(document).ready(function functionName() {
-  new Vue({
-    el: '#app',
-    data: {
-      repos: [],
-      badge_repo: "your-user-name/awesome-project"
+new Vue({
+  el: '#app',
+  data: {
+    repos: [],
+    languages: [],
+    badge_repo: "your-user-name/awesome-project"
+  },
+  ready: function() {
+    this.setFromAjax("repos", "/api/v1/repositories");
+    this.setFromAjax("languages", "/api/v1/languages");
+  },
+  methods: {
+    filterByLanguage: function(language) {
+      var url = "/api/v1/repositories?language=" + encodeURIComponent(language);
+      this.setFromAjax("repos", url);
     },
-    ready: function() {
+    setFromAjax: function(what, url) {
       var that = this;
       $.ajax({
-        url: "/api/v1/repositories",
-        success: function(repos) {
-          that.repos = repos
+        url: url,
+        success: function(data) {
+          that[what] = data
         }
       });
     }
-  })
+  }
 });

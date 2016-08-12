@@ -8,7 +8,10 @@
 
 <div id="app">
 
-  <%= render("claim_badge.html", conn: @conn) %>
+  <div class="btn-group">
+    <%= render("language_selection.html") %>
+    <%= render("claim_badge.html", conn: @conn) %>
+  </div>
 
   <ul class="list-group">
     <li v-for="repo in repos" class="list-group-item">

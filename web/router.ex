@@ -24,7 +24,8 @@ defmodule Krihelinator.Router do
   scope "/api/v1", Krihelinator do
     pipe_through :api
 
-    get "/repositories", APIController, :index
+    get "/repositories", APIController, :repositories
+    get "/languages", APIController, :languages
   end
 
   scope "/badge", Krihelinator do
