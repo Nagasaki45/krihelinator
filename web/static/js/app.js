@@ -21,3 +21,5 @@ import "phoenix_html"
 // import socket from "./socket"
 
 import "./vue_app"
+// Add all bootstrap plugins to the jQuery global variable
+require("bootstrap");

@@ -2,28 +2,10 @@ exports.config = {
   // See http://brunch.io/#documentation for docs.
   files: {
     javascripts: {
-      joinTo: "js/app.js",
-
-      // To use a separate vendor.js bundle, specify two files path
-      // http://brunch.io/docs/config#-files-
-      // joinTo: {
-      //  "js/app.js": /^(web\/static\/js)/,
-      //  "js/vendor.js": /^(web\/static\/vendor)|(deps)/
-      // }
-      //
-      // To change the order of concatenation of files, explicitly mention here
-      order: {
-        before: [
-          "web/static/vendor/js/jquery.min.js",
-          "web/static/vendor/js/bootstrap.min.js"
-        ]
-      }
+      joinTo: "js/app.js"
     },
     stylesheets: {
-      joinTo: "css/app.css",
-      order: {
-        after: ["web/static/css/app.css"] // concat app.css last
-      }
+      joinTo: "css/app.css"
     },
     templates: {
       joinTo: "js/app.js"
@@ -54,7 +36,13 @@ exports.config = {
     babel: {
       // Do not use ES6 compiler in vendor code
       ignore: [/web\/static\/vendor/]
-    }
+    },
+    afterBrunch: [
+      // Copy octicon fonts to priv/static/css manually
+      "cp node_modules/octicons/build/font/octicons.ttf priv/static/css/",
+      "cp node_modules/octicons/build/font/octicons.woff priv/static/css/",
+      "cp node_modules/octicons/build/font/octicons.woff2 priv/static/css/"
+    ]
   },
 
   modules: {
@@ -64,6 +52,12 @@ exports.config = {
   },
 
   npm: {
-    enabled: true
+    globals: {
+      jQuery: 'jquery'
+    },
+    styles: {
+      bootstrap: ["dist/css/bootstrap.min.css",],
+      octicons: ["build/font/"]
+    }
   }
 };
