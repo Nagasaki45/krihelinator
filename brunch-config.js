@@ -1,22 +1,8 @@
 exports.config = {
   // See http://brunch.io/#documentation for docs.
   files: {
-    javascripts: {
-      joinTo: "js/app.js"
-    },
-    stylesheets: {
-      joinTo: "css/app.css"
-    },
-    templates: {
-      joinTo: "js/app.js"
-    }
-  },
-
-  conventions: {
-    // This option sets where we should place non-css and non-js assets in.
-    // By default, we set this to "/web/static/assets". Files in this directory
-    // will be copied to `paths.public`, which is "priv/static" by default.
-    assets: /^(web\/static\/assets)/
+    javascripts: {joinTo: "js/app.js"},
+    stylesheets: {joinTo: "css/app.css"}
   },
 
   // Phoenix paths configuration
@@ -33,12 +19,9 @@ exports.config = {
 
   // Configure your plugins
   plugins: {
-    babel: {
-      // Do not use ES6 compiler in vendor code
-      ignore: [/web\/static\/vendor/]
-    },
     afterBrunch: [
       // Copy octicon fonts to priv/static/css manually
+      "cp node_modules/octicons/build/font/octicons.eot priv/static/css/",
       "cp node_modules/octicons/build/font/octicons.ttf priv/static/css/",
       "cp node_modules/octicons/build/font/octicons.woff priv/static/css/",
       "cp node_modules/octicons/build/font/octicons.woff2 priv/static/css/"
@@ -56,8 +39,8 @@ exports.config = {
       jQuery: 'jquery'
     },
     styles: {
-      bootstrap: ["dist/css/bootstrap.min.css",],
-      octicons: ["build/font/"]
+      bootstrap: ["dist/css/bootstrap.css"],
+      octicons: ["build/font/octicons.css"]
     }
   }
 };
