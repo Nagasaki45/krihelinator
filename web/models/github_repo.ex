@@ -59,7 +59,8 @@ defmodule Krihelinator.GithubRepo do
   Trim the description string to `max_length` chars.
   """
   def trim_description(%{changes: %{description: description}}=changeset,
-                       max_length: max_length) do
+                       max_length: max_length)
+                       when is_binary(description) do
     description = if String.length(description) > max_length do
       String.slice(description, 0, 255 - 1 - 3) <> "..."
     else
