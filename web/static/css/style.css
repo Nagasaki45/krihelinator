@@ -35,3 +35,8 @@
   margin-bottom: 4px;
   border-radius: 3px !important;
 }
+
+.small-margin {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

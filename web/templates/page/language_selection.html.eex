@@ -1,6 +1,13 @@
-<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<button type="button" class="btn btn-primary dropdown-toggle"
+        v-bind:class="{ 'btn-primary': currentLanguage === null, 'btn-success': currentLanguage !== null }"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
   Filter by language
   <span class="caret"></span>
+</button>
+<button v-if="currentLanguage !== null"
+        v-on:click="filterByLanguage(null)"
+        type="button" class="btn btn-success">
+  Clear filter
 </button>
 <ul class="dropdown-menu">
   <li v-for="language in languages">

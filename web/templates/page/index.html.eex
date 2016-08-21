@@ -13,6 +13,10 @@
     <%= render("claim_badge.html", conn: @conn) %>
   </div>
 
+  <div v-if="currentLanguage !== null" class="alert alert-success small-margin" role="alert">
+    Most trending {{ currentLanguage }} repositories
+  </div>
+
   <ul class="list-group">
     <li v-for="repo in repos" class="list-group-item">
 
