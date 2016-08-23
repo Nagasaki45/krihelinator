@@ -30,6 +30,10 @@ new Vue({
           that[what] = data
         }
       });
+    },
+    clickTrendingLanguage: function(language) {
+      this.filterByLanguage(language);
+      $('#mostTrendingLanguages').modal('hide')
     }
   }
 });

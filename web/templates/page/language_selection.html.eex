@@ -10,7 +10,7 @@
   Clear filter
 </button>
 <ul class="dropdown-menu">
-  <li v-for="language in languages">
-    <a v-on:click="filterByLanguage(language)">{{ language }}</a>
+  <li v-for="language in languages | orderBy 'name'">
+    <a v-on:click="filterByLanguage(language.name)">{{ language.name }}</a>
   </li>
 </ul>

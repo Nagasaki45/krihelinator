@@ -12,12 +12,11 @@ defmodule Krihelinator.APIController do
   end
 
   def languages(conn, _params) do
-    languages =
-      Repo.all(GithubRepo)
-      |> Stream.map(fn repo -> repo.language end)
-      |> Stream.filter(fn l -> is_binary(l) && String.length(l) > 0 end)
-      |> Stream.uniq
-      |> Enum.sort
+    query = from(r in GithubRepo,
+                 group_by: r.language,
+                 select: %{name: r.language, krihelimeter: sum(r.krihelimeter)},
+                 where: not(is_nil(r.language)))
+    languages = Repo.all(query)
     render conn, :languages, languages: languages
   end
 

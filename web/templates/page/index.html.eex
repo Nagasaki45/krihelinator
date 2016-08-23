@@ -10,6 +10,7 @@
 
   <div class="btn-group">
     <%= render("language_selection.html") %>
+    <%= render("most_trending_languages.html") %>
     <%= render("claim_badge.html", conn: @conn) %>
   </div>
 
