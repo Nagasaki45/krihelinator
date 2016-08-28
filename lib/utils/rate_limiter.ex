@@ -13,7 +13,8 @@ defmodule RateLimiter do
       {:ok, _calls_made} ->
         apply(module, function, args)
       {:error, _calls_made} ->
-        ExRated.inspect_bucket(bucket, scale, limit)
+        inspection = ExRated.inspect_bucket(bucket, scale, limit)
+        inspection
         |> elem(2)  # ms_to_next_bucket
         |> Process.sleep
         apply(module, function, args, {bucket, scale, limit})

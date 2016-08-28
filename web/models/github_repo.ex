@@ -1,6 +1,10 @@
 defmodule Krihelinator.GithubRepo do
   use Krihelinator.Web, :model
 
+  @moduledoc """
+  Ecto model of a repository on github.
+  """
+
   schema "repos" do
     field :name, :string
     field :description, :string
@@ -46,11 +50,11 @@ defmodule Krihelinator.GithubRepo do
   Use the existing data, and the expected changes, to calculate and set the
   krihelimeter.
   """
-  def set_krihelimeter(%{valid?: false}=changeset) do
+  def set_krihelimeter(%{valid?: false} = changeset) do
     changeset
   end
 
-  def set_krihelimeter(%{data: data, changes: changes}=changeset) do
+  def set_krihelimeter(%{data: data, changes: changes} = changeset) do
     new_data = Map.merge(data, changes)
     put_change(changeset, :krihelimeter, Krihelimeter.calculate(new_data))
   end
@@ -58,7 +62,7 @@ defmodule Krihelinator.GithubRepo do
   @doc """
   Trim the description string to `max_length` chars.
   """
-  def trim_description(%{changes: %{description: description}}=changeset,
+  def trim_description(%{changes: %{description: description}} = changeset,
                        max_length: max_length)
                        when is_binary(description) do
     description = if String.length(description) > max_length do

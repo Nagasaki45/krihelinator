@@ -13,13 +13,13 @@ defmodule Krihelinator.Pipeline.Poller do
     {:producer, %{next_path: :nil, buffer: []}}
   end
 
-  def handle_demand(demand, %{next_path: :nil}=state) do
+  def handle_demand(demand, %{next_path: :nil} = state) do
     new_next_path = PollerStash.get()
     Logger.info "Starting to poll from '#{new_next_path}'"
     handle_demand(demand, %{state | next_path: new_next_path})
   end
 
-  def handle_demand(demand, %{buffer: buffer}=state) when demand <= length(buffer) do
+  def handle_demand(demand, %{buffer: buffer} = state) when demand <= length(buffer) do
     {repos, new_buffer} = Enum.split(buffer, demand)
     {:noreply, repos, %{state | buffer: new_buffer}}
   end

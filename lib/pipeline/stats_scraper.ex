@@ -25,7 +25,8 @@ defmodule Krihelinator.Pipeline.StatsScraper do
   """
   def scrape(repo) do
     result =
-      HTTPoison.get("https://github.com/#{repo.name}/pulse")
+      "https://github.com/#{repo.name}/pulse"
+      |> HTTPoison.get
       |> handle_response
 
     Map.merge(repo, result)
@@ -62,10 +63,9 @@ defmodule Krihelinator.Pipeline.StatsScraper do
   """
   def parse(body) do
     floki = Floki.parse(body)
-    for {key, css_selector, regex_pattern} <- @to_parse do
+    for {key, css_selector, regex_pattern} <- @to_parse, into: %{} do
       {key, general_extractor(floki, css_selector, regex_pattern)}
     end
-    |> Enum.into(%{})
   end
 
   @doc """

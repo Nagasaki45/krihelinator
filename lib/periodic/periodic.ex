@@ -26,7 +26,8 @@ defmodule Krihelinator.Periodic do
     Logger.info "Running DB cleaner..."
     clean_db()
     Logger.info "Scraping repos (trending + existing)..."
-    Stream.concat(scrape_trending(), existing_repos_to_scrape())
+    repos = Stream.concat(scrape_trending(), existing_repos_to_scrape())
+    repos
     |> Stream.uniq(fn repo -> repo.name end)
     |> Stream.map(&Pipeline.StatsScraper.scrape/1)
     |> Stream.map(&add_api_only_updates/1)
@@ -73,8 +74,8 @@ defmodule Krihelinator.Periodic do
        "new minimum krihelimeter is #{threshold}"]
       |> Enum.join(", ")
       |> Logger.info
-      from(r in non_user_requested, where: r.krihelimeter < ^threshold)
-      |> Repo.delete_all
+      query = from(r in non_user_requested, where: r.krihelimeter < ^threshold)
+      Repo.delete_all(query)
     end
   end
 
@@ -90,7 +91,8 @@ defmodule Krihelinator.Periodic do
   """
   def add_api_only_updates(repo) do
     updates =
-      GithubAPI.limited_get("repos/#{repo.name}")
+      "repos/#{repo.name}"
+      |> GithubAPI.limited_get
       |> handle_api_call
 
     Map.merge(repo, updates)
@@ -109,19 +111,19 @@ defmodule Krihelinator.Periodic do
   Decide what to do with the scraped data. Specific errors might trigger save,
   other deletes, or ignores.
   """
-  def handle_scraped(%{error: :nil}=repo) do
+  def handle_scraped(%{error: :nil} = repo) do
     Pipeline.DataHandler.save_to_db(repo)
   end
 
   @ignorable_errors ~w(timeout api_error)a
 
-  def handle_scraped(%{error: error}=repo) when error in @ignorable_errors do
+  def handle_scraped(%{error: error} = repo) when error in @ignorable_errors do
     Logger.info "Failed to process #{repo.name} due to #{error}. No update done"
   end
 
-  def handle_scraped(%{error: error}=repo) do
+  def handle_scraped(%{error: error} = repo) do
     Logger.info "Failed to process #{repo.name} due to #{error}. Deleting!"
-    (from r in GithubRepo, where: r.name == ^repo.name)
-    |> Repo.delete_all
+    query = from(r in GithubRepo, where: r.name == ^repo.name)
+    Repo.delete_all(query)
   end
 end

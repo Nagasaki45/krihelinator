@@ -28,7 +28,8 @@ defmodule Krihelinator.Pipeline.DataHandler do
       {:ok, _model} -> :ok
       {:error, _changeset} ->
         Logger.debug "#{params.name} already exists. Updating"
-        Repo.get_by(GithubRepo, name: params.name)
+        GithubRepo
+        |> Repo.get_by(name: params.name)
         |> GithubRepo.changeset(params)
         |> Repo.update!
     end

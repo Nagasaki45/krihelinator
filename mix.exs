@@ -44,7 +44,8 @@ defmodule Krihelinator.Mixfile do
      {:ex_rated, "~> 1.2"},
      {:ex_doc, "~> 0.13.0"},
      {:exredis, "~> 0.2.5"},
-     {:gen_stage, "~> 0.4.0"}]
+     {:gen_stage, "~> 0.4.0"},
+     {:credo, "~> 0.3", only: [:dev, :test]}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
