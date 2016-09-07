@@ -26,7 +26,8 @@ defmodule Krihelinator.Periodic do
     Logger.info "Running DB cleaner..."
     clean_db()
     Logger.info "Scraping repos (trending + existing)..."
-    repos = Stream.concat(scrape_trending(), existing_repos_to_scrape())
+    repos = Stream.concat(Periodic.GithubTrending.scrape(),
+                          existing_repos_to_scrape())
     repos
     |> Stream.uniq(fn repo -> repo.name end)
     |> Stream.map(&Pipeline.StatsScraper.scrape/1)
@@ -42,18 +43,6 @@ defmodule Krihelinator.Periodic do
   """
   def reschedule_work do
     Process.send_after(self(), :run, Application.fetch_env!(:krihelinator, :periodic_schedule))
-  end
-
-  @doc """
-  Scrape the github trending page and return stream of repos to scrape.
-  """
-  def scrape_trending do
-    Repo.update_all(GithubRepo, set: [trending: false])
-
-    %{body: body, status_code: 200} = HTTPoison.get!("https://github.com/trending")
-    body
-    |> Periodic.TrendingParser.parse
-    |> Stream.map(fn repo -> Map.put(repo, :trending, true) end)
   end
 
   @doc """

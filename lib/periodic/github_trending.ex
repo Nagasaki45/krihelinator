@@ -1,8 +1,21 @@
-defmodule Krihelinator.Periodic.TrendingParser do
+defmodule Krihelinator.Periodic.GithubTrending do
+  alias Krihelinator.{Repo, GithubRepo}
 
   @moduledoc """
-  Helper module for parsing the github trending page.
+  Helper module for scrape and parsing the github trending page.
   """
+
+  @doc """
+  Scrape the github trending page and return stream of repos to scrape.
+  """
+  def scrape do
+    Repo.update_all(GithubRepo, set: [trending: false])
+
+    %{body: body, status_code: 200} = HTTPoison.get!("https://github.com/trending")
+    body
+    |> parse
+    |> Stream.map(fn repo -> Map.put(repo, :trending, true) end)
+  end
 
   @doc """
   Parse the github trending page. Returns a list of maps with name and
