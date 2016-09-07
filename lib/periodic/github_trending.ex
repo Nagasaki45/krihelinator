@@ -1,5 +1,4 @@
 defmodule Krihelinator.Periodic.GithubTrending do
-  alias Krihelinator.{Repo, GithubRepo}
 
   @moduledoc """
   Helper module for scrape and parsing the github trending page.
@@ -9,8 +8,6 @@ defmodule Krihelinator.Periodic.GithubTrending do
   Scrape the github trending page and return stream of repos to scrape.
   """
   def scrape do
-    Repo.update_all(GithubRepo, set: [trending: false])
-
     %{body: body, status_code: 200} = HTTPoison.get!("https://github.com/trending")
     body
     |> parse

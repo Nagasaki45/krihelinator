@@ -33,7 +33,22 @@ defmodule Krihelinator.GithubRepo do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, @allowed)
+    |> cast_allowed(params)
+    |> finalize_changeset
+  end
+
+  @doc """
+  Create basic changeset from struct and params.
+  """
+  def cast_allowed(struct, params) do
+    cast(struct, params, @allowed)
+  end
+
+  @doc """
+  Run all validations and set calculated fields on a changeset.
+  """
+  def finalize_changeset(changeset) do
+    changeset
     |> validate_required(@required)
     |> validate_number(:merged_pull_requests, greater_than_or_equal_to: 0)
     |> validate_number(:proposed_pull_requests, greater_than_or_equal_to: 0)

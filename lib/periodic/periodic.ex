@@ -3,12 +3,13 @@ defmodule Krihelinator.Periodic do
   require Logger
   import Ecto.Query, only: [from: 2]
   alias Krihelinator.{Periodic, Pipeline, Repo, GithubRepo}
+  alias Ecto.Changeset
 
   @moduledoc """
   Every `:periodic_schedule` do the following:
 
-  - Scrape the github trending page for interesting, active, projects.
   - Run the DB cleaner.
+  - Scrape the github trending page for interesting, active, projects.
   - Pass all of the repos from the DB through the parser again, to update stats.
   """
 
@@ -26,13 +27,8 @@ defmodule Krihelinator.Periodic do
     Logger.info "Running DB cleaner..."
     clean_db()
     Logger.info "Scraping repos (trending + existing)..."
-    repos = Stream.concat(Periodic.GithubTrending.scrape(),
-                          existing_repos_to_scrape())
-    repos
-    |> Stream.uniq(fn repo -> repo.name end)
-    |> Stream.map(&Pipeline.StatsScraper.scrape/1)
-    |> Stream.map(&add_api_only_updates/1)
-    |> Enum.each(&handle_scraped/1)
+    Repo.update_all(GithubRepo, set: [trending: false])
+    rescrape()
     Logger.info "Periodic process finished successfully!"
     reschedule_work()
     {:noreply, state}
@@ -68,51 +64,69 @@ defmodule Krihelinator.Periodic do
     end
   end
 
-  def existing_repos_to_scrape do
-    GithubRepo
-    |> Repo.all
-    |> Stream.map(&Map.from_struct/1)
+  @doc """
+  Rescrape existing repos plus new github trending repos.
+  """
+  def rescrape() do
+    create_changesets()
+    |> Stream.map(&api_only_updates_and_redirects/1)
+    |> Stream.map(&scrape_pulse_page/1)
+    |> Stream.map(&GithubRepo.finalize_changeset/1)
+    |> Enum.each(&Repo.insert_or_update/1)
+  end
+
+  @doc """
+  Instead of working on the repos directly, create changesets to manipulate.
+  """
+  def create_changesets() do
+    existing = Stream.map(Repo.all(GithubRepo),
+                          fn struct -> {struct, %{}} end)
+    trending = Stream.map(Periodic.GithubTrending.scrape(),
+                          fn params -> {%GithubRepo{}, params} end)
+    all = Stream.concat(existing, trending)
+    all
+    |> Stream.map(
+      fn {struct, params} -> GithubRepo.cast_allowed(struct, params) end
+    )
+    |> Stream.uniq(&fetch_name/1)
   end
 
   @doc """
   Some data is not available on the pulse page but available on the API.
   Get it and update the repo.
   """
-  def add_api_only_updates(repo) do
-    updates =
-      "repos/#{repo.name}"
-      |> GithubAPI.limited_get
-      |> handle_api_call
-
-    Map.merge(repo, updates)
+  def api_only_updates_and_redirects(changeset) do
+    repo_name = fetch_name(changeset)
+    "repos/#{repo_name}"
+    |> GithubAPI.limited_get
+    |> handle_api_call(changeset)
   end
 
   @api_only_fields ~w(language description)a
 
-  def handle_api_call({:ok, %{body: map, status_code: 200}}) do
-    for key <- @api_only_fields, into: %{} do
+  def handle_api_call({:ok, %{body: map, status_code: 200}}, changeset) do
+    changes = for key <- @api_only_fields, into: %{} do
       {key, Map.get(map, Atom.to_string(key))}
     end
+    Changeset.change(changeset, changes)
   end
-  def handle_api_call(_otherwise), do: %{error: :api_error}
+
+  def handle_api_call(_otherwise, changeset) do
+    Changeset.add_error(changeset, :api_error, "Unknown")
+  end
 
   @doc """
-  Decide what to do with the scraped data. Specific errors might trigger save,
-  other deletes, or ignores.
+  TODO A temporary solution, until I implement the Pipeline using
+  changesets.
   """
-  def handle_scraped(%{error: :nil} = repo) do
-    Pipeline.DataHandler.save_to_db(repo)
+  def scrape_pulse_page(changeset) do
+    repo_name = fetch_name(changeset)
+    changes = Pipeline.StatsScraper.scrape(%{name: repo_name})
+    Changeset.change(changeset, changes)
   end
 
-  @ignorable_errors ~w(timeout api_error)a
-
-  def handle_scraped(%{error: error} = repo) when error in @ignorable_errors do
-    Logger.info "Failed to process #{repo.name} due to #{error}. No update done"
-  end
-
-  def handle_scraped(%{error: error} = repo) do
-    Logger.info "Failed to process #{repo.name} due to #{error}. Deleting!"
-    query = from(r in GithubRepo, where: r.name == ^repo.name)
-    Repo.delete_all(query)
+  def fetch_name(changeset) do
+    {_data_or_change, repo_name} = Changeset.fetch_field(changeset, :name)
+    repo_name
   end
 end
