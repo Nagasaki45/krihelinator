@@ -48,13 +48,25 @@ defmodule Krihelinator.Scraper do
   Several errors are ignorable, collect them, the callers will have to decide
   what to do with them.
   """
-  def handle_response({:ok, %{body: body, status_code: 200}}, elements) do
+  def handle_response({:ok, %{status_code: 200, body: body}}, elements) do
     body
     |> parse(elements)
   end
+  def handle_response({:ok, %{status_code: 301, headers: headers}}, elements) do
+    headers = Enum.into(headers, %{})
+    new_url = Map.fetch!(headers, "Location")
+    new_name =
+      new_url
+      |> String.split("/")
+      |> Enum.slice(3, 2)  # Two items starting from the 3rd "/"
+      |> Enum.join("/")
+    new_url
+    |> HTTPoison.get
+    |> handle_response(elements)
+    |> Map.put(:name, new_name)
+  end
   def handle_response({:ok, %{status_code: 404}}, _elements), do: %{error: :page_not_found}
   def handle_response({:ok, %{status_code: 451}}, _elements), do: %{error: :dmca_takedown}
-  def handle_response({:ok, %{status_code: 301}}, _elements), do: %{error: :redirect}
   def handle_response({:error, %{reason: :timeout}}, _elements), do: %{error: :timeout}
 
   @doc """
