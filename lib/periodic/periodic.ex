@@ -27,7 +27,6 @@ defmodule Krihelinator.Periodic do
     Logger.info "Running DB cleaner..."
     clean_db()
     Logger.info "Scraping repos (trending + existing)..."
-    Repo.update_all(GithubRepo, set: [trending: false])
     rescrape()
     Logger.info "Periodic process finished successfully!"
     reschedule_work()
@@ -68,7 +67,12 @@ defmodule Krihelinator.Periodic do
   Rescrape existing repos plus new github trending repos.
   """
   def rescrape() do
-    create_changesets()
+    existing = Repo.all(GithubRepo)
+    trending = Periodic.GithubTrending.scrape()
+    new_trending = set_trendiness(existing, trending)
+    existing = Repo.all(GithubRepo)  # Trendiness updated
+    all = create_changesets(existing, new_trending)
+    all
     |> Stream.map(&api_only_updates_and_redirects/1)
     |> Stream.map(&scrape_pulse_page/1)
     |> Stream.map(&GithubRepo.finalize_changeset/1)
@@ -76,19 +80,34 @@ defmodule Krihelinator.Periodic do
   end
 
   @doc """
+  Set trendiness of existing repos in the DB and return the remaining trending
+  structs - those that weren't in `existing`.
+  """
+  def set_trendiness(existing, trending) do
+    existing_names = for r <- existing, into: MapSet.new, do: r.name
+    {existing_trending, new_trending} = Enum.partition(
+      trending,
+      fn repo -> MapSet.member?(existing_names, repo.name) end
+    )
+    existing_trending_names = for r <- existing_trending, do: r.name
+    Repo.update_all(GithubRepo, set: [trending: false])
+    query = from(r in GithubRepo, where: r.name in ^existing_trending_names)
+    Repo.update_all(query, set: [trending: true])
+    new_trending
+  end
+
+  @doc """
   Instead of working on the repos directly, create changesets to manipulate.
   """
-  def create_changesets() do
-    existing = Stream.map(Repo.all(GithubRepo),
-                          fn struct -> {struct, %{}} end)
-    trending = Stream.map(Periodic.GithubTrending.scrape(),
-                          fn params -> {%GithubRepo{}, params} end)
-    all = Stream.concat(existing, trending)
-    all
-    |> Stream.map(
+  def create_changesets(existing, new_trending) do
+    all = Stream.concat(
+      Stream.map(existing, fn struct -> {struct, %{}} end),
+      Stream.map(new_trending, fn params -> {%GithubRepo{}, params} end)
+    )
+    Stream.map(
+      all,
       fn {struct, params} -> GithubRepo.cast_allowed(struct, params) end
     )
-    |> Stream.uniq(&fetch_name/1)
   end
 
   @doc """
