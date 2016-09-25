@@ -2,7 +2,7 @@ defmodule Krihelinator.Periodic do
   use GenServer
   require Logger
   import Ecto.Query, only: [from: 2]
-  alias Krihelinator.{Periodic, Pipeline, Repo, GithubRepo}
+  alias Krihelinator.{Periodic, Repo, GithubRepo}
   alias Ecto.Changeset
 
   @moduledoc """
@@ -135,12 +135,11 @@ defmodule Krihelinator.Periodic do
   end
 
   @doc """
-  TODO A temporary solution, until I implement the Pipeline using
-  changesets.
+  Scrape pulse page and add changes to the changeset.
   """
   def scrape_pulse_page(changeset) do
     repo_name = fetch_name(changeset)
-    changes = Pipeline.StatsScraper.scrape(%{name: repo_name})
+    changes = Krihelinator.Scraper.scrape_pulse_page(repo_name)
     Changeset.change(changeset, changes)
   end
 
