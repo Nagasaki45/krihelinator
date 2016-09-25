@@ -20,7 +20,7 @@ defmodule Krihelinator.Pipeline.StatsScraper do
           Map.merge(r, new_data)
         end
       )
-      |> Enum.filter(fn repo -> is_nil(repo.error) end)
+      |> Enum.filter(fn repo -> !Map.has_key?(repo, :error) end)
     {:noreply, repos, state}
   end
 end

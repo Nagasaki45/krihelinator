@@ -51,7 +51,6 @@ defmodule Krihelinator.Scraper do
   def handle_response({:ok, %{body: body, status_code: 200}}, elements) do
     body
     |> parse(elements)
-    |> Map.put(:error, :nil)
   end
   def handle_response({:ok, %{status_code: 404}}, _elements), do: %{error: :page_not_found}
   def handle_response({:ok, %{status_code: 451}}, _elements), do: %{error: :dmca_takedown}

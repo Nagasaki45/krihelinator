@@ -121,7 +121,12 @@ defmodule Krihelinator.Periodic do
     fn changeset ->
       repo_name = fetch_name(changeset)
       changes = scraping_function.(repo_name)
-      Changeset.change(changeset, changes)
+      case changes do
+        %{error: error} ->
+          {repo_name, error} |> inspect |> Logger.debug
+          Changeset.add_error(changeset, :error, inspect(error))
+        _otherwise -> Changeset.change(changeset, changes)
+      end
     end
   end
 
