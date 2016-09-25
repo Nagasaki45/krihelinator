@@ -67,7 +67,7 @@ defmodule Krihelinator.Scraper do
   end
   def handle_response({:ok, %{status_code: 404}}, _elements), do: %{error: :page_not_found}
   def handle_response({:ok, %{status_code: 451}}, _elements), do: %{error: :dmca_takedown}
-  def handle_response({:error, %{reason: :timeout}}, _elements), do: %{error: :timeout}
+  def handle_response({:error, %{reason: reason}}, _elements), do: %{error: reason}
 
   @doc """
   Use [floki](https://github.com/philss/floki) to parse the page and return
