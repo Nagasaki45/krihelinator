@@ -3,6 +3,8 @@ defmodule Krihelinator.Periodic do
   require Logger
   import Ecto.Query, only: [from: 2]
   alias Krihelinator.{Periodic, Repo, GithubRepo}
+  import Krihelinator.Scraper, only: [scrape_repo_page: 1,
+                                      scrape_pulse_page: 1]
   alias Ecto.Changeset
 
   @moduledoc """
@@ -73,8 +75,8 @@ defmodule Krihelinator.Periodic do
     existing = Repo.all(GithubRepo)  # Trendiness updated
     all = create_changesets(existing, new_trending)
     all
-    |> Stream.map(&api_only_updates_and_redirects/1)
-    |> Stream.map(&scrape_pulse_page/1)
+    |> Stream.map(changeset_updater_factory(&scrape_repo_page/1))
+    |> Stream.map(changeset_updater_factory(&scrape_pulse_page/1))
     |> Stream.map(&GithubRepo.finalize_changeset/1)
     |> Enum.each(&Repo.insert_or_update/1)
   end
@@ -111,36 +113,16 @@ defmodule Krihelinator.Periodic do
   end
 
   @doc """
-  Some data is not available on the pulse page but available on the API.
-  Get it and update the repo.
+  TODO A temporary solution, until the scraper will work with changesets
+  directly.
+  Build a function that scrape data and update the changeset.
   """
-  def api_only_updates_and_redirects(changeset) do
-    repo_name = fetch_name(changeset)
-    "repos/#{repo_name}"
-    |> GithubAPI.limited_get
-    |> handle_api_call(changeset)
-  end
-
-  @api_only_fields ~w(language description)a
-
-  def handle_api_call({:ok, %{body: map, status_code: 200}}, changeset) do
-    changes = for key <- @api_only_fields, into: %{} do
-      {key, Map.get(map, Atom.to_string(key))}
+  def changeset_updater_factory(scraping_function) do
+    fn changeset ->
+      repo_name = fetch_name(changeset)
+      changes = scraping_function.(repo_name)
+      Changeset.change(changeset, changes)
     end
-    Changeset.change(changeset, changes)
-  end
-
-  def handle_api_call(_otherwise, changeset) do
-    Changeset.add_error(changeset, :api_error, "Unknown")
-  end
-
-  @doc """
-  Scrape pulse page and add changes to the changeset.
-  """
-  def scrape_pulse_page(changeset) do
-    repo_name = fetch_name(changeset)
-    changes = Krihelinator.Scraper.scrape_pulse_page(repo_name)
-    Changeset.change(changeset, changes)
   end
 
   def fetch_name(changeset) do
