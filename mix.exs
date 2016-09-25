@@ -19,7 +19,7 @@ defmodule Krihelinator.Mixfile do
   def application do
     [mod: {Krihelinator, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :httpoison, :ex_rated]]
+                    :phoenix_ecto, :postgrex, :httpoison]]
   end
 
   # Specifies which paths to compile per environment.
@@ -41,7 +41,6 @@ defmodule Krihelinator.Mixfile do
      {:httpoison, "~> 0.9.0"},
      {:poison, "~> 2.2"},
      {:floki, "~> 0.9.0"},
-     {:ex_rated, "~> 1.2"},
      {:ex_doc, "~> 0.13.0"},
      {:exredis, "~> 0.2.5"},
      {:gen_stage, "~> 0.4.0"},

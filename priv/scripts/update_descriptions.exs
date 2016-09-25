@@ -6,7 +6,7 @@ alias Krihelinator.{Repo, GithubRepo}
 repos = Repo.all(GithubRepo)
 for repo <- repos do
   url = "repos/#{repo.name}"
-  {:ok, %{body: content, status_code: 200}} = GithubAPI.limited_get(url)
+  {:ok, %{body: content, status_code: 200}} = GithubAPI.get(url)
   description = Map.get(content, "description")
 
   repo

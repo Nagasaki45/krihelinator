@@ -25,7 +25,7 @@ defmodule Krihelinator.Pipeline.Poller do
   end
 
   def handle_demand(demand, %{buffer: buffer, next_path: next_path}) do
-    {:ok, %{body: repos, status_code: 200}} = GithubAPI.limited_get(next_path)
+    {:ok, %{body: repos, status_code: 200}} = GithubAPI.get(next_path)
     new_next_path = next_path(repos)
     PollerStash.put(new_next_path)
     handle_demand(demand, %{buffer: buffer ++ repos, next_path: new_next_path})
