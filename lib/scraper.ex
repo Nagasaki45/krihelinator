@@ -98,7 +98,10 @@ defmodule Krihelinator.Scraper do
   regex matching on the resulting text.
   """
   def general_extractor(floki, css_selector, :string) do
-    basic_text_extraction(floki, css_selector)
+    case basic_text_extraction(floki, css_selector) do
+      "" -> :nil
+      string -> string
+    end
   end
   def general_extractor(floki, css_selector, regex_pattern) do
     text =
