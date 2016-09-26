@@ -1,7 +1,7 @@
 defmodule Krihelinator.Pipeline.StatsScraperTest do
   use ExUnit.Case
-  alias Krihelinator.Pipeline.StatsScraper
-  doctest StatsScraper
+  alias Krihelinator.Scraper
+  doctest Scraper
 
   test "parsing numbers with comma, larger than 999" do
     html = """
@@ -11,7 +11,7 @@ defmodule Krihelinator.Pipeline.StatsScraperTest do
     css_selector = "div.commits"
     pattern = ~r/(?<value>\d+) commits to all branches/
 
-    parsed = StatsScraper.general_extractor(html, css_selector, pattern)
+    parsed = Scraper.general_extractor(html, css_selector, pattern)
     assert parsed == 1234
   end
 end

@@ -130,7 +130,7 @@ defmodule Krihelinator.Scraper do
 
   Example:
 
-    iex> import Krihelinator.Pipeline.StatsScraper, only: [to_one_line: 1]
+    iex> import Krihelinator.Scraper, only: [to_one_line: 1]
     iex> to_one_line("hello\\nworld")
     "hello world"
     iex> to_one_line("   too\\n many    spaces ")
