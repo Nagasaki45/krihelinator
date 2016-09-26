@@ -11,16 +11,8 @@ defmodule Krihelinator.Pipeline.StatsScraper do
     {:producer_consumer, :nil}
   end
 
-  def handle_events(repos, _from, state) do
-    repos =
-      repos
-      |> Stream.map(
-        fn r ->
-          new_data = Krihelinator.Scraper.scrape_pulse_page(r.name)
-          Map.merge(r, new_data)
-        end
-      )
-      |> Enum.filter(fn repo -> !Map.has_key?(repo, :error) end)
-    {:noreply, repos, state}
+  def handle_events(changesets, _from, state) do
+    changesets = Enum.map(changesets, &Krihelinator.Scraper.scrape_pulse_page/1)
+    {:noreply, changesets, state}
   end
 end

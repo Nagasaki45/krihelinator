@@ -91,4 +91,13 @@ defmodule Krihelinator.GithubRepo do
   def trim_description(changeset, _opts) do
     changeset
   end
+
+  @doc """
+  Get the repo name from the changeset
+  """
+  def fetch_name(changeset) do
+    changeset
+    |> Ecto.Changeset.fetch_field(:name)
+    |> elem(1)  # {data_or_changes, value}
+  end
 end

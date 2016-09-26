@@ -23,24 +23,37 @@ defmodule Krihelinator.Scraper do
   @doc """
   Scrape statistics about a repository from it's homepage.
   """
-  def scrape_repo_page(repo_name) do
-    scrape(repo_name, "", @basic_elements)
+  def scrape_repo_page(repo_name_or_changeset) do
+    scrape(repo_name_or_changeset, "", @basic_elements)
   end
 
   @doc """
   Scrape statistics about a repository from github's pulse page.
   """
-  def scrape_pulse_page(repo_name) do
-    scrape(repo_name, "/pulse", @pulse_elements)
+  def scrape_pulse_page(repo_name_or_changeset) do
+    scrape(repo_name_or_changeset, "/pulse", @pulse_elements)
   end
 
   @doc """
-  Common scraping function.
+  Common scraping function. Accepts repo name or changeset.
   """
-  def scrape(repo_name, suffix, elements) do
+  def scrape(repo_name, suffix, elements) when is_binary(repo_name) do
     "https://github.com/#{repo_name}#{suffix}"
     |> HTTPoison.get
     |> handle_response(elements)
+  end
+  def scrape(%Ecto.Changeset{valid?: false} = changeset, _suffix, _elements) do
+    changeset
+  end
+  def scrape(changeset, suffix, elements) do
+    repo_name = Krihelinator.GithubRepo.fetch_name(changeset)
+    new_data = scrape(repo_name, suffix, elements)
+    case new_data do
+      %{error: error} ->
+        Ecto.Changeset.add_error(changeset, :scraping_error, inspect(error))
+      _otherwise ->
+        Ecto.Changeset.change(changeset, new_data)
+    end
   end
 
   @doc """

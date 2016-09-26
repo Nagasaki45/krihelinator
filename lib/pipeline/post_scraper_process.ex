@@ -2,24 +2,27 @@ alias Experimental.GenStage
 
 defmodule Krihelinator.Pipeline.PostScraperProcess do
   use GenStage
-  alias Krihelinator.Krihelimeter
+  import Ecto.Changeset, only: [validate_number: 3]
 
   @moduledoc """
-  Filter out projects below statistics thresholds.
+  Extra validations on statistics.
   """
 
   def init([]) do
     {:producer_consumer, :nil}
   end
 
-  def handle_events(repos, _from, state) do
-    repos =
-      repos
-      |> Stream.filter(fn r -> r.authors > 1 end)
-      |> Stream.filter(fn r -> r.commits > 0 end)
-      |> Stream.filter(fn r -> r.forks >= 10 end)
-      |> Stream.filter(fn r -> Krihelimeter.calculate(r) > 30 end)
-      |> Enum.to_list
-    {:noreply, repos, state}
+  def handle_events(changesets, _from, state) do
+    changesets = Enum.map(changesets, &post_process_validations/1)
+    {:noreply, changesets, state}
+  end
+
+  def post_process_validations(changeset) do
+    changeset
+    |> Krihelinator.GithubRepo.finalize_changeset
+    |> validate_number(:authors, greater_than: 1)
+    |> validate_number(:commits, greater_than: 0)
+    |> validate_number(:forks, greater_than: 10)
+    |> validate_number(:krihelimeter, greater_than: 30)
   end
 end

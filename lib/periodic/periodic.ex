@@ -5,7 +5,6 @@ defmodule Krihelinator.Periodic do
   alias Krihelinator.{Periodic, Repo, GithubRepo}
   import Krihelinator.Scraper, only: [scrape_repo_page: 1,
                                       scrape_pulse_page: 1]
-  alias Ecto.Changeset
 
   @moduledoc """
   Every `:periodic_schedule` do the following:
@@ -75,8 +74,8 @@ defmodule Krihelinator.Periodic do
     existing = Repo.all(GithubRepo)  # Trendiness updated
     all = create_changesets(existing, new_trending)
     all
-    |> Stream.map(changeset_updater_factory(&scrape_repo_page/1))
-    |> Stream.map(changeset_updater_factory(&scrape_pulse_page/1))
+    |> Stream.map(&scrape_repo_page/1)
+    |> Stream.map(&scrape_pulse_page/1)
     |> Stream.map(&GithubRepo.finalize_changeset/1)
     |> Enum.each(&Repo.insert_or_update/1)
   end
@@ -110,28 +109,5 @@ defmodule Krihelinator.Periodic do
       all,
       fn {struct, params} -> GithubRepo.cast_allowed(struct, params) end
     )
-  end
-
-  @doc """
-  TODO A temporary solution, until the scraper will work with changesets
-  directly.
-  Build a function that scrape data and update the changeset.
-  """
-  def changeset_updater_factory(scraping_function) do
-    fn changeset ->
-      repo_name = fetch_name(changeset)
-      changes = scraping_function.(repo_name)
-      case changes do
-        %{error: error} ->
-          {repo_name, error} |> inspect |> Logger.debug
-          Changeset.add_error(changeset, :error, inspect(error))
-        _otherwise -> Changeset.change(changeset, changes)
-      end
-    end
-  end
-
-  def fetch_name(changeset) do
-    {_data_or_change, repo_name} = Changeset.fetch_field(changeset, :name)
-    repo_name
   end
 end
