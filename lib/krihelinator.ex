@@ -1,5 +1,6 @@
 defmodule Krihelinator do
   use Application
+  require Logger
 
   @moduledoc """
   The Krihelinator OTP application. Everything starts from here.
@@ -16,13 +17,18 @@ defmodule Krihelinator do
       supervisor(Krihelinator.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Krihelinator.Endpoint, []),
-      # Start the background polling pipeline
-      supervisor(Krihelinator.Pipeline.Supervisor, []),
       # Start the background periodic process
       worker(Krihelinator.Periodic, []),
-      # Start your own worker by calling: Krihelinator.Worker.start_link(arg1, arg2, arg3)
-      # worker(Krihelinator.Worker, [arg1, arg2, arg3]),
     ]
+
+    children =
+      if Application.fetch_env!(:krihelinator, :pipeline_disabled) do
+        Logger.info "The pipeline process is disabled"
+        children
+      else
+        # Start the background polling pipeline
+        [supervisor(Krihelinator.Pipeline.Supervisor, []) | children ]
+      end
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options

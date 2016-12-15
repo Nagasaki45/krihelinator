@@ -19,6 +19,11 @@ To start your app:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
+Two environment variables can controll the background processes for debugging.
+
+    NO_PIPELINE=1 iex -S mix  # The pipeline will be disabled
+    PERIODIC_SCHEDULE=5 iex -S mix  # The periodic process will kick in every 5 minutes
+
 ## Scripts
 
 If you messed things up there are several usefull scripts in `priv/scripts`:

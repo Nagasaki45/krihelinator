@@ -38,7 +38,7 @@ defmodule Krihelinator.Periodic do
   Schedule the next run in `:periodic_schedule` milliseconds.
   """
   def reschedule_work do
-    Process.send_after(self(), :run, Application.fetch_env!(:krihelinator, :periodic_schedule))
+    Process.send_after(self(), :run, Application.fetch_env!(:krihelinator, :periodic_schedule) * 60 * 1000)
   end
 
   @doc """
