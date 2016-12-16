@@ -44,7 +44,7 @@ I use `docker` and `docker-compose` in production, so make sure you have them on
 
     # Get ready, locally
     docker build -t user/image .
-    push user/image
+    docker push user/image
 
     # Remotely
     ssh server.com
