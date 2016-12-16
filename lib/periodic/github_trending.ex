@@ -20,7 +20,7 @@ defmodule Krihelinator.Periodic.GithubTrending do
   """
   def parse(html) do
     html
-    |> Floki.find(".repo-list-item")
+    |> Floki.find(".repo-list li")
     |> Enum.map(&parse_item/1)
   end
 
@@ -38,7 +38,7 @@ defmodule Krihelinator.Periodic.GithubTrending do
   """
   def parse_name(floki_item) do
     floki_item
-    |> Floki.find(".repo-list-name a")
+    |> Floki.find("h3 a")
     |> Floki.attribute("href")
     |> hd
     |> String.trim_leading("/")
@@ -48,9 +48,11 @@ defmodule Krihelinator.Periodic.GithubTrending do
   Parse the repo description from the floki item, or `:nil` if doesn't exist.
   """
   def parse_description(floki_item) do
-    case Floki.find(floki_item, ".repo-list-description") do
-      [] -> :nil
-      [floki] -> floki |> Floki.text |> String.strip
-    end
+    floki_item
+    |> Floki.find("div")
+    |> Enum.at(2)  # The 3rd div contains the description
+    |> Floki.text
+    |> String.trim()
+    |> (fn text -> if text == "", do: :nil, else: text end).()
   end
 end
