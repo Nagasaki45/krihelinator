@@ -9,7 +9,7 @@ web:
   restart: always
 
 db:
-  image: postgres
+  image: postgres:9.5
   restart: always
 
 stash:
