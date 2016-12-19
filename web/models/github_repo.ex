@@ -1,5 +1,6 @@
 defmodule Krihelinator.GithubRepo do
   use Krihelinator.Web, :model
+  import Ecto.Query, only: [from: 2]
 
   @moduledoc """
   Ecto model of a repository on github.
@@ -99,5 +100,18 @@ defmodule Krihelinator.GithubRepo do
     changeset
     |> Ecto.Changeset.fetch_field(:name)
     |> elem(1)  # {data_or_changes, value}
+  end
+
+  @doc """
+  For querying all languages.
+  """
+  def languages_query() do
+    from(r in __MODULE__,
+         group_by: r.language,
+         select: %{name: r.language,
+                   krihelimeter: sum(r.krihelimeter),
+                   num_of_repos: count(r.id)},
+         order_by: [desc: sum(r.krihelimeter)],
+         where: not(is_nil(r.language)))
   end
 end

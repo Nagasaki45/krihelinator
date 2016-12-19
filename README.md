@@ -22,6 +22,7 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 Two environment variables can controll the background processes for debugging.
 
     NO_PIPELINE=1 iex -S mix  # The pipeline will be disabled
+    NO_HISTORY_KEEPER=1 iex -S mix  # Same idea...
     PERIODIC_SCHEDULE=5 iex -S mix  # The periodic process will kick in every 5 minutes
 
 ## Scripts

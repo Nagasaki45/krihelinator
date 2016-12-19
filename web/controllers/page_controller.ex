@@ -19,18 +19,11 @@ defmodule Krihelinator.PageController do
       |> Repo.all
     conn
     |> put_flash(:info, "#{language} repositories")
-    |> render "repositories.html", repos: repos
+    |> render("repositories.html", repos: repos)
   end
 
   def languages(conn, _params) do
-    query = from(r in GithubRepo,
-                 group_by: r.language,
-                 select: %{name: r.language,
-                           krihelimeter: sum(r.krihelimeter),
-                           num_of_repos: count(r.id)},
-                 order_by: [desc: sum(r.krihelimeter)],
-                 where: not(is_nil(r.language)))
-    languages = Repo.all(query)
+    languages = Repo.all(GithubRepo.languages_query)
     render conn, "languages.html", languages: languages
   end
 
