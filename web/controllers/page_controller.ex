@@ -1,7 +1,7 @@
 defmodule Krihelinator.PageController do
   use Krihelinator.Web, :controller
 
-  def repositories(conn, params) do
+  def repositories(conn, _params) do
     repos =
       GithubRepo
       |> order_by(desc: :krihelimeter)
@@ -17,7 +17,9 @@ defmodule Krihelinator.PageController do
       |> order_by(desc: :krihelimeter)
       |> limit(50)
       |> Repo.all
-    render conn, "repositories.html", repos: repos
+    conn
+    |> put_flash(:info, "#{language} repositories")
+    |> render "repositories.html", repos: repos
   end
 
   def languages(conn, _params) do
