@@ -80,6 +80,11 @@ defmodule Krihelinator.Scraper do
   end
   def handle_response({:ok, %{status_code: 404}}, _elements), do: %{error: :page_not_found}
   def handle_response({:ok, %{status_code: 451}}, _elements), do: %{error: :dmca_takedown}
+  def handle_response({:ok, %{status_code: code, body: body}}, _elements) do
+    # Some unknown failure: elaborate!
+    body_text = Floki.text(body)
+    %{error: "GET request failed with status_code #{code}:\n#{body_text}"}
+  end
   def handle_response({:error, %{reason: reason}}, _elements), do: %{error: reason}
 
   @doc """
