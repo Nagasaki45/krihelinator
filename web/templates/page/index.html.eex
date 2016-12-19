@@ -23,9 +23,9 @@
 
       <h3>
         <a href="http://github.com/{{ repo.name }}">{{ repo.name }}</a>
-        <button data-toggle="collapse" class="pull-right btn btn-danger" data-target="#{{ repo.id }}">
-          Krihelimeter <span class="badge">{{ repo.krihelimeter }}</span>
-        </button>
+        <a data-toggle="collapse" class="krihelinator-badge pull-right" data-target="#{{ repo.id }}">
+          <%= {:safe, Krihelinator.BadgeView.template()} %>
+        </a>
       </h3>
 
       <div v-if="repo.language" class="label label-default">{{ repo.language }}</div>
