@@ -77,7 +77,8 @@ defmodule Krihelinator.Periodic do
     |> Stream.map(&scrape_repo_page/1)
     |> Stream.map(&scrape_pulse_page/1)
     |> Stream.map(&GithubRepo.finalize_changeset/1)
-    |> Enum.each(&Repo.insert_or_update/1)
+    |> Stream.map(&Repo.insert_or_update/1)
+    |> Enum.each(&log_changeset_errors/1)
   end
 
   @doc """
@@ -109,5 +110,16 @@ defmodule Krihelinator.Periodic do
       all,
       fn {struct, params} -> GithubRepo.cast_allowed(struct, params) end
     )
+  end
+
+  @doc """
+  Log why the insertion of the changeset to the DB failed.
+  """
+  def log_changeset_errors({:ok, _struct}), do: :ok
+  def log_changeset_errors({:error, changeset}) do
+    repo_name = GithubRepo.fetch_name(changeset)
+    errors = inspect changeset.errors
+    msg = "Failed to insert changeset for #{repo_name}: #{errors}"
+    Logger.error msg
   end
 end
