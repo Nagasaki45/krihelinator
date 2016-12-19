@@ -1,3 +1,8 @@
+/* For fixed navbar */
+body {
+  padding-top: 70px;
+}
+
 /* Phoenix flash messages */
 .alert:empty { display: none; }
 
@@ -28,17 +33,6 @@
 
 .list-group-item {
   padding-bottom: 0px
-}
-
-.btn-group > button {
-  margin-right: 6px;
-  margin-bottom: 4px;
-  border-radius: 3px !important;
-}
-
-.small-margin {
-  margin-top: 10px;
-  margin-bottom: 10px;
 }
 
 .krihelinator-badge {

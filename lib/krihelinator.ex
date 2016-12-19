@@ -27,7 +27,7 @@ defmodule Krihelinator do
         children
       else
         # Start the background polling pipeline
-        [supervisor(Krihelinator.Pipeline.Supervisor, []) | children ]
+        [supervisor(Krihelinator.Pipeline.Supervisor, []) | children]
       end
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

@@ -27,6 +27,7 @@
     <td>&nbsp;* commits</td>
   </tr>
 <table>
+<br >
 
 <p class="lead">
   During the development of this project I found out that people use github as a
@@ -34,5 +35,3 @@
   these projects out, only projects with more than one author enters the
   Krihelinator DB.
 </p>
-
-<%= link "<- Back home", to: page_path(@conn, :index) %>

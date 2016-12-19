@@ -1,0 +1,55 @@
+<ul class="list-group">
+  <%= for repo <- @repos do %>
+  <li class="list-group-item">
+
+    <h3>
+      <a href="http://github.com/<%= repo.name %>"><%= repo.name %></a>
+      <a data-toggle="collapse" class="krihelinator-badge pull-right" data-target="#<%= repo.id %>">
+        <%= {:safe, Krihelinator.BadgeView.render("badge.svg", %{repo: repo})} %>
+      </a>
+    </h3>
+
+    <%= if repo.language do %>
+      <div class="label label-default"><%= repo.language %></div>
+    <%= end %>
+    <%= if repo.trending do %>
+      <div class="label label-warning">Trending on github!</div>
+    <%= end %>
+
+    <p class="repo-description"><%= repo.description %></p>
+
+    <div id="<%= repo.id %>" class="row collapse">
+      <div class="stat-block col-md-4 col-xs-6">
+        <span class="octicon octicon-organization"></span>
+        <b><%= repo.authors %></b>
+        <div class="stat-block-text">Authors</div>
+      </div>
+      <div class="stat-block col-md-4 col-xs-6">
+        <span class="octicon octicon-git-commit"></span>
+        <b><%= repo.commits %></b>
+        <div class="stat-block-text">Commits</div>
+      </div>
+      <div class="stat-block col-md-4 col-xs-6">
+        <span class="octicon octicon-git-pull-request"></span>
+        <b><%= repo.merged_pull_requests %></b>
+        <div class="stat-block-text">Merged Pull Requests</div>
+      </div>
+      <div class="stat-block col-md-4 col-xs-6">
+        <span class="octicon octicon-git-branch"></span>
+        <b><%= repo.proposed_pull_requests %></b>
+        <div class="stat-block-text">Proposed Pull Requests</div>
+      </div>
+      <div class="stat-block col-md-4 col-xs-6">
+        <span class="octicon octicon-issue-closed"></span>
+        <b><%= repo.closed_issues %></b>
+        <div class="stat-block-text">Closed Issues</div>
+      </div>
+      <div class="stat-block col-md-4 col-xs-6">
+        <span class="octicon octicon-issue-opened"></span>
+        <b><%= repo.new_issues %></b>
+        <div class="stat-block-text">New Issues</div>
+      </div>
+    </div>
+  </li>
+  <%= end %>
+</ul>
