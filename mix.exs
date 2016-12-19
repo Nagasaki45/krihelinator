@@ -41,7 +41,6 @@ defmodule Krihelinator.Mixfile do
      {:httpoison, "~> 0.9.0"},
      {:poison, "~> 2.2"},
      {:floki, "~> 0.9.0"},
-     {:ex_doc, "~> 0.13.0"},
      {:exredis, "~> 0.2.5"},
      {:gen_stage, "~> 0.4.0"},
      {:credo, "~> 0.3", only: [:dev, :test]}]
