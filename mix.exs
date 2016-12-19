@@ -43,7 +43,7 @@ defmodule Krihelinator.Mixfile do
      {:floki, "~> 0.9.0"},
      {:exredis, "~> 0.2.5"},
      {:gen_stage, "~> 0.4.0"},
-     {:credo, "~> 0.3", only: [:dev, :test]}]
+     {:credo, "~> 0.5.3", only: [:dev, :test]}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
