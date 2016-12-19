@@ -10,7 +10,8 @@ defmodule Krihelinator.BadgeView do
         <stop offset="1" stop-opacity=".1"/>
       </linearGradient>
       <rect rx="3" width="120" height="20" fill="#555"/>
-      <rect rx="3" x="80" width="40" height="20" fill="#c41"/>
+      <rect rx="3" x="80" width="40" height="20" fill="#4CC71E"/>
+      <rect x="80" width="10" height="20" fill="#4CC71E"/>
       <rect rx="3" width="120" height="20" fill="url(#a)"/>
       <g fill="#fff" text-anchor="left" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
         <text x="4" y="15" fill="#010101" fill-opacity=".3">Krihelimeter</text>
