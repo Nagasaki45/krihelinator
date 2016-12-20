@@ -3,8 +3,6 @@ defmodule Krihelinator.Periodic do
   require Logger
   import Ecto.Query, only: [from: 2]
   alias Krihelinator.{Periodic, Repo, GithubRepo}
-  import Krihelinator.Scraper, only: [scrape_repo_page: 1,
-                                      scrape_pulse_page: 1]
 
   @moduledoc """
   Every `:periodic_schedule` do the following:
@@ -25,10 +23,9 @@ defmodule Krihelinator.Periodic do
 
   def handle_info(:run, state) do
     Logger.info "Periodic process kicked in!"
-    Logger.info "Running DB cleaner..."
     clean_db()
-    Logger.info "Scraping repos (trending + existing)..."
-    rescrape()
+    scrape_trending()
+    rescrape_existing()
     Logger.info "Periodic process finished successfully!"
     reschedule_work()
     {:noreply, state}
@@ -45,6 +42,7 @@ defmodule Krihelinator.Periodic do
   Keep only the top :max_repos_to_keep in the DB. Delete the rest.
   """
   def clean_db do
+    Logger.info "Running DB cleaner..."
     non_user_requested = from(r in GithubRepo, where: not r.user_requested)
     count = Repo.one(from r in non_user_requested, select: count(r.id))
     keep = Application.fetch_env!(:krihelinator, :max_repos_to_keep)
@@ -65,52 +63,50 @@ defmodule Krihelinator.Periodic do
   end
 
   @doc """
-  Rescrape existing repos plus new github trending repos.
+  Scrape the github trending page and put all to DB (update if already exists).
   """
-  def rescrape() do
-    existing = Repo.all(GithubRepo)
-    trending = Periodic.GithubTrending.scrape()
-    new_trending = set_trendiness(existing, trending)
-    existing = Repo.all(GithubRepo)  # Trendiness updated
-    all = create_changesets(existing, new_trending)
-    all
-    |> Stream.map(&scrape_repo_page/1)
-    |> Stream.map(&scrape_pulse_page/1)
-    |> Stream.map(&GithubRepo.finalize_changeset/1)
-    |> Stream.map(&Repo.insert_or_update/1)
+  def scrape_trending() do
+    Logger.info "Scraping trending..."
+    Periodic.GithubTrending.scrape()
+    |> Stream.map(fn params -> GithubRepo.cast_allowed(%GithubRepo{}, params) end)
+    |> Stream.map(&scrape_repo/1)
+    |> Stream.map(&update_trendiness/1)  # Effects only name uniqueness failures
+    |> Enum.each(&log_changeset_errors/1)
+  end
+
+  def rescrape_existing() do
+    Logger.info "Rescraping existing (non trending)..."
+    query = from(r in GithubRepo, where: not r.trending)
+    query
+    |> Repo.all()
+    |> Stream.map(fn struct -> GithubRepo.cast_allowed(struct) end)
+    |> Stream.map(&scrape_repo/1)
     |> Enum.each(&log_changeset_errors/1)
   end
 
   @doc """
-  Set trendiness of existing repos in the DB and return the remaining trending
-  structs - those that weren't in `existing`.
+  Scrape changeset and insert to DB.
   """
-  def set_trendiness(existing, trending) do
-    existing_names = for r <- existing, into: MapSet.new, do: r.name
-    {existing_trending, new_trending} = Enum.partition(
-      trending,
-      fn repo -> MapSet.member?(existing_names, repo.name) end
-    )
-    existing_trending_names = for r <- existing_trending, do: r.name
-    Repo.update_all(GithubRepo, set: [trending: false])
-    query = from(r in GithubRepo, where: r.name in ^existing_trending_names)
-    Repo.update_all(query, set: [trending: true])
-    new_trending
+  def scrape_repo(changeset) do
+    changeset
+    |> Krihelinator.Scraper.scrape_repo_page()
+    |> Krihelinator.Scraper.scrape_pulse_page()
+    |> GithubRepo.finalize_changeset()
+    |> Repo.insert_or_update()
   end
 
   @doc """
-  Instead of working on the repos directly, create changesets to manipulate.
+  The repo is already in the DB, update it to be trending.
   """
-  def create_changesets(existing, new_trending) do
-    all = Stream.concat(
-      Stream.map(existing, fn struct -> {struct, %{}} end),
-      Stream.map(new_trending, fn params -> {%GithubRepo{}, params} end)
-    )
-    Stream.map(
-      all,
-      fn {struct, params} -> GithubRepo.cast_allowed(struct, params) end
-    )
+  def update_trendiness({:error, %{errors: [name: _]} = changeset}) do
+    repo_name = GithubRepo.fetch_name(changeset)
+    GithubRepo
+    |> Repo.get_by(name: repo_name)
+    |> GithubRepo.changeset()
+    |> Ecto.Changeset.put_change(:trending, true)
+    |> Repo.update()
   end
+  def update_trendiness(everything_else), do: everything_else
 
   @doc """
   Log why the insertion of the changeset to the DB failed.

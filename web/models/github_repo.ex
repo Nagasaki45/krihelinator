@@ -42,7 +42,7 @@ defmodule Krihelinator.GithubRepo do
   @doc """
   Create basic changeset from struct and params.
   """
-  def cast_allowed(struct, params) do
+  def cast_allowed(struct, params \\ %{}) do
     cast(struct, params, @allowed)
   end
 
