@@ -16,6 +16,7 @@ defmodule Krihelinator.GithubRepo do
     field :new_issues, :integer
     field :commits, :integer
     field :authors, :integer
+    field :forks, :integer
     field :krihelimeter, :integer
     field :trending, :boolean, default: false
     field :user_requested, :boolean, default: false
@@ -25,7 +26,7 @@ defmodule Krihelinator.GithubRepo do
 
   @allowed ~w(name description language merged_pull_requests
               proposed_pull_requests closed_issues new_issues commits authors
-              trending user_requested)a
+              forks trending user_requested)a
   @required ~w(name merged_pull_requests proposed_pull_requests
                closed_issues new_issues commits authors)a
 
@@ -57,6 +58,7 @@ defmodule Krihelinator.GithubRepo do
     |> validate_number(:new_issues, greater_than_or_equal_to: 0)
     |> validate_number(:commits, greater_than_or_equal_to: 0)
     |> validate_number(:authors, greater_than_or_equal_to: 0)
+    |> validate_number(:forks, greater_than_or_equal_to: 0)
     |> unique_constraint(:name)
     |> set_krihelimeter
     |> trim_description(max_length: 255)
