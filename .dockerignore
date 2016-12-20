@@ -3,3 +3,4 @@ _build
 .git
 deps
 node_modules
+test
