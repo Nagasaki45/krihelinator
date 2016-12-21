@@ -14,14 +14,14 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><%= link "Repositories", to: page_path(@conn, :repositories) %></li>
-        <li><%= link "Languages", to: page_path(@conn, :languages) %></li>
+        <%= navbar_link conn: @conn, action: :repositories, text: "Repositories" %>
+        <%= navbar_link conn: @conn, action: :languages, text: "Languages" %>
       </ul>
       <button type="button" class="btn btn-default navbar-btn navbar-right" data-toggle="modal" data-target="#badge-app">
         Claim a Krihelimeter badge
       </button>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="/about">About</a></li>
+        <%= navbar_link conn: @conn, action: :about, text: "About" %>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->

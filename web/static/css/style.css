@@ -38,3 +38,7 @@ body {
 .krihelinator-badge {
   cursor: pointer;
 }
+
+.navbar-btn {
+  margin-left: 5px;
+}
