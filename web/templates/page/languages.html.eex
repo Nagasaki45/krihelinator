@@ -9,7 +9,7 @@
   <tbody>
     <%= for language <- @languages do %>
       <tr>
-        <td><%= link language.name, to: page_path(@conn, :language, language.name) %></a></td>
+        <td><%= link language.name, to: page_path(@conn, :language, language.name) %></td>
         <td><%= language.krihelimeter %></td>
         <td><%= language.num_of_repos %></td>
       </tr>
