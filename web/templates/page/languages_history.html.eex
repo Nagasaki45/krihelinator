@@ -1,0 +1,41 @@
+<div id="vizDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+
+var rawData = [
+  <%= for datum <- @history do %>
+    {
+      name: "<%= datum.name %>",
+      timestamp: "<%= datum.timestamp %>",
+      value: "<%= datum.value %>",
+    },
+  <%= end %>
+]
+function unpack(rows, key) {
+  return rows.map(function(row) { return row[key]; });
+}
+
+var languages = Array.from(new Set(unpack(rawData, "name")));
+languages.sort(function(language) { return language });
+
+var data = languages.map(function(language) {
+  var languageData = rawData.filter(function(datum) {
+    return (datum.name === language);
+  });
+  return {
+    x: unpack(languageData, 'timestamp'),
+    y: unpack(languageData, 'value'),
+    type: 'scatter',
+    name: language,
+  }
+});
+
+var layout = {
+  yaxis: {title: "<%= nicier @value_field %>"},
+  hovermode: 'closest'
+};
+
+Plotly.plot('vizDiv', data, layout);
+
+</script>

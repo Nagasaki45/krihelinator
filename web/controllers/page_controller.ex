@@ -27,6 +27,24 @@ defmodule Krihelinator.PageController do
     render conn, "languages.html", languages: languages
   end
 
+  def languages_history(conn, params) do
+    languages =
+      params
+      |> Map.get("languages", "[]")
+      |> Poison.decode!
+    query = from(d in LanguageHistory,
+                 where: d.name in ^languages)
+    value_field = Map.get(params, "by", "krihelimeter")
+    history =
+      query
+      |> Repo.all()
+      |> Enum.map(fn datum ->
+        LanguageHistory.choose_stat_field(datum, value_field)
+      end)
+    assigns = [history: history, value_field: value_field]
+    render conn, "languages_history.html", assigns
+  end
+
   def about(conn, _params) do
     render conn, "about.html"
   end

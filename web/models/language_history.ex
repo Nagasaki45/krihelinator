@@ -22,4 +22,19 @@ defmodule Krihelinator.LanguageHistory do
     |> validate_required([:name, :krihelimeter, :num_of_repos])
     |> put_change(:timestamp, DateTime.utc_now())
   end
+
+  @doc """
+  Returns a map with only one stat (krihelimeter / num_of_repos) as :value.
+  """
+  def choose_stat_field(datum, stat_field) when is_binary(stat_field) do
+    stat_field = String.to_existing_atom(stat_field)
+    choose_stat_field(datum, stat_field)
+  end
+  def choose_stat_field(datum, stat_field) do
+    value = Map.fetch!(datum, stat_field)
+    datum
+    |> Map.from_struct
+    |> Map.drop([:krihelimeter, :num_of_repos])
+    |> Map.put(:value, value)
+  end
 end
