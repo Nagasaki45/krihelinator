@@ -44,7 +44,7 @@ defmodule Krihelinator.Mixfile do
      {:exredis, "~> 0.2.5"},
      {:gen_stage, "~> 0.4.0"},
      {:credo, "~> 0.5.3", only: [:dev, :test]},
-     {:erlport, github: "hdima/erlport"}]
+     {:erlport, github: "hdima/erlport", manager: :make}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
