@@ -38,10 +38,16 @@ defmodule Krihelinator.PageController do
     history =
       query
       |> Repo.all()
-      |> Enum.map(fn datum ->
+      |> Stream.map(fn datum ->
         LanguageHistory.choose_stat_field(datum, value_field)
       end)
-    assigns = [history: history, value_field: value_field]
+      |> Enum.map(fn datum -> Map.drop(datum, [:id, :__meta__]) end)
+
+    json =
+      history
+      |> Poison.encode!()
+      |> Krihelinator.PythonGenServer.process()
+    assigns = [json: json, value_field: value_field]
     render conn, "languages_history.html", assigns
   end
 

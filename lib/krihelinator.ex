@@ -19,6 +19,8 @@ defmodule Krihelinator do
       supervisor(Krihelinator.Endpoint, []),
       # Start the background periodic process
       worker(Krihelinator.Periodic, []),
+      # Start the python GenServer
+      worker(Krihelinator.PythonGenServer, []),
     ]
 
     children =

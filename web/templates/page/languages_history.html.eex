@@ -3,15 +3,8 @@
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script>
 
-var rawData = [
-  <%= for datum <- @history do %>
-    {
-      name: "<%= datum.name %>",
-      timestamp: "<%= datum.timestamp %>",
-      value: "<%= datum.value %>",
-    },
-  <%= end %>
-]
+var rawData = <%= {:safe, @json} %>
+
 function unpack(rows, key) {
   return rows.map(function(row) { return row[key]; });
 }
