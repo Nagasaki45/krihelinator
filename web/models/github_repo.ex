@@ -9,7 +9,7 @@ defmodule Krihelinator.GithubRepo do
   schema "repos" do
     field :name, :string
     field :description, :string
-    field :language_name, :string  # TODO make virtual
+    field :language_name, :string, virtual: true
     belongs_to :language, Krihelinator.Language
     field :merged_pull_requests, :integer
     field :proposed_pull_requests, :integer
