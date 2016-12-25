@@ -39,17 +39,24 @@ RUN mkdir -p $CONDA_DIR && \
     $CONDA_DIR/bin/conda install --yes conda==${CONDA_VER}
 ###### /CONDA ######
 
-ADD . .
+RUN conda install pandas
 
 # Environment
 ENV PORT 80
 ENV MIX_ENV prod
 
-# Setup dependencies, auto-acknowledge
-RUN mix deps.get --only prod
-RUN mix compile
+# Cache elixir deps
+ADD mix.exs mix.lock ./
+RUN mix do deps.get --only prod, deps.compile
+
+# Same with npm deps
+ADD package.json ./
 RUN npm install
-RUN conda install pandas
+
+ADD . .
+
+# Compile the krihelinator
+RUN mix compile
 
 # Compile assets
 RUN brunch build --production
