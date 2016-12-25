@@ -32,7 +32,7 @@ defmodule Krihelinator.Web do
     quote do
       use Phoenix.Controller
 
-      alias Krihelinator.{Repo, GithubRepo, LanguageHistory}
+      alias Krihelinator.{Repo, GithubRepo, LanguageHistory, Language}
       import Ecto
       import Ecto.Query
 

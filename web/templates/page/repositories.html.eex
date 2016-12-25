@@ -10,7 +10,7 @@
     </h3>
 
     <%= if repo.language do %>
-      <%= link repo.language, to: page_path(@conn, :language, repo.language), class: "label label-default"%>
+      <%= link repo.language.name, to: page_path(@conn, :language, repo.language.name), class: "label label-default"%>
     <%= end %>
     <%= if repo.trending do %>
       <div class="label label-warning">Trending on github!</div>

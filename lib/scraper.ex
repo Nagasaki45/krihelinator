@@ -7,7 +7,7 @@ defmodule Krihelinator.Scraper do
 
   @basic_elements [
     {:description, ~s{span[itemprop="about"]}, :string},
-    {:language, ~s{span[class="lang"]}, :string},
+    {:language_name, ~s{span[class="lang"]}, :string},
   ]
 
   @pulse_elements [

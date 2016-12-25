@@ -1,7 +1,7 @@
 defmodule Krihelinator.HistoryKeeper do
   use GenServer
   require Logger
-  alias Krihelinator.{Repo, GithubRepo, LanguageHistory}
+  alias Krihelinator.{Repo, Language, LanguageHistory}
 
   @moduledoc """
   Every `:history_keeping_schedule` keep, for each language, the total
@@ -37,7 +37,7 @@ defmodule Krihelinator.HistoryKeeper do
   Iterate over all languages and push info to DB.
   """
   def keep_history() do
-    GithubRepo.languages_query()
+    Language
     |> Repo.all
     |> Enum.each(&keep_language_history/1)
   end
@@ -45,9 +45,12 @@ defmodule Krihelinator.HistoryKeeper do
   @doc """
   Push the info to the DB.
   """
-  def keep_language_history(language_map) do
+  def keep_language_history(language) do
+    params = %{krihelimeter: language.krihelimeter,
+               num_of_repos: language.num_of_repos}
     %LanguageHistory{}
-    |> LanguageHistory.changeset(language_map)
+    |> LanguageHistory.changeset(params)
+    |> Ecto.Changeset.put_assoc(:language, language)
     |> Repo.insert!()
   end
 end

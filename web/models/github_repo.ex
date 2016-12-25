@@ -1,6 +1,6 @@
 defmodule Krihelinator.GithubRepo do
   use Krihelinator.Web, :model
-  import Ecto.Query, only: [from: 2]
+  alias Krihelinator.{Repo, Language}
 
   @moduledoc """
   Ecto model of a repository on github.
@@ -9,7 +9,8 @@ defmodule Krihelinator.GithubRepo do
   schema "repos" do
     field :name, :string
     field :description, :string
-    field :language, :string
+    field :language_name, :string  # TODO make virtual
+    belongs_to :language, Krihelinator.Language
     field :merged_pull_requests, :integer
     field :proposed_pull_requests, :integer
     field :closed_issues, :integer
@@ -24,7 +25,7 @@ defmodule Krihelinator.GithubRepo do
     timestamps()
   end
 
-  @allowed ~w(name description language merged_pull_requests
+  @allowed ~w(name description language_name merged_pull_requests
               proposed_pull_requests closed_issues new_issues commits authors
               forks trending user_requested)a
   @required ~w(name merged_pull_requests proposed_pull_requests
@@ -61,6 +62,7 @@ defmodule Krihelinator.GithubRepo do
     |> validate_number(:forks, greater_than_or_equal_to: 0)
     |> unique_constraint(:name)
     |> set_krihelimeter
+    |> put_language_assoc()
     |> trim_description(max_length: 255)
   end
 
@@ -95,6 +97,15 @@ defmodule Krihelinator.GithubRepo do
     changeset
   end
 
+  def put_language_assoc(%{changes: %{language_name: lang}} = changeset) do
+    {:ok, language} = Repo.get_or_create_by(Language, name: lang)
+    changeset
+    |> put_change(:language_id, language.id)
+  end
+  def put_language_assoc(changeset) do
+    changeset
+  end
+
   @doc """
   Get the repo name from the changeset
   """
@@ -102,18 +113,5 @@ defmodule Krihelinator.GithubRepo do
     changeset
     |> Ecto.Changeset.fetch_field(:name)
     |> elem(1)  # {data_or_changes, value}
-  end
-
-  @doc """
-  For querying all languages.
-  """
-  def languages_query() do
-    from(r in __MODULE__,
-         group_by: r.language,
-         select: %{name: r.language,
-                   krihelimeter: sum(r.krihelimeter),
-                   num_of_repos: count(r.id)},
-         order_by: [desc: sum(r.krihelimeter)],
-         where: not(is_nil(r.language)))
   end
 end

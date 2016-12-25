@@ -2,7 +2,7 @@ defmodule Krihelinator.Periodic do
   use GenServer
   require Logger
   import Ecto.Query, only: [from: 2]
-  alias Krihelinator.{Periodic, Repo, GithubRepo}
+  alias Krihelinator.{Periodic, Repo, GithubRepo, Language}
 
   @moduledoc """
   Every `:periodic_schedule` do the following:
@@ -10,6 +10,7 @@ defmodule Krihelinator.Periodic do
   - Run the DB cleaner.
   - Scrape the github trending page for interesting, active, projects.
   - Pass all of the repos from the DB through the parser again, to update stats.
+  - Update the total krihelimeter and num_of_repos for all languages.
   """
 
   def start_link do
@@ -26,6 +27,7 @@ defmodule Krihelinator.Periodic do
     clean_db()
     scrape_trending()
     rescrape_existing()
+    update_languages_stats()
     Logger.info "Periodic process finished successfully!"
     reschedule_work()
     {:noreply, state}
@@ -83,6 +85,25 @@ defmodule Krihelinator.Periodic do
     |> Stream.map(fn struct -> GithubRepo.cast_allowed(struct) end)
     |> Stream.map(&scrape_repo/1)
     |> Enum.each(&log_changeset_errors/1)
+  end
+
+  @doc """
+  Update the total krihelimeter and num_of_repos for all languages.
+  """
+  def update_languages_stats() do
+    Logger.info "Updating languages statistics..."
+    Language
+    |> Repo.all()
+    |> Repo.preload(:repos)
+    |> Enum.each(fn language ->
+      changes = %{
+        krihelimeter: Enum.sum(for r <- language.repos, do: r.krihelimeter),
+        num_of_repos: length(language.repos)
+      }
+      language
+      |> Language.changeset(changes)
+      |> Repo.update()
+    end)
   end
 
   @doc """
