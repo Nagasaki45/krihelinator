@@ -13,6 +13,10 @@ body {
   }
 }
 
+h3 {
+  display: inline;
+}
+
 .repo-description {
   padding-top: 10px;
 }
@@ -35,10 +39,11 @@ body {
   padding-bottom: 0px
 }
 
-.krihelinator-badge {
-  cursor: pointer;
-}
-
 .navbar-btn {
   margin-left: 5px;
+}
+
+.show-stats-button {
+  cursor: pointer;
+  text-decoration: none;
 }

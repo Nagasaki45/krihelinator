@@ -2,12 +2,16 @@
   <%= for repo <- @repos do %>
   <li class="list-group-item">
 
-    <h3>
-      <a href="http://github.com/<%= repo.name %>"><%= repo.name %></a>
-      <a data-toggle="collapse" class="krihelinator-badge pull-right" data-target="#<%= repo.id %>">
-        <%= {:safe, Krihelinator.BadgeView.render("badge.svg", %{repo: repo})} %>
+    <p>
+      <h3><%= link split_and_bold(repo.name), to: "http://github.com/#{repo.name}" %></h3>
+      &nbsp;
+      <a data-toggle="collapse" data-target="#<%= repo.id %>" class="show-stats-button hint--bottom" aria-label="See weekly stats">
+        <span class="glyphicon glyphicon-info-sign"></span>
       </a>
-    </h3>
+      <div class="pull-right">
+        <%= {:safe, Krihelinator.BadgeView.render("badge.svg", %{repo: repo})} %>
+      </div>
+    </p>
 
     <%= if repo.language do %>
       <%= link repo.language.name, to: page_path(@conn, :language, repo.language.name), class: "label label-default"%>
