@@ -19,6 +19,8 @@ defmodule Krihelinator do
       supervisor(Krihelinator.Endpoint, []),
       # Start the background periodic process
       worker(Krihelinator.Periodic, []),
+      # Start the background history keeper process
+      worker(Krihelinator.HistoryKeeper, []),
       # Start the python GenServer
       worker(Krihelinator.PythonGenServer, []),
     ]
@@ -30,15 +32,6 @@ defmodule Krihelinator do
       else
         # Start the background polling pipeline
         children ++ [supervisor(Krihelinator.Pipeline.Supervisor, [])]
-      end
-
-    children =
-      if Application.fetch_env!(:krihelinator, :history_keeper_disabled) do
-        Logger.info "The history keeper process is disabled"
-        children
-      else
-        # Start the background history keeper process
-        children ++ [worker(Krihelinator.HistoryKeeper, [])]
       end
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

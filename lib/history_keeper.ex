@@ -13,8 +13,7 @@ defmodule Krihelinator.HistoryKeeper do
   end
 
   def init([]) do
-    # Run it when restart
-    reschedule_work(0)
+    reschedule_work()
     {:ok, :nil}
   end
 
@@ -22,15 +21,15 @@ defmodule Krihelinator.HistoryKeeper do
     Logger.info "HistoryKeeper process kicked in!"
     keep_history()
     Logger.info "HistoryKeeper process finished successfully!"
-    next_run = Application.fetch_env!(:krihelinator, :history_keeper_schedule)
-    reschedule_work(next_run)
+    reschedule_work()
     {:noreply, state}
   end
 
   @doc """
   Schedule the next run in.
   """
-  def reschedule_work(next_run) do
+  def reschedule_work() do
+    next_run = Application.fetch_env!(:krihelinator, :history_keeper_schedule)
     Process.send_after(self(), :run, next_run)
   end
 

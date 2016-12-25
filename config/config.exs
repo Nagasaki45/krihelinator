@@ -8,12 +8,11 @@ use Mix.Config
 # General application configuration
 config :krihelinator,
   ecto_repos: [Krihelinator.Repo],
-  periodic_schedule: String.to_integer(System.get_env("PERIODIC_SCHEDULE") || "360"),  # 6 hours
+  periodic_schedule: 6 * 60 * 60 * 1000,  # 6 hours
   max_repos_to_keep: 5000,
   scrapers_pool_size: 4,
   pipeline_disabled: not is_nil(System.get_env("NO_PIPELINE")),
-  history_keeper_schedule: 3 * 24 * 60 * 60 * 1000,  # 3 days
-  history_keeper_disabled: not is_nil(System.get_env("NO_HISTORY_KEEPER"))
+  history_keeper_schedule: 3 * 24 * 60 * 60 * 1000  # 3 days
 
 # Configures the endpoint
 config :krihelinator, Krihelinator.Endpoint,
