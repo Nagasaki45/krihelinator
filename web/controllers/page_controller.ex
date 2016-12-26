@@ -27,10 +27,16 @@ defmodule Krihelinator.PageController do
     |> render("repositories.html", repos: repos)
   end
 
-  def languages(conn, _params) do
-    languages = Repo.all from(l in Language,
-                              order_by: [desc: l.krihelimeter])
-    render conn, "languages.html", languages: languages
+  def languages(conn, params) do
+    {conn, {by, dir}} = case verify_by(params) do
+      {:ok, by, dir} ->
+        {conn, {by, dir}}
+      _error ->
+        conn = put_flash(conn, :error, "The provided arguments are invalid!")
+        {conn, {:krihelimeter, :desc}}
+    end
+    languages = Repo.all from(Language, order_by: [{^dir, ^by}])
+    render(conn, "languages.html", languages: languages)
   end
 
   def languages_history(conn, params) do

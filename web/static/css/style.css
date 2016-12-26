@@ -13,7 +13,7 @@ body {
   }
 }
 
-h3 {
+.list-group-item > h3 {
   display: inline;
 }
 
