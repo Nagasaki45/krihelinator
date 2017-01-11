@@ -49,18 +49,10 @@ ENV MIX_ENV prod
 ADD mix.exs mix.lock ./
 RUN mix do deps.get --only prod, deps.compile
 
-# Same with npm deps
-ADD package.json ./
-RUN npm install
-
 ADD . .
 
 # Compile the krihelinator
 RUN mix compile
-
-# Compile assets
-RUN brunch build --production
-RUN mix phoenix.digest
 
 # Finally run the server
 CMD mix phoenix.server
