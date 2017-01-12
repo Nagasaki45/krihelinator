@@ -12,7 +12,7 @@ config :krihelinator,
   periodic_schedule: 6 * 60 * 60 * 1000,  # 6 hours
   max_repos_to_keep: 5000,
   scrapers_pool_size: 4,
-  pipeline_disabled: not is_nil(System.get_env("NO_PIPELINE")),
+  pipeline_enabled: not is_nil(System.get_env("PIPELINE")),
   history_keeper_schedule: 3 * 24 * 60 * 60 * 1000  # 3 days
 
 # Configures the endpoint

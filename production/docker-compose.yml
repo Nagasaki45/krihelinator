@@ -2,6 +2,7 @@ web:
   image: nagasaki45/krihelinator_web
   environment:
     - MIX_ENV=prod
+    - PIPELINE=1
   ports:
     - 80:4000
   links:

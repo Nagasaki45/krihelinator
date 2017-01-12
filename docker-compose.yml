@@ -1,7 +1,5 @@
 web:
   image: nagasaki45/krihelinator_web
-  environment:
-    - NO_PIPELINE=1
   volumes:  # Override the files in the image with local files
     - ./_build:/opt/app/_build
     - ./config:/opt/app/config

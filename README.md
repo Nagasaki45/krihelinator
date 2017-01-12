@@ -19,11 +19,9 @@ To start your app:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-Running without the pipeline in the background:
+By default, the pipeline is disabled, unable with with:
 
-    NO_PIPELINE=1 iex -S mix
-    # In production
-    docker-compose run --rm -e NO_PIPELINE=1 web iex -S mix
+    docker-compose run --rm -e PIPELINE=1 web iex -S mix
 
 ## Scripts
 
