@@ -3,6 +3,9 @@ FROM bitwalker/alpine-elixir-phoenix:latest
 # Probably missing from the original image...
 RUN apk --no-cache add erlang-eunit
 
+# Needed for live reload in development
+RUN apk --no-cache add inotify-tools
+
 ###### CONDA ######
 # Copied from https://github.com/CognitiveScale/alpine-miniconda/
 RUN apk --update  --repository http://dl-4.alpinelinux.org/alpine/edge/community add \
@@ -41,18 +44,20 @@ RUN mkdir -p $CONDA_DIR && \
 
 RUN conda install pandas
 
-# Environment
-ENV PORT 80
-ENV MIX_ENV prod
-
 # Cache elixir deps
 ADD mix.exs mix.lock ./
-RUN mix do deps.get --only prod, deps.compile
+# Always compile into _build/prod
+RUN MIX_ENV=prod mix do deps.get, deps.compile
 
-ADD . .
+# Add the source code
+COPY config ./config
+COPY lib ./lib
+COPY priv ./priv
+COPY python ./python
+COPY web ./web
 
-# Compile the krihelinator
-RUN mix compile
+# Compile the krihelinator (again, to _build/prod)
+RUN MIX_ENV=prod mix compile
 
 # Finally run the server
 CMD mix phoenix.server

@@ -8,6 +8,7 @@ use Mix.Config
 # General application configuration
 config :krihelinator,
   ecto_repos: [Krihelinator.Repo],
+  github_token: System.get_env("GITHUB_TOKEN"),
   periodic_schedule: 6 * 60 * 60 * 1000,  # 6 hours
   max_repos_to_keep: 5000,
   scrapers_pool_size: 4,
@@ -29,7 +30,7 @@ config :logger, :console,
 
 # Redis configuration
 config :exredis,
-  host: "localhost",
+  host: "stash",
   reconnect: :no_reconnect,
   max_queue: :infinity
 

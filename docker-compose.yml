@@ -1,9 +1,24 @@
+web:
+  image: nagasaki45/krihelinator_web
+  environment:
+    - NO_PIPELINE=1
+  volumes:  # Override the files in the image with local files
+    - ./_build:/opt/app/_build
+    - ./config:/opt/app/config
+    - ./lib:/opt/app/lib
+    - ./priv:/opt/app/priv
+    - ./python:/opt/app/python
+    - ./test:/opt/app/test
+    - ./web:/opt/app/web
+  ports:
+    - 4000:4000
+  links:
+    - db
+    - stash
+  env_file: ./secrets
+
 db:
   image: postgres:9.5
-  ports:
-    - 5432:5432
 
 stash:
   image: redis
-  ports:
-    - 6379:6379

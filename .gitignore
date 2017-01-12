@@ -17,5 +17,6 @@ erl_crash.dump
 
 # Dont track my secrets
 secrets
+production/secrets
 
 __pycache__

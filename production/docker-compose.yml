@@ -1,7 +1,9 @@
 web:
   image: nagasaki45/krihelinator_web
+  environment:
+    - MIX_ENV=prod
   ports:
-    - 80:80
+    - 80:4000
   links:
     - db
     - stash
