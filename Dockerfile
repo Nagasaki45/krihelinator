@@ -1,48 +1,44 @@
-FROM bitwalker/alpine-elixir-phoenix:latest
+FROM bitwalker/alpine-elixir-phoenix:1.4.0
 
-# Probably missing from the original image...
-RUN apk --no-cache add erlang-eunit
+RUN apk add --no-cache bash
 
-# Needed for live reload in development
-RUN apk --no-cache add inotify-tools
+###### GLIBC ######
+# Necessary for conda / python
+# Based on https://github.com/frol/docker-alpine-glibc
+RUN BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
+    VERSION="2.23-r3" && \
+    apk add --no-cache --virtual=.build-dependencies ca-certificates && \
+    wget --quiet \
+        "https://raw.githubusercontent.com/andyshinn/alpine-pkg-glibc/master/sgerrand.rsa.pub" \
+        -O "/etc/apk/keys/sgerrand.rsa.pub" && \
+    wget --quiet \
+        "$BASE_URL/$VERSION/glibc-$VERSION.apk" \
+        "$BASE_URL/$VERSION/glibc-bin-$VERSION.apk" \
+        "$BASE_URL/$VERSION/glibc-i18n-$VERSION.apk" && \
+    apk add --no-cache ./glibc*.apk && \
+    rm "/etc/apk/keys/sgerrand.rsa.pub" && \
+    /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 C.UTF-8 || true && \
+    echo "export LANG=C.UTF-8" > /etc/profile.d/locale.sh && \
+    apk del glibc-i18n && \
+    apk del .build-dependencies && \
+    rm glibc*.apk
+
+ENV LANG=C.UTF-8
+###### /GLIBC ######
 
 ###### CONDA ######
-# Copied from https://github.com/CognitiveScale/alpine-miniconda/
-RUN apk --update  --repository http://dl-4.alpinelinux.org/alpine/edge/community add \
-    bash \
-    git \
-    curl \
-    ca-certificates \
-    bzip2 \
-    unzip \
-    sudo \
-    libstdc++ \
-    glib \
-    libxext \
-    libxrender \
-    tini \
-    && curl -L "https://github.com/andyshinn/alpine-pkg-glibc/releases/download/2.23-r1/glibc-2.23-r1.apk" -o /tmp/glibc.apk \
-    && curl -L "https://github.com/andyshinn/alpine-pkg-glibc/releases/download/2.23-r1/glibc-bin-2.23-r1.apk" -o /tmp/glibc-bin.apk \
-    && curl -L "https://github.com/andyshinn/alpine-pkg-glibc/releases/download/2.23-r1/glibc-i18n-2.23-r1.apk" -o /tmp/glibc-i18n.apk \
-    && apk add --allow-untrusted /tmp/glibc*.apk \
-    && /usr/glibc-compat/sbin/ldconfig /lib /usr/glibc-compat/lib \
-    && /usr/glibc-compat/bin/localedef -i en_US -f UTF-8 en_US.UTF-8 \
-    && rm -rf /tmp/glibc*apk /var/cache/apk/*
+ENV CONDA_DIR=/opt/conda
+ENV PATH=$CONDA_DIR/bin:$PATH
 
-# Configure environment
-ENV CONDA_DIR=/opt/conda CONDA_VER=4.0.5
-ENV PATH=$CONDA_DIR/bin:$PATH SHELL=/bin/bash LANG=C.UTF-8
-
-# Install conda
 RUN mkdir -p $CONDA_DIR && \
-    echo export PATH=$CONDA_DIR/bin:'$PATH' > /etc/profile.d/conda.sh && \
-    curl https://repo.continuum.io/miniconda/Miniconda3-${CONDA_VER}-Linux-x86_64.sh  -o mconda.sh && \
-    /bin/bash mconda.sh -f -b -p $CONDA_DIR && \
-    rm mconda.sh && \
-    $CONDA_DIR/bin/conda install --yes conda==${CONDA_VER}
+    wget --quiet "https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh" -O mconda.sh && \
+    bash mconda.sh -f -b -p $CONDA_DIR && \
+    rm mconda.sh
 ###### /CONDA ######
 
-RUN conda install pandas
+###### KRIHELINATOR ######
+RUN conda install \
+        pandas=0.19.2
 
 # Cache elixir deps
 ADD mix.exs mix.lock ./
