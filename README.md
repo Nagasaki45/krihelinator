@@ -19,7 +19,7 @@ To start your app:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-By default, the pipeline is disabled, unable with with:
+By default, the pipeline is disabled, enable it with:
 
     docker-compose run --rm -e PIPELINE=1 web iex -S mix
 
