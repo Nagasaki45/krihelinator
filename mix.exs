@@ -38,7 +38,7 @@ defmodule Krihelinator.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
-     {:httpoison, "~> 0.9.0"},
+     {:httpoison, "~> 0.11.0"},
      {:poison, "~> 2.2"},
      {:floki, "~> 0.9.0"},
      {:exredis, "~> 0.2.5"},

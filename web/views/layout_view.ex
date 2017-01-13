@@ -1,7 +1,7 @@
 defmodule Krihelinator.LayoutView do
   use Krihelinator.Web, :view
 
-  def production? do
+  def in_production() do
     Mix.env == :prod
   end
 
