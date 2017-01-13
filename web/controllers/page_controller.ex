@@ -17,14 +17,23 @@ defmodule Krihelinator.PageController do
                              where: l.name == ^language_name,
                              preload: [repos: ^repos_query])
 
-    # Set the repos language without another DB hit
-    repos = for r <- language.repos do
-      %{r | language: %{name: language.name}}
-    end
+    case language do
 
-    conn
-    |> put_flash(:info, "#{language.name} repositories")
-    |> render("repositories.html", repos: repos)
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> render(Krihelinator.ErrorView, "404.html")
+
+      _otherwise ->
+        # Set the repos language without another DB hit
+        repos = for r <- language.repos do
+          %{r | language: %{name: language.name}}
+        end
+        conn
+        |> put_flash(:info, "#{language.name} repositories")
+        |> render("repositories.html", repos: repos)
+
+    end
   end
 
   def languages(conn, params) do
