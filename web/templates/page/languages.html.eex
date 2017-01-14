@@ -1,29 +1,38 @@
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>
-        Language
-        <a href="<%= page_path(@conn, :languages, by: :name, dir: :asc) %>"><span class="glyphicon glyphicon-chevron-down"></span><a/>
-      </th>
-      <th>
-        Krihelimeter
-        <a href="<%= page_path(@conn, :languages, by: :krihelimeter) %>"><span class="glyphicon glyphicon-chevron-down"></span><a/>
-      </th>
-      <th>
-        # of repos
-        <a href="<%= page_path(@conn, :languages, by: :num_of_repos) %>"><span class="glyphicon glyphicon-chevron-down"></span><a/>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= for {language, index} <- Enum.with_index(@languages) do %>
+<div id="languages-app">
+
+  <button v-on:click="see_history" :disabled="checkedLanguages.length == 0" class="btn btn-primary btn-block">
+    Show selected languages history
+  </button>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>
+          Language
+          <a href="<%= page_path(@conn, :languages, by: :name, dir: :asc) %>"><span class="glyphicon glyphicon-chevron-down"></span></a>
+        </th>
+        <th>
+          Krihelimeter
+          <a href="<%= page_path(@conn, :languages, by: :krihelimeter) %>"><span class="glyphicon glyphicon-chevron-down"></span></a>
+        </th>
+        <th>
+          # of repos
+          <a href="<%= page_path(@conn, :languages, by: :num_of_repos) %>"><span class="glyphicon glyphicon-chevron-down"></span></a>
+        </th>
+        <th>Select language</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for {language, index} <- Enum.with_index(@languages) do %>
       <tr>
         <td><b><%= index + 1 %>.</b></td>
         <td><%= link language.name, to: page_path(@conn, :language, language.name) %></td>
         <td><%= language.krihelimeter %></td>
         <td><%= language.num_of_repos %></td>
+        <td><input type="checkbox" value="<%= language.name %>" v-model="checkedLanguages"></td>
       </tr>
-    <%= end %>
-  </tbody>
-</table>
+      <%= end %>
+    </tbody>
+  </table>
+</div>

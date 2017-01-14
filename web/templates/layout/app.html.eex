@@ -39,7 +39,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.6/vue.min.js"></script>
-    <script src="<%= static_path(@conn, "/js/badge_app.js") %>"></script>
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
 
     <%= if in_production() do %>
       <script>
