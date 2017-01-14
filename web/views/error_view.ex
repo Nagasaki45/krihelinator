@@ -1,6 +1,10 @@
 defmodule Krihelinator.ErrorView do
   use Krihelinator.Web, :view
 
+  def render("400.html", _assigns) do
+    "Bad request"
+  end
+
   def render("404.html", _assigns) do
     "Page not found"
   end

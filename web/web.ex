@@ -33,7 +33,7 @@ defmodule Krihelinator.Web do
       use Phoenix.Controller
 
       alias Krihelinator.{Repo, GithubRepo, LanguageHistory, Language}
-      import InputValidator
+      import Krihelinator.InputValidator
       import Ecto
       import Ecto.Query
 

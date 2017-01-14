@@ -49,31 +49,28 @@ defmodule Krihelinator.PageController do
   end
 
   def languages_history(conn, params) do
-    # "Sanitize" params
-    language_names =
-      params
-      |> Map.get("languages", "[]")
-      |> Poison.decode!
-    value_field = Map.get(params, "by", "krihelimeter")
+    case validate_history_query(params) do
 
-    languages = Repo.all from(l in Language,
-                              where: l.name in ^language_names,
-                              preload: :history)
+      {:ok, value_field, language_names} ->
 
-    json =
-      languages
-      |> Enum.flat_map(fn language ->
-        for datum <- language.history do
-          %{name: language.name,
-            timestamp: datum.timestamp,
-            value: Map.fetch!(datum, String.to_existing_atom(value_field))}
-          end
-        end)
-      |> Poison.encode!()
-      |> Krihelinator.PythonGenServer.process()
+        query = from(l in Language,
+                     where: l.name in ^language_names,
+                     preload: :history)
+        json =
+          query
+          |> Repo.all()
+          |> Krihelinator.PythonGenServer.process(value_field)
+        assigns = [json: json, value_field: value_field]
+        render conn, "languages_history.html", assigns
 
-    assigns = [json: json, value_field: value_field]
-    render conn, "languages_history.html", assigns
+      {:error, error} ->
+
+        conn
+        |> put_flash(:error, error)
+        |> put_status(:bad_request)
+        |> render(Krihelinator.ErrorView, "400.html")
+    end
+
   end
 
   def about(conn, _params) do

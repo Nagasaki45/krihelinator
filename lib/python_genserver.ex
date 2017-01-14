@@ -22,7 +22,21 @@ defmodule Krihelinator.PythonGenServer do
 
   ##### Client side #####
 
-  def process(json_data) do
+  def process(languages, value_field) do
+    languages
+    |> Enum.flat_map(fn language ->
+      for datum <- language.history do
+        %{name: language.name,
+          timestamp: datum.timestamp,
+          value: Map.fetch!(datum, value_field)}
+      end
+    end)
+    |> Poison.encode!()
+    |> process_json()
+  end
+
+  def process_json("[]"), do: "[]"
+  def process_json(json_data) do
     GenServer.call(__MODULE__, {:process, json_data})
   end
 end
