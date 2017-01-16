@@ -25,13 +25,7 @@ defmodule Krihelinator.PageController do
         |> render(Krihelinator.ErrorView, "404.html")
 
       _otherwise ->
-        # Set the repos language without another DB hit
-        repos = for r <- language.repos do
-          %{r | language: %{name: language.name}}
-        end
-        conn
-        |> put_flash(:info, "#{language.name} repositories")
-        |> render("repositories.html", repos: repos)
+        render(conn, "language.html", language: language)
 
     end
   end
