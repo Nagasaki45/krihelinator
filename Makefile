@@ -16,4 +16,7 @@ logs:
 test:
 	docker-compose run --rm web mix test
 
-.PHONY: test
+functional_tests:
+	cd functional_tests && source env/bin/activate && pytest
+
+.PHONY: test functional_tests
