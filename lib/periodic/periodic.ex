@@ -27,6 +27,7 @@ defmodule Krihelinator.Periodic do
     clean_db()
     scrape_trending()
     rescrape_existing()
+    delete_repos_with_less_than_two_authors()
     update_languages_stats()
     Logger.info "Periodic process finished successfully!"
     reschedule_work()
@@ -85,6 +86,17 @@ defmodule Krihelinator.Periodic do
     |> Stream.map(fn struct -> GithubRepo.cast_allowed(struct) end)
     |> Stream.map(&scrape_repo/1)
     |> Enum.each(&log_changeset_errors/1)
+  end
+
+  @doc """
+  Repos can't enter the Krihelinator with less than 2 authors, but they can
+  become such repos later, which are problematic. See issue #94.
+  """
+  def delete_repos_with_less_than_two_authors() do
+    Logger.info "Deleting repositories with less than two authors..."
+    query = from(r in GithubRepo, where: not r.user_requested,
+                                  where: r.authors < 2)
+    Repo.delete_all(query)
   end
 
   @doc """
