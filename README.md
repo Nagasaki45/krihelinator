@@ -24,6 +24,8 @@ By default, the pipeline is disabled, run it with:
 
     docker-compose run --rm -e PIPELINE=1 web iex -S mix
 
+Any value except `1`, or no value at all, will disable the pipeline.
+
 ## Makefile
 
 Some tasks are automated in the `Makefile`. During development `docker-compose run --rm web <whatever>` is used a lot! However, I prefer not to automate these one-liners unless they are used by other tasks.
