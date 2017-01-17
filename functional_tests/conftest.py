@@ -17,14 +17,13 @@ class Driver(webdriver.Firefox):
         timeout.
         """
 
-        expected = urllib.parse.quote(url, safe='/=:?')
         for attempt in range(timeout):
-            current_url = self.current_url.strip('/')
-            if current_url == expected:
+            current_url = urllib.parse.unquote(self.current_url).strip('/')
+            if current_url == url:
                 break
             time.sleep(1)
         else:
-            assert current_url == expected
+            assert current_url == url
 
 
 @pytest.fixture(scope='session')
