@@ -2,7 +2,6 @@ alias Experimental.GenStage
 
 defmodule Krihelinator.Pipeline.DataHandler do
   use GenStage
-  require Logger
 
   @moduledoc """
   The sink of the pipeline. Persist new maps.
