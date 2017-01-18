@@ -12,10 +12,10 @@ This project proposes an alternative to github's [trending page](http://github.c
 
 The only dependencies are docker and docker-compose. To start your app:
 
-  * Generate a github token and create a `secrets` file, with your it, like this: `GITHUB_TOKEN=<your github token>`.
+  * Generate a github token and create a `secrets` file, with it, like this: `GITHUB_TOKEN=<your github token>`.
   * Build the docker image: `docker-compose build`.
   * Create the DB: `docker-compose run --rm web mix ecto.create`.
-  * Migrate to the latest DB scheme: `docker-compose run --rm web mix ecto.create`.
+  * Migrate to the latest DB scheme: `docker-compose run --rm web mix ecto.migrate`.
   * Spin up everything `docker-compose up -d`.
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
