@@ -33,28 +33,3 @@ Some tasks are automated in the `Makefile`. During development `docker-compose r
 ## Scripts
 
 If you messed things up there are several useful scripts in `priv/scripts` with relatively self explanatory names. Run them with `docker-compose run --rm web mix run path/to/script.exs`.
-
-## Running in production
-
-I use `docker` and `docker-compose` in production, so make sure you have them on your server.
-
-    # Provisioning
-    scp production/docker-compose.yml server.com:/path/to/project
-    scp secrets server.com:/path/to/project
-
-    # Get ready, locally
-    docker build -t user/image .
-    docker push user/image
-
-    # Remotely
-    ssh server.com
-    cd /path/to/project
-    docker-compose pull
-
-    # Only on first run
-    docker-compose run --rm web mix ecto.create
-
-    # Spin up the new version
-    docker-compose run --rm web mix ecto.migrate
-    docker-compose run --rm web mix run priv/repo/update_krihelimeter.exs  # Optionally
-    docker-compose up -d
