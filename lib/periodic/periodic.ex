@@ -67,9 +67,11 @@ defmodule Krihelinator.Periodic do
   end
 
   @doc """
-  Scrape the github trending page and put all to DB (update if already exists).
+  Scrape the github trending page and update repos.
   """
   def scrape_trending() do
+    Logger.info "Resetting trendingness for all..."
+    Repo.update_all(GithubRepo, set: [trending: false])
     Logger.info "Scraping trending..."
     Periodic.GithubTrending.scrape()
     |> Stream.map(fn params -> GithubRepo.cast_allowed(%GithubRepo{}, params) end)
