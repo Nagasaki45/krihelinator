@@ -9,7 +9,8 @@ import random
 def validate_page_contains_list_of_repositories(driver):
     list_element = driver.find_element_by_css_selector('.list-group')
     repos = list_element.find_elements_by_tag_name('li')
-    assert len(repos) == 50
+    assert len(repos) > 0
+    assert len(repos) <= 50
 
     # Examine a random repo
     repo = random.choice(repos)
