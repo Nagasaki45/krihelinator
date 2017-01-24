@@ -38,7 +38,10 @@ defmodule Krihelinator.PageController do
         conn = put_flash(conn, :error, "The provided arguments are invalid!")
         {conn, {:krihelimeter, :desc}}
     end
-    languages = Repo.all from(Language, order_by: [{^dir, ^by}])
+    query = from(l in Language,
+                 order_by: [{^dir, ^by}],
+                 where: l.krihelimeter > 0)
+    languages = Repo.all(query)
     render(conn, "languages.html", languages: languages)
   end
 
