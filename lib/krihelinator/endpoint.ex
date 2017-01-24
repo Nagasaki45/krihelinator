@@ -9,7 +9,7 @@ defmodule Krihelinator.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/", from: :krihelinator, gzip: true,
-    only: ~w(css fonts images js favicon.ico robots.txt
+    only: ~w(css fonts images js media favicon.png robots.txt
              loaderio-af9cda539c1b3a4a235147af21f0fe5d.txt)
 
   # Code reloading can be explicitly enabled under the

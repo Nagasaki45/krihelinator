@@ -5,9 +5,10 @@ Make sure that the site is browsable: clicking things leads to the right places.
 
 def go_to(driver, navbar_link):
     navbar = driver.find_element_by_tag_name('nav')
-    navbar.find_element_by_link_text(navbar_link).click()
-    import time
-    time.sleep(1)
+    if navbar_link == 'logo':
+        navbar.find_element_by_tag_name('img').click()
+    else:
+        navbar.find_element_by_link_text(navbar_link).click()
 
 
 def test_browsing(driver, base_url):
@@ -15,7 +16,7 @@ def test_browsing(driver, base_url):
 
     go_to(driver, 'About')
     driver.assert_current_url(base_url + '/about')
-    go_to(driver, 'Repositories')
+    go_to(driver, 'logo')
     driver.assert_current_url(base_url)
     go_to(driver, 'Languages')
     driver.assert_current_url(base_url + '/languages')

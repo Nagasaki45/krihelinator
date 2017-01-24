@@ -3,7 +3,7 @@ defmodule Krihelinator.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"
-    assert html_response(conn, 200) =~ "The Krihelinator"
+    assert html_response(conn, 200) =~ "Krihelinator"
   end
 
   test "Get repos of unexisting language. Bug #79", %{conn: conn} do
