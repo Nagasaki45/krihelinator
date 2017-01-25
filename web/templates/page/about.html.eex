@@ -1,10 +1,8 @@
-<p class="lead">
-  This project proposes an alternative to <%= link "github's trending page", to: "https://www.github.com/trending" %>,
-  by exposing projects with high contribution rate, instead of daily stars (similarly to github's pulse page).
-  The krihelimeter of each repository is calculated using the number of
-  authors, commits, pull requests, and issues of that project, from the past week.
-</p>
+This project proposes an alternative to <%= link "github's trending page", to: "https://www.github.com/trending" %>, by exposing projects with high contribution rate, instead of daily stars (similarly to github's pulse page).
+The krihelimeter of each repository is calculated using the number of authors, commits, pull requests, and issues of that project, from the past week.
 
+<br >
+<br >
 <table align="center">
   <tr>
     <td>Krihelimeter =&nbsp;</td>
@@ -29,9 +27,10 @@
 <table>
 <br >
 
-<p class="lead">
-  During the development of this project I found out that people use github as a
-  backup service, automating hundreds of commits per week. Therefor, to filter
-  these projects out, only projects with more than one author enters the
-  Krihelinator DB.
-</p>
+During the development of this project I found out that people use github as a backup service, automating hundreds of commits per week.
+Therefor, to filter these projects out, only projects with more than one author enters the Krihelinator DB.
+
+<h2>Want to know more?</h2>
+
+The Krihelinator is an <%= link "open source project", to: "https://www.github.com/Nagasaki45/krihelinator" %> written in <%= link "elixir", to: "http://elixir-lang.org/" %>.
+Contributions, of any kind, are more than welcome and highly appreciated :-).
