@@ -70,6 +70,10 @@ defmodule Krihelinator.PageController do
 
   end
 
+  def badge(conn, _params) do
+    render conn, "badge.html"
+  end
+
   def about(conn, _params) do
     render conn, "about.html"
   end

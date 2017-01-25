@@ -26,8 +26,6 @@
         <p>- Meir Kriheli</p>
       </blockquote>
 
-      <%= render("badge_modal.html", conn: @conn) %>
-
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
