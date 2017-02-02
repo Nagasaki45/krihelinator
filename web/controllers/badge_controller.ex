@@ -16,13 +16,10 @@ defmodule Krihelinator.BadgeController do
   def get_from_db_or_scrape(name) do
     case Repo.get_by(GithubRepo, name: name) do
       :nil ->
-        scraped =
-          name
-          |> scrape_pulse_page
-          |> Map.put(:name, name)
-          |> Map.put(:user_requested, true)
         %GithubRepo{}
-        |> GithubRepo.changeset(scraped)
+        |> GithubRepo.cast_allowed(%{name: name, user_requested: true})
+        |> scrape_pulse_page
+        |> GithubRepo.finalize_changeset
         |> Repo.insert
       model ->
         {:ok, model}
