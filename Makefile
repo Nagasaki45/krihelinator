@@ -15,6 +15,7 @@ logs:
 
 test:
 	docker-compose run --rm web mix test
+	docker-compose run --rm web mix credo
 
 functional_tests:
 	cd functional_tests && source env/bin/activate && pytest
