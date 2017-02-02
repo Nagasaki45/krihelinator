@@ -1,4 +1,4 @@
-defmodule Krihelinator.Pipeline.StatsScraperTest do
+defmodule Krihelinator.ScraperTest do
   use ExUnit.Case
   alias Krihelinator.Scraper
   doctest Scraper
