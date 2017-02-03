@@ -1,7 +1,7 @@
 build:
 	docker-compose build
 
-deploy: build test
+deploy: build
 	docker tag `docker images -q krihelinator_web` nagasaki45/krihelinator_web
 	docker push nagasaki45/krihelinator_web
 	ssh krihelinator.xyz " \
@@ -13,11 +13,7 @@ deploy: build test
 logs:
 	docker logs -f krihelinator_web_1 | less +F
 
-test:
-	docker-compose run --rm web mix test
-	docker-compose run --rm web mix credo
-
 functional_tests:
 	cd functional_tests && source env/bin/activate && pytest
 
-.PHONY: test functional_tests
+.PHONY: functional_tests
