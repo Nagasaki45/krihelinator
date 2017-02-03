@@ -87,6 +87,7 @@ defmodule Krihelinator.Periodic do
     |> Repo.all()
     |> Stream.map(fn struct -> GithubRepo.cast_allowed(struct) end)
     |> Stream.map(&scrape_repo/1)
+    |> Stream.map(&remove_already_exists/1)
     |> Enum.each(&log_changeset_errors/1)
   end
 
@@ -143,6 +144,16 @@ defmodule Krihelinator.Periodic do
     |> Repo.update()
   end
   def update_trendiness(everything_else), do: everything_else
+
+  @doc """
+  Remove repos that cause insert / update "name has already been taken" error.
+  """
+  def remove_already_exists({:ok, struct}), do: {:ok, struct}
+  def remove_already_exists({:error, %{errors: [name: _], data: repo}}) do
+    Logger.info "Repo #{repo.name} already exists. Deleting..."
+    Repo.delete(repo)
+  end
+  def remove_already_exists(everything_else), do: everything_else
 
   @doc """
   Log why the insertion of the changeset to the DB failed.

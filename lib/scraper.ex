@@ -6,6 +6,7 @@ defmodule Krihelinator.Scraper do
   """
 
   @basic_elements [
+    {:name, ~s{h1[class="public "]}, :string},
     {:description, ~s{span[itemprop="about"]}, :string},
     {:language_name, ~s{span[class="lang"]}, :string},
   ]
