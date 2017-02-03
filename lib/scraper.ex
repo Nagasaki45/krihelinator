@@ -64,6 +64,19 @@ defmodule Krihelinator.Scraper do
     body
     |> parse(elements)
   end
+  def handle_response({:ok, %{status_code: 301, headers: headers}}, elements) do
+    headers = Enum.into(headers, %{})
+    new_url = Map.fetch!(headers, "Location")
+    new_name =
+      new_url
+      |> String.split("/")
+      |> Enum.slice(3, 2)  # Two items starting from the 3rd "/"
+      |> Enum.join("/")
+    new_url
+    |> HTTPoison.get
+    |> handle_response(elements)
+    |> Map.put(:name, new_name)
+  end
   def handle_response({:ok, %{status_code: 404}}, _elements), do: %{error: :page_not_found}
   def handle_response({:ok, %{status_code: 451}}, _elements), do: %{error: :dmca_takedown}
   def handle_response({:ok, %{status_code: code, body: body}}, _elements) do
