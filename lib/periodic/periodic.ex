@@ -148,7 +148,6 @@ defmodule Krihelinator.Periodic do
   @doc """
   Remove repos that cause insert / update "name has already been taken" error.
   """
-  def remove_already_exists({:ok, struct}), do: {:ok, struct}
   def remove_already_exists({:error, %{errors: [name: _], data: repo}}) do
     Logger.info "Repo #{repo.name} already exists. Deleting..."
     Repo.delete(repo)
