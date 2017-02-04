@@ -1,9 +1,5 @@
 use Mix.Config
 
-# Set the GITHUB_TOKEN from environment variable.
-config :krihelinator,
-  scrapers_pool_size: 16
-
 # For production, we configure the host to read the PORT
 # from the system environment. Therefore, you will need
 # to set PORT=80 before running your server.

@@ -8,11 +8,8 @@ use Mix.Config
 # General application configuration
 config :krihelinator,
   ecto_repos: [Krihelinator.Repo],
-  github_token: System.get_env("GITHUB_TOKEN"),
   periodic_schedule: 6 * 60 * 60 * 1000,  # 6 hours
-  max_repos_to_keep: 5000,
-  scrapers_pool_size: 4,
-  pipeline_enabled: System.get_env("PIPELINE") == "1",
+  scrapers_pool_size: 20,
   history_keeper_schedule: 3 * 24 * 60 * 60 * 1000  # 3 days
 
 # Configures the endpoint
@@ -28,11 +25,8 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-# Redis configuration
-config :exredis,
-  host: "stash",
-  reconnect: :no_reconnect,
-  max_queue: :infinity
+config :big_query,
+  bigquery_private_key_path: "bigquery_private_key.json"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -2,14 +2,19 @@ defmodule Krihelinator.Periodic do
   use GenServer
   require Logger
   import Ecto.Query, only: [from: 2]
-  alias Krihelinator.{Periodic, Repo, GithubRepo, Language}
+  alias Krihelinator.{Periodic, Repo, GithubRepo, Language, Scraper}
 
   @moduledoc """
   Every `:periodic_schedule` do the following:
 
-  - Run the DB cleaner.
+  - Mark all github repos as "dirty".
   - Scrape the github trending page for interesting, active, projects.
-  - Pass all of the repos from the DB through the parser again, to update stats.
+  - Using BigQuery, get and scrape all repos that at least 2 users pushed
+    commits to.
+  - Get the remaining "dirty" repos and pass through the scraper again, to
+    update stats.
+  - Clean the remaining dirty repos. These repos failed to update or fell bellow
+    activity threshold.
   - Update the total krihelimeter and num_of_repos for all languages.
   """
 
@@ -23,13 +28,7 @@ defmodule Krihelinator.Periodic do
   end
 
   def handle_info(:run, state) do
-    Logger.info "Periodic process kicked in!"
-    clean_db()
-    scrape_trending()
-    rescrape_existing()
-    delete_repos_with_less_than_two_authors()
-    update_languages_stats()
-    Logger.info "Periodic process finished successfully!"
+    run()
     reschedule_work()
     {:noreply, state}
   end
@@ -43,27 +42,22 @@ defmodule Krihelinator.Periodic do
   end
 
   @doc """
-  Keep only the top :max_repos_to_keep in the DB. Delete the rest.
+  The tasks to run every periodic loop.
   """
-  def clean_db do
-    Logger.info "Running DB cleaner..."
-    non_user_requested = from(r in GithubRepo, where: not r.user_requested)
-    count = Repo.one(from r in non_user_requested, select: count(r.id))
-    keep = Application.fetch_env!(:krihelinator, :max_repos_to_keep)
-    if count > keep do
-      threshold = Repo.one(from r in non_user_requested,
-                           order_by: [desc: r.krihelimeter],
-                           offset: ^keep,
-                           limit: 1,
-                           select: r.krihelimeter)
-      ["There are #{count} repos (excluding user requested) in the DB",
-       "keeping only #{keep}",
-       "new minimum krihelimeter is #{threshold}"]
-      |> Enum.join(", ")
-      |> Logger.info
-      query = from(r in non_user_requested, where: r.krihelimeter < ^threshold)
-      Repo.delete_all(query)
-    end
+  def run() do
+    Logger.info "Periodic process kicked in!"
+    set_dirty_bit()
+    scrape_trending()
+    scrape_from_bigquery()
+    rescrape_still_dirty()
+    clean_dirty()
+    update_languages_stats()
+    Logger.info "Periodic process finished successfully!"
+  end
+
+  def set_dirty_bit() do
+    Logger.info "Setting dirty bit for all..."
+    Repo.update_all(GithubRepo, set: [dirty: true])
   end
 
   @doc """
@@ -74,32 +68,83 @@ defmodule Krihelinator.Periodic do
     Repo.update_all(GithubRepo, set: [trending: false])
     Logger.info "Scraping trending..."
     Periodic.GithubTrending.scrape()
-    |> Stream.map(fn params -> GithubRepo.cast_allowed(%GithubRepo{}, params) end)
-    |> Stream.map(&scrape_repo/1)
-    |> Stream.map(&update_trendiness/1)  # Effects only name uniqueness failures
-    |> Enum.each(&log_changeset_errors/1)
+    |> Stream.map(&prepare_changeset/1)
+    |> Stream.map(fn cs -> Ecto.Changeset.put_change(cs, :trending, true) end)
+    |> handle_changesets
   end
 
-  def rescrape_existing() do
-    Logger.info "Rescraping existing (non trending)..."
-    query = from(r in GithubRepo, where: not r.trending)
+  @doc """
+  Request repos to scrape from google BigQuery. See the moduledoc for more info.
+  """
+  def scrape_from_bigquery() do
+    Logger.info "Getting repositories from BigQuery to scrape..."
+    Periodic.BigQuery.query()
+    |> Stream.map(&prepare_changeset/1)
+    |> handle_changesets
+  end
+
+  @doc """
+  Create changeset to work with. If the name already in the DB use that,
+  otherwise create changeset from `params`.
+  """
+  def prepare_changeset(name) do
+    case Repo.get_by(GithubRepo, name: name) do
+      :nil -> GithubRepo.cast_allowed(%GithubRepo{}, %{name: name})
+      struct -> GithubRepo.changeset(struct)
+    end
+  end
+
+  @doc """
+  Get the rest of the repositories that weren't updated from github trending
+  or BigQuery and rescrape.
+  """
+  def rescrape_still_dirty() do
+    Logger.info "Rescraping still dirty repositories..."
+    query = from(r in GithubRepo, where: r.dirty)
     query
     |> Repo.all()
     |> Stream.map(fn struct -> GithubRepo.cast_allowed(struct) end)
-    |> Stream.map(&scrape_repo/1)
-    |> Stream.map(&remove_already_exists/1)
+    |> handle_changesets
+  end
+
+  @doc """
+  Run the changesets asyncronously through the scraper, apply extra validations,
+  push to the DB and log issues.
+  """
+  def handle_changesets(changesets) do
+    max_concurrency = Application.fetch_env!(:krihelinator, :scrapers_pool_size)
+    async_params = [max_concurrency: max_concurrency, timeout: 60_000]
+    changesets
+    |> Task.async_stream(&Scraper.scrape_repo/1, async_params)
+    |> Stream.map(fn {:ok, cs} -> cs end)
+    |> Stream.map(&GithubRepo.finalize_changeset_restrictive/1)
+    |> Stream.map(&Repo.insert_or_update/1)
     |> Enum.each(&log_changeset_errors/1)
   end
 
   @doc """
-  Repos can't enter the Krihelinator with less than 2 authors, but they can
-  become such repos later, which are problematic. See issue #94.
+  Log scraping errors. Other changeset errors are supposed to be OK.
   """
-  def delete_repos_with_less_than_two_authors() do
-    Logger.info "Deleting repositories with less than two authors..."
-    query = from(r in GithubRepo, where: not r.user_requested,
-                                  where: r.authors < 2)
-    Repo.delete_all(query)
+  def log_changeset_errors({:ok, _struct}), do: :ok
+  def log_changeset_errors({:error, changeset}) do
+    repo_name = GithubRepo.fetch_name(changeset)
+    case Enum.into(changeset.errors, %{}) do
+      %{scraping_error: {"page_not_found", []}} -> :ok
+      %{scraping_error: error} ->
+        Logger.error "Scraping error for #{repo_name}: #{inspect(error)}"
+      _otherwise -> :ok
+    end
+  end
+
+  @doc """
+  Clean the DB from repositories that failed to update properly in the last
+  periodic loop.
+  """
+  def clean_dirty do
+    Logger.info "Cleaning dirty repos..."
+    query = from(r in GithubRepo, where: r.dirty)
+    {num, _whatever} = Repo.delete_all(query)
+    Logger.info "Cleaned #{num} dirty repos"
   end
 
   @doc """
@@ -119,49 +164,5 @@ defmodule Krihelinator.Periodic do
       |> Language.changeset(changes)
       |> Repo.update()
     end)
-  end
-
-  @doc """
-  Scrape changeset and insert to DB.
-  """
-  def scrape_repo(changeset) do
-    changeset
-    |> Krihelinator.Scraper.scrape_repo_page()
-    |> Krihelinator.Scraper.scrape_pulse_page()
-    |> GithubRepo.finalize_changeset()
-    |> Repo.insert_or_update()
-  end
-
-  @doc """
-  The repo is already in the DB, update it to be trending.
-  """
-  def update_trendiness({:error, %{errors: [name: _]} = changeset}) do
-    repo_name = GithubRepo.fetch_name(changeset)
-    GithubRepo
-    |> Repo.get_by(name: repo_name)
-    |> GithubRepo.changeset()
-    |> Ecto.Changeset.put_change(:trending, true)
-    |> Repo.update()
-  end
-  def update_trendiness(everything_else), do: everything_else
-
-  @doc """
-  Remove repos that cause insert / update "name has already been taken" error.
-  """
-  def remove_already_exists({:error, %{errors: [name: _], data: repo}}) do
-    Logger.info "Repo #{repo.name} already exists. Deleting..."
-    Repo.delete(repo)
-  end
-  def remove_already_exists(everything_else), do: everything_else
-
-  @doc """
-  Log why the insertion of the changeset to the DB failed.
-  """
-  def log_changeset_errors({:ok, _struct}), do: :ok
-  def log_changeset_errors({:error, changeset}) do
-    repo_name = GithubRepo.fetch_name(changeset)
-    errors = inspect changeset.errors
-    msg = "Failed to insert changeset for #{repo_name}: #{errors}"
-    Logger.error msg
   end
 end

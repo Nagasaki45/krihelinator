@@ -1,22 +1,23 @@
 web:
   build: .
-  volumes:  # Override the files in the image with local files
+  volumes:
+    - ./bigquery_private_key.json:/opt/app/bigquery_private_key.json:ro  # read only
+
+    # Override the files in the image with local files
     - ./_build:/opt/app/_build
+    - ./deps:/opt/app/deps
     - ./config:/opt/app/config
     - ./lib:/opt/app/lib
     - ./priv:/opt/app/priv
     - ./python:/opt/app/python
     - ./test:/opt/app/test
     - ./web:/opt/app/web
+    - ./mix.exs:/opt/app/mix.exs
+    - ./mix.lock:/opt/app/mix.lock
   ports:
     - 4000:4000
   links:
     - db
-    - stash
-  env_file: ./secrets
 
 db:
   image: postgres:9.5
-
-stash:
-  image: redis

@@ -21,13 +21,14 @@ defmodule Krihelinator.GithubRepo do
     field :krihelimeter, :integer
     field :trending, :boolean, default: false
     field :user_requested, :boolean, default: false
+    field :dirty, :boolean, default: false
 
     timestamps()
   end
 
   @allowed ~w(name description language_name merged_pull_requests
               proposed_pull_requests closed_issues new_issues commits authors
-              forks trending user_requested)a
+              forks trending user_requested dirty)a
   @required ~w(name merged_pull_requests proposed_pull_requests
                closed_issues new_issues commits authors)a
 
@@ -64,6 +65,18 @@ defmodule Krihelinator.GithubRepo do
     |> set_krihelimeter
     |> put_language_assoc()
     |> trim_description(max_length: 255)
+    |> clear_dirty_bit()
+  end
+
+  @doc """
+  For changesets that come from github (not from the user) have more
+  restrictions.
+  """
+  def finalize_changeset_restrictive(changeset) do
+    changeset
+    |> finalize_changeset()
+    |> validate_number(:forks, greater_than_or_equal_to: 10)
+    |> validate_number(:krihelimeter, greater_than_or_equal_to: 30)
   end
 
   @doc """
@@ -104,6 +117,10 @@ defmodule Krihelinator.GithubRepo do
   end
   def put_language_assoc(changeset) do
     changeset
+  end
+
+  def clear_dirty_bit(changeset) do
+    put_change(changeset, :dirty, false)
   end
 
   @doc """

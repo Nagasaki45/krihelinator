@@ -19,7 +19,7 @@ defmodule Krihelinator.Mixfile do
   def application do
     [mod: {Krihelinator, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :httpoison]]
+                    :phoenix_ecto, :postgrex, :httpoison, :big_query, :timex]]
   end
 
   # Specifies which paths to compile per environment.
@@ -30,21 +30,23 @@ defmodule Krihelinator.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2.0"},
-     {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.1"},
-     {:postgrex, ">= 0.0.0"},
-     {:phoenix_html, "~> 2.6"},
-     {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:gettext, "~> 0.11"},
-     {:cowboy, "~> 1.0"},
-     {:httpoison, "~> 0.11.0"},
-     {:poison, "~> 2.2"},
-     {:floki, "~> 0.9.0"},
-     {:exredis, "~> 0.2.5"},
-     {:gen_stage, "~> 0.4.0"},
-     {:credo, "~> 0.5.3", only: [:dev, :test]},
-     {:erlport, github: "hdima/erlport", manager: :make}]
+    [
+      {:phoenix, "~> 1.2.0"},
+      {:phoenix_pubsub, "~> 1.0"},
+      {:phoenix_ecto, "~> 3.1"},
+      {:postgrex, ">= 0.0.0"},
+      {:phoenix_html, "~> 2.6"},
+      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:gettext, "~> 0.11"},
+      {:cowboy, "~> 1.0"},
+      {:httpoison, "~> 0.11.0"},
+      {:poison, "~> 2.2"},
+      {:floki, "~> 0.9.0"},
+      {:timex, "~> 3.1"},
+      {:erlport, github: "hdima/erlport", manager: :make},
+      {:big_query, git: "https://github.com/Nagasaki45/big_query"},
+      {:credo, "~> 0.5.3", only: [:dev, :test]},
+    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

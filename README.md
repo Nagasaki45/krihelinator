@@ -12,19 +12,13 @@ This project proposes an alternative to github's [trending page](http://github.c
 
 The only dependencies are docker and docker-compose. To start your app:
 
-  * Generate a github token and create a `secrets` file, with it, like this: `GITHUB_TOKEN=<your github token>`.
+  * Get a google [Application Default Credentials](https://cloud.google.com/docs/authentication) json file. Name it `bigquery_private_key.json` and put it in the project root directory.
   * Build the docker image: `docker-compose build`.
   * Create the DB: `docker-compose run --rm web mix ecto.create`.
   * Migrate to the latest DB scheme: `docker-compose run --rm web mix ecto.migrate`.
   * Spin up everything `docker-compose up -d`.
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-By default, the pipeline is disabled, run it with:
-
-    docker-compose run --rm -e PIPELINE=1 web iex -S mix
-
-Any value except `1`, or no value at all, will disable the pipeline.
 
 ## Makefile
 

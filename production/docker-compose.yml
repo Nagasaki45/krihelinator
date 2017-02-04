@@ -2,19 +2,14 @@ web:
   image: nagasaki45/krihelinator_web
   environment:
     - MIX_ENV=prod
-    - PIPELINE=1
   ports:
     - 80:4000
   links:
     - db
-    - stash
-  env_file: ./secrets
   restart: always
+  volumes:
+    - ./bigquery_private_key.json:/opt/app/bigquery_private_key.json:ro  # read only
 
 db:
   image: postgres:9.5
-  restart: always
-
-stash:
-  image: redis
   restart: always

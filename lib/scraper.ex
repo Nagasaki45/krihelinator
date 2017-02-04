@@ -5,8 +5,43 @@ defmodule Krihelinator.Scraper do
   scraping.
   """
 
+  @doc """
+  Scrape repo home and pulse pages.
+  """
+  def scrape_repo(changeset) do
+    changeset
+    |> Krihelinator.Scraper.scrape_repo_page()
+    |> Krihelinator.Scraper.scrape_pulse_page()
+    |> add_error_if_fork()
+    |> combine_full_name()
+  end
+
+  @doc """
+  If a repo is a fork (indicated near the repo name on github) add an error.
+  """
+  def add_error_if_fork(%{valid?: false} = changeset), do: changeset
+  def add_error_if_fork(changeset) do
+    case Ecto.Changeset.get_change(changeset, :fork_of) do
+      :nil -> changeset
+      fork_text -> Ecto.Changeset.add_error(changeset, :is_fork, fork_text)
+    end
+  end
+
+  @doc """
+  Scraping the repo page will return the user name and the repo name.
+  Combine them together to get the full name.
+  """
+  def combine_full_name(%{valid?: false} = changeset), do: changeset
+  def combine_full_name(changeset) do
+    {:changes, user_name} = Ecto.Changeset.fetch_field(changeset, :user_name)
+    {:changes, repo_name} = Ecto.Changeset.fetch_field(changeset, :repo_name)
+    Ecto.Changeset.put_change(changeset, :name, "#{user_name}/#{repo_name}")
+  end
+
   @basic_elements [
-    {:name, ~s{h1[class="public "]}, :string},
+    {:user_name, ~s{span[itemprop="author"]}, :string},
+    {:repo_name, ~s{strong[itemprop="name"]}, :string},
+    {:fork_of, ~s{span[class="fork-flag"]}, :string},
     {:description, ~s{span[itemprop="about"]}, :string},
     {:language_name, ~s{span[class="lang"]}, :string},
   ]
@@ -49,7 +84,7 @@ defmodule Krihelinator.Scraper do
       |> handle_response(elements)
     case new_data do
       %{error: error} ->
-        Ecto.Changeset.add_error(changeset, :scraping_error, inspect(error))
+        Ecto.Changeset.add_error(changeset, :scraping_error, error)
       _otherwise ->
         Ecto.Changeset.change(changeset, new_data)
     end
@@ -61,8 +96,7 @@ defmodule Krihelinator.Scraper do
   what to do with them.
   """
   def handle_response({:ok, %{status_code: 200, body: body}}, elements) do
-    body
-    |> parse(elements)
+    parse(body, elements)
   end
   def handle_response({:ok, %{status_code: 301, headers: headers}}, elements) do
     headers
@@ -71,14 +105,15 @@ defmodule Krihelinator.Scraper do
     |> HTTPoison.get
     |> handle_response(elements)
   end
-  def handle_response({:ok, %{status_code: 404}}, _elements), do: %{error: :page_not_found}
-  def handle_response({:ok, %{status_code: 451}}, _elements), do: %{error: :dmca_takedown}
+  def handle_response({:ok, %{status_code: 404}}, _elements), do: %{error: "page_not_found"}
+  def handle_response({:ok, %{status_code: 451}}, _elements), do: %{error: "dmca_takedown"}
   def handle_response({:ok, %{status_code: code, body: body}}, _elements) do
     # Some unknown failure: elaborate!
-    body_text = Floki.text(body)
-    %{error: "GET request failed with status_code #{code}:\n#{body_text}"}
+    %{error: "Request failed with status_code #{code}:\n#{Floki.text(body)}"}
   end
-  def handle_response({:error, %{reason: reason}}, _elements), do: %{error: reason}
+  def handle_response({:error, %{reason: reason}}, _elements) do
+    %{error: Atom.to_string(reason)}
+  end
 
   @doc """
   Use [floki](https://github.com/philss/floki) to parse the page and return

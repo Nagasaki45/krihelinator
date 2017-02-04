@@ -18,5 +18,6 @@ erl_crash.dump
 # Dont track my secrets
 secrets
 production/secrets
+bigquery_private_key.json
 
 __pycache__

@@ -25,15 +25,6 @@ defmodule Krihelinator do
       worker(Krihelinator.PythonGenServer, []),
     ]
 
-    children =
-      if Application.fetch_env!(:krihelinator, :pipeline_enabled) do
-        # Start the background polling pipeline
-        children ++ [supervisor(Krihelinator.Pipeline.Supervisor, [])]
-      else
-        Logger.info "The pipeline process is disabled"
-        children
-      end
-
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Krihelinator.Supervisor]
