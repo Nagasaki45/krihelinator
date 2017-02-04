@@ -80,7 +80,7 @@ defmodule Krihelinator.Scraper do
     repo_name = Krihelinator.GithubRepo.fetch_name(changeset)
     new_data =
       "https://github.com/#{repo_name}#{suffix}"
-      |> HTTPoison.get
+      |> http_get
       |> handle_response(elements)
     case new_data do
       %{error: error} ->
@@ -88,6 +88,14 @@ defmodule Krihelinator.Scraper do
       _otherwise ->
         Ecto.Changeset.change(changeset, new_data)
     end
+  end
+
+  @doc """
+  A wrapper around `HTTPoison.get` with extra timeout.
+  """
+  def http_get(url) do
+    headers = []
+    HTTPoison.get(url, headers, recv_timeout: 10_000)
   end
 
   @doc """
@@ -102,11 +110,12 @@ defmodule Krihelinator.Scraper do
     headers
     |> Enum.into(%{})
     |> Map.fetch!("Location")
-    |> HTTPoison.get
+    |> http_get
     |> handle_response(elements)
   end
   def handle_response({:ok, %{status_code: 404}}, _elements), do: %{error: "page_not_found"}
   def handle_response({:ok, %{status_code: 451}}, _elements), do: %{error: "dmca_takedown"}
+  def handle_response({:ok, %{status_code: 500}}, _elements), do: %{error: "github_server_error"}
   def handle_response({:ok, %{status_code: code, body: body}}, _elements) do
     # Some unknown failure: elaborate!
     %{error: "Request failed with status_code #{code}:\n#{Floki.text(body)}"}
