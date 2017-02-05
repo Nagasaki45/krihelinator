@@ -1,6 +1,6 @@
 defmodule Krihelinator.BadgeController do
   use Krihelinator.Web, :controller
-  import Krihelinator.Scraper, only: [scrape_pulse_page: 1]
+  alias Krihelinator.Scraper
 
   def badge(conn, %{"user" => user, "repo" => repo}) do
     case get_from_db_or_scrape("#{user}/#{repo}") do
@@ -18,9 +18,9 @@ defmodule Krihelinator.BadgeController do
       :nil ->
         %GithubRepo{}
         |> GithubRepo.cast_allowed(%{name: name, user_requested: true})
-        |> scrape_pulse_page
-        |> GithubRepo.finalize_changeset
-        |> Repo.insert
+        |> Scraper.scrape_repo()
+        |> GithubRepo.finalize_changeset()
+        |> Repo.insert()
       model ->
         {:ok, model}
     end
