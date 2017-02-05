@@ -117,9 +117,23 @@ defmodule Krihelinator.Periodic do
     changesets
     |> Task.async_stream(&Scraper.scrape_repo/1, async_params)
     |> Stream.map(fn {:ok, cs} -> cs end)
-    |> Stream.map(&GithubRepo.finalize_changeset_restrictive/1)
+    |> Stream.map(&GithubRepo.finalize_changeset/1)
+    |> Stream.map(&apply_restrictive_validations/1)
     |> Stream.map(&Repo.insert_or_update/1)
     |> Enum.each(&log_changeset_errors/1)
+  end
+
+  @doc """
+  If not user_requested make sure stats are above thresholds.
+  """
+  def apply_restrictive_validations(changeset) do
+    if Ecto.Changeset.get_field(changeset, :user_requested) do
+      changeset
+    else
+      changeset
+      |> Ecto.Changeset.validate_number(:forks, greater_than_or_equal_to: 10)
+      |> Ecto.Changeset.validate_number(:krihelimeter, greater_than_or_equal_to: 30)
+    end
   end
 
   @doc """

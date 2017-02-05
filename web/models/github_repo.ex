@@ -69,17 +69,6 @@ defmodule Krihelinator.GithubRepo do
   end
 
   @doc """
-  For changesets that come from github (not from the user) have more
-  restrictions.
-  """
-  def finalize_changeset_restrictive(changeset) do
-    changeset
-    |> finalize_changeset()
-    |> validate_number(:forks, greater_than_or_equal_to: 10)
-    |> validate_number(:krihelimeter, greater_than_or_equal_to: 30)
-  end
-
-  @doc """
   Use the existing data, and the expected changes, to calculate and set the
   krihelimeter.
   """
