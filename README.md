@@ -4,7 +4,7 @@
 >
 > \- Meir Kriheli
 
-[![Krihelimeter](http://krihelinator.xyz/badge/nagasaki45/krihelinator)](http://krihelinator.xyz)
+[![Krihelimeter](http://krihelinator.xyz/badge/Nagasaki45/krihelinator)](http://krihelinator.xyz)
 
 This project proposes an alternative to github's [trending page](http://github.com/trending), by exposing projects with highest "krihelimeter", instead of daily stars. The krihelimeter of each repository is calculated using the commits, pull requests, and issues of that project, from the past week (similarly to github's pulse page).
 
