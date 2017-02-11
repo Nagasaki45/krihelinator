@@ -1,5 +1,8 @@
 <div id="badge-app">
   <h1>Claim a Krihelimeter badge for your project</h1>
+  <div class="alert alert-warning" role="alert">
+    <b>Note!</b> URLs for badges are case sensitive.
+  </div>
   <div class="form">
     <div class="form-group">
       <input class="form-control" v-model="badge_repo">

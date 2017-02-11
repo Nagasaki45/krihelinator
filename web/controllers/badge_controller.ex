@@ -20,6 +20,7 @@ defmodule Krihelinator.BadgeController do
         |> GithubRepo.cast_allowed(%{name: name, user_requested: true})
         |> Scraper.scrape_repo()
         |> GithubRepo.finalize_changeset()
+        |> Ecto.Changeset.validate_inclusion(:name, [name])
         |> Repo.insert()
       model ->
         {:ok, model}
