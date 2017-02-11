@@ -1,19 +1,19 @@
 web:
-  build: .
+  build: krihelinator
   volumes:
     - ./bigquery_private_key.json:/opt/app/bigquery_private_key.json:ro  # read only
 
     # Override the files in the image with local files
-    - ./_build:/opt/app/_build
-    - ./deps:/opt/app/deps
-    - ./config:/opt/app/config
-    - ./lib:/opt/app/lib
-    - ./priv:/opt/app/priv
-    - ./python:/opt/app/python
-    - ./test:/opt/app/test
-    - ./web:/opt/app/web
-    - ./mix.exs:/opt/app/mix.exs
-    - ./mix.lock:/opt/app/mix.lock
+    - ./krihelinator/_build:/opt/app/_build
+    - ./krihelinator/deps:/opt/app/deps
+    - ./krihelinator/config:/opt/app/config
+    - ./krihelinator/lib:/opt/app/lib
+    - ./krihelinator/priv:/opt/app/priv
+    - ./krihelinator/python:/opt/app/python
+    - ./krihelinator/test:/opt/app/test
+    - ./krihelinator/web:/opt/app/web
+    - ./krihelinator/mix.exs:/opt/app/mix.exs
+    - ./krihelinator/mix.lock:/opt/app/mix.lock
   ports:
     - 4000:4000
   links:
