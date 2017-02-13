@@ -2,18 +2,20 @@
 
   <h3><%= link split_and_bold(@repo.name), to: "http://github.com/#{@repo.name}" %></h3>
 
+  <p class="repo-description"><%= @repo.description %></p>
+
   <span class="krihelimeter-badge badge-item">
     <%= {:safe, Krihelinator.BadgeView.render("badge.svg", %{repo: @repo})} %>
   </span>
+  <a href="# "data-toggle="collapse" data-target="#<%= @repo.id %>" class="label label-info badge-item">Details</a>
   <%= if @language do %>
     <%= link @language.name, to: page_path(@conn, :language, @language.name), class: "label label-default badge-item"%>
   <%= end %>
   <%= if @repo.trending do %>
     <div class="label label-warning badge-item">Trending on github!</div>
   <%= end %>
-  <a href="# "data-toggle="collapse" data-target="#<%= @repo.id %>" class="label label-info badge-item">Details</a>
 
-  <p class="repo-description"><%= @repo.description %></p>
+  <p></p>
 
   <div id="<%= @repo.id %>" class="row collapse">
     <div class="stat-block col-md-4 col-xs-6">

@@ -6,13 +6,6 @@ body {
 /* Phoenix flash messages */
 .alert:empty { display: none; }
 
-/* Customize container */
-@media (min-width: 768px) {
-  .container {
-    max-width: 730px;
-  }
-}
-
 .badge-item {
   margin: 0 0 4px;
 }
@@ -69,4 +62,15 @@ nav img {
 .btn-block {
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+/* Costumizations for desktop. Mobile first! */
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+
+  .krihelimeter-badge {
+    float: right;
+  }
 }
