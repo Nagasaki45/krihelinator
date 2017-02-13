@@ -6,16 +6,16 @@
     <a data-toggle="collapse" data-target="#<%= @repo.id %>" class="show-stats-button hint--bottom" aria-label="See weekly stats">
       <span class="glyphicon glyphicon-info-sign"></span>
     </a>
-    <div class="pull-right">
-      <%= {:safe, Krihelinator.BadgeView.render("badge.svg", %{repo: @repo})} %>
-    </div>
   </p>
 
+  <span class="krihelimeter-badge badge-item">
+    <%= {:safe, Krihelinator.BadgeView.render("badge.svg", %{repo: @repo})} %>
+  </span>
   <%= if @language do %>
-    <%= link @language.name, to: page_path(@conn, :language, @language.name), class: "label label-default"%>
+    <%= link @language.name, to: page_path(@conn, :language, @language.name), class: "label label-default badge-item"%>
   <%= end %>
   <%= if @repo.trending do %>
-    <div class="label label-warning">Trending on github!</div>
+    <div class="label label-warning badge-item">Trending on github!</div>
   <%= end %>
 
   <p class="repo-description"><%= @repo.description %></p>

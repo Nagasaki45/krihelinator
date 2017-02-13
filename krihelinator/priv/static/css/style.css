@@ -17,8 +17,25 @@ body {
   display: inline;
 }
 
+.badge-item {
+  margin: 0 0 4px;
+}
+
+.krihelimeter-badge {
+  display: flex;
+  float: left;
+  padding-right: 4px;
+}
+
+.label {
+  display: inline-block;
+  height: 20px;
+  padding-top: .6em;
+}
+
 .repo-description {
   padding-top: 10px;
+  clear: left;
 }
 
 .stat-block {
