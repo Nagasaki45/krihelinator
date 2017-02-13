@@ -1,12 +1,6 @@
 <li class="list-group-item">
 
-  <p>
-    <h3><%= link split_and_bold(@repo.name), to: "http://github.com/#{@repo.name}" %></h3>
-    &nbsp;
-    <a data-toggle="collapse" data-target="#<%= @repo.id %>" class="show-stats-button hint--bottom" aria-label="See weekly stats">
-      <span class="glyphicon glyphicon-info-sign"></span>
-    </a>
-  </p>
+  <h3><%= link split_and_bold(@repo.name), to: "http://github.com/#{@repo.name}" %></h3>
 
   <span class="krihelimeter-badge badge-item">
     <%= {:safe, Krihelinator.BadgeView.render("badge.svg", %{repo: @repo})} %>
@@ -17,6 +11,7 @@
   <%= if @repo.trending do %>
     <div class="label label-warning badge-item">Trending on github!</div>
   <%= end %>
+  <a href="# "data-toggle="collapse" data-target="#<%= @repo.id %>" class="label label-info badge-item">Details</a>
 
   <p class="repo-description"><%= @repo.description %></p>
 

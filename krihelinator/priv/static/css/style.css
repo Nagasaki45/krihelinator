@@ -13,10 +13,6 @@ body {
   }
 }
 
-.list-group-item > h3 {
-  display: inline;
-}
-
 .badge-item {
   margin: 0 0 4px;
 }
@@ -69,11 +65,6 @@ body {
 nav img {
   height: 42px;
   margin-top: 10px;
-}
-
-.show-stats-button {
-  cursor: pointer;
-  text-decoration: none;
 }
 
 .btn-block {
