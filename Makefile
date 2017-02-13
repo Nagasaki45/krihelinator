@@ -4,6 +4,7 @@ build:
 deploy: build
 	docker tag `docker images -q krihelinator_web` nagasaki45/krihelinator_web
 	docker push nagasaki45/krihelinator_web
+	scp production/docker-compose.yml bigquery_private_key.json krihelinator.xyz:
 	ssh krihelinator.xyz " \
 		docker-compose pull && \
 		docker-compose run --rm web mix ecto.migrate && \
