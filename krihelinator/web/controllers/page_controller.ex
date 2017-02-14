@@ -22,7 +22,8 @@ defmodule Krihelinator.PageController do
       nil ->
         conn
         |> put_status(:not_found)
-        |> render(Krihelinator.ErrorView, "404.html")
+        |> put_layout(false)
+        |> render(Krihelinator.ErrorView, "404.html", [])
 
       _otherwise ->
         render(conn, "language.html", language: language)
