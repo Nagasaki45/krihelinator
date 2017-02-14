@@ -24,7 +24,7 @@ def test_homepage(driver, base_url):
     driver.get(base_url)
 
     # Basic page properties
-    assert driver.title == 'Krihelinator'
+    assert 'krihelinator' in driver.title.lower()
     quote = driver.find_element_by_tag_name('blockquote')
     assert 'Trendiness of OSS should be assessed by' in quote.text
 
