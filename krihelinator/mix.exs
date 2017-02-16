@@ -39,12 +39,12 @@ defmodule Krihelinator.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:httpoison, "~> 0.11.0"},
-      {:poison, "~> 2.2"},
+      {:httpoison, "~> 0.11.0", override: true},
+      {:poison, "~> 2.2", override: true},
       {:floki, "~> 0.9.0"},
       {:timex, "~> 3.1"},
       {:erlport, github: "hdima/erlport", manager: :make},
-      {:big_query, git: "https://github.com/Nagasaki45/big_query"},
+      {:big_query, "~> 0.0.7"},
       {:credo, "~> 0.5.3", only: [:dev, :test]},
     ]
   end
