@@ -11,6 +11,7 @@ defmodule Krihelinator.GithubRepo do
     field :description, :string
     field :language_name, :string, virtual: true
     belongs_to :language, Krihelinator.Language
+    belongs_to :showcase, Krihelinator.Showcase
     field :merged_pull_requests, :integer
     field :proposed_pull_requests, :integer
     field :closed_issues, :integer

@@ -1,0 +1,11 @@
+<div class="well">
+  <h1>Showcases!</h1>
+  TODO intro text.
+</div>
+
+
+<ul>
+  <%= for showcase <- @showcases do %>
+    <li><%= link showcase.name, to: page_path(@conn, :showcase, showcase.href) %></li>
+  <%= end %>
+</ul>

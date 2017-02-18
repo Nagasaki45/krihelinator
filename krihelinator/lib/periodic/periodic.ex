@@ -2,7 +2,7 @@ defmodule Krihelinator.Periodic do
   use GenServer
   require Logger
   import Ecto.Query, only: [from: 2]
-  alias Krihelinator.{Periodic, Repo, GithubRepo, Language, Scraper}
+  alias Krihelinator.{Periodic, Repo, GithubRepo, Language, Showcase, Scraper}
 
   @moduledoc """
   Every `:periodic_schedule` do the following:
@@ -16,6 +16,7 @@ defmodule Krihelinator.Periodic do
   - Clean the remaining dirty repos. These repos failed to update or fell bellow
     activity threshold.
   - Update the total krihelimeter and num_of_repos for all languages.
+  - Scrape showcases from github and update repos that belongs to showcases.
   """
 
   def start_link do
@@ -52,6 +53,7 @@ defmodule Krihelinator.Periodic do
     rescrape_still_dirty()
     clean_dirty()
     update_languages_stats()
+    update_showcases()
     Logger.info "Periodic process finished successfully!"
   end
 
@@ -178,5 +180,15 @@ defmodule Krihelinator.Periodic do
       |> Language.changeset(changes)
       |> Repo.update()
     end)
+  end
+
+  def update_showcases() do
+    maps = Periodic.GithubShowcases.scrape()
+    for map <- maps do
+      params = [name: map.name, href: map.href]
+      {:ok, showcase} = Repo.get_or_create_by(Showcase, params)
+      query = from(r in GithubRepo, where: r.name in ^map.repos)
+      Repo.update_all(query, set: [showcase_id: showcase.id])
+    end
   end
 end

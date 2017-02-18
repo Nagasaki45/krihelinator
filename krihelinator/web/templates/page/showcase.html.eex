@@ -1,0 +1,9 @@
+<div class="well">
+  <h1><%= @showcase.name %></h1>
+</div>
+
+<ul class="list-group">
+  <%= for repo <- @showcase.repos do %>
+    <%= render("repo_item.html", conn: @conn, repo: repo, language: repo.language) %>
+  <%= end %>
+</ul>
