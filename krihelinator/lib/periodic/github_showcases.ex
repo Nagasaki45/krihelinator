@@ -61,17 +61,32 @@ defmodule Krihelinator.Periodic.GithubShowcases do
   Parse a showcase tile for it's name and href (from the showcases page).
   """
   def parse_showcase_tile(html_tile) do
-    href =
-      html_tile
-      |> Floki.attribute("href")
-      |> hd
-      |> String.replace_prefix("/showcases/", "")
-    name =
-      html_tile
-      |> Floki.find("h3")
-      |> Floki.text()
-      |> String.strip()
-    %{href: href, name: name}
+    %{
+      href: parse_showcase_href(html_tile),
+      name: parse_showcase_name(html_tile),
+      description: parse_showcase_description(html_tile)
+    }
+  end
+
+  def parse_showcase_href(html_tile) do
+    html_tile
+    |> Floki.attribute("href")
+    |> hd
+    |> String.replace_prefix("/showcases/", "")
+  end
+
+  def parse_showcase_name(html_tile) do
+    html_tile
+    |> Floki.find("h3")
+    |> Floki.text()
+    |> String.strip()
+  end
+
+  def parse_showcase_description(html_tile) do
+    html_tile
+    |> Floki.find("p")
+    |> Floki.text()
+    |> String.strip()
   end
 
   @doc """

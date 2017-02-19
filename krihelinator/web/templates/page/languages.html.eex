@@ -1,8 +1,10 @@
 <div id="languages-app">
 
-  <button v-on:click="see_history" :disabled="checkedLanguages.length == 0" class="btn btn-primary btn-block">
-    Show selected languages history
-  </button>
+  <div class="header">
+    <button v-on:click="see_history" :disabled="checkedLanguages.length == 0" class="btn btn-primary btn-block">
+      Show selected languages history
+    </button>
+  </div>
 
   <table class="table table-hover">
     <thead>

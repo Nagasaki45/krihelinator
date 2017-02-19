@@ -53,7 +53,7 @@ defmodule Krihelinator.Periodic do
     rescrape_still_dirty()
     clean_dirty()
     update_languages_stats()
-    update_showcases()
+    scrape_showcases()
     Logger.info "Periodic process finished successfully!"
   end
 
@@ -182,13 +182,18 @@ defmodule Krihelinator.Periodic do
     end)
   end
 
-  def update_showcases() do
+  def scrape_showcases() do
+    Logger.info "Scraping showcases and updating repos..."
     maps = Periodic.GithubShowcases.scrape()
     for map <- maps do
       params = [name: map.name, href: map.href]
       {:ok, showcase} = Repo.get_or_create_by(Showcase, params)
       query = from(r in GithubRepo, where: r.name in ^map.repos)
       Repo.update_all(query, set: [showcase_id: showcase.id])
+      # Update the showcase description
+      showcase
+      |> Showcase.changeset(%{description: map.description})
+      |> Repo.update
     end
   end
 end

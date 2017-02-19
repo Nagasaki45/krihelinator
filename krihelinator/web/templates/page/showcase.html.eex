@@ -1,5 +1,6 @@
 <div class="well">
   <h1><%= @showcase.name %></h1>
+  <p><%= @showcase.description %></p>
 </div>
 
 <ul class="list-group">

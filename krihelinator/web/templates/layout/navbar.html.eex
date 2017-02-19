@@ -17,6 +17,7 @@
     <div class="collapse navbar-collapse" id="navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
         <%= navbar_link conn: @conn, action: :languages, text: "Languages" %>
+        <%= navbar_link conn: @conn, action: :showcases, text: "Showcases" %>
         <%= navbar_link conn: @conn, action: :badge, text: "Badges" %>
         <%= navbar_link conn: @conn, action: :about, text: "About" %>
       </ul>

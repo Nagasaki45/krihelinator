@@ -1,11 +1,13 @@
-<div class="well">
-  <h1>Showcases!</h1>
-  TODO intro text.
+<div class="header">
+  <h1 class="text-center">Open source showcases</h1>
+  <h4 class="text-center">Browse popular repositories based on the topic that interests you most.</h4>
 </div>
 
-
-<ul>
+<div class="row tiles">
   <%= for showcase <- @showcases do %>
-    <li><%= link showcase.name, to: page_path(@conn, :showcase, showcase.href) %></li>
+    <div class="tile well">
+      <h2><%= link showcase.name, to: page_path(@conn, :showcase, showcase.href) %></h2>
+      <p><%= showcase.description %></p>
+    </div>
   <%= end %>
-</ul>
+</div>

@@ -59,9 +59,24 @@ nav img {
   margin-top: 10px;
 }
 
-.btn-block {
-  margin-top: 30px;
-  margin-bottom: 30px;
+.header {
+  padding-top: 10px;
+  padding-bottom: 50px;
+}
+
+.tile {
+  display: inline-block;
+	width: 100%;
+}
+
+.tiles {
+	/* column width */
+	-moz-column-width: 19em;
+	-webkit-column-width: 19em;
+
+	/* space between columns */
+	-moz-column-gap: 1em;
+	-webkit-column-gap: 1em;
 }
 
 /* Costumizations for desktop. Mobile first! */
