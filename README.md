@@ -12,7 +12,8 @@ This project proposes an alternative to github's [trending page](http://github.c
 
 The only dependencies are docker and docker-compose. To start your app:
 
-  * Get a google [Application Default Credentials](https://cloud.google.com/docs/authentication) json file. Name it `bigquery_private_key.json` and put it in the project root directory.
+  * Get a google [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials) json file by following instructions 1a - 1f under the title "How the Application Default Credentials work" in the link.
+  * Name the file you just downloaded `bigquery_private_key.json` and put it in the project root directory.
   * Build the docker image: `docker-compose build`.
   * Create the DB: `docker-compose run --rm web mix ecto.create`.
   * Migrate to the latest DB scheme: `docker-compose run --rm web mix ecto.migrate`.
