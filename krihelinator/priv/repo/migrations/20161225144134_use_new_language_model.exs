@@ -1,6 +1,5 @@
 defmodule Krihelinator.Repo.Migrations.UseNewLanguageModel do
   use Ecto.Migration
-  alias Krihelinator.{Repo, GithubRepo, LanguageHistory, Language}
 
   @moduledoc """
   The GithubRepo model has a language field, and the LanguageHistory has a
@@ -24,35 +23,6 @@ defmodule Krihelinator.Repo.Migrations.UseNewLanguageModel do
       add :language_id, references(:languages)
     end
     create index(:languages_history, [:language_id])
-
-    flush()
-
-    # Copy the language data from GithubRepo.language_name to GithubRepo.language
-    GithubRepo
-    |> Repo.all()
-    |> Repo.preload(:language)
-    |> Stream.filter(fn repo -> repo.language_name end)
-    |> Enum.each(fn repo ->
-      {:ok, language} = Repo.get_or_create_by(Language, name: repo.language_name)
-      repo
-      |> GithubRepo.changeset()
-      |> Ecto.Changeset.put_assoc(:language, language)
-      |> Repo.insert_or_update()
-    end)
-
-    # Same for the history
-    LanguageHistory
-    |> Repo.all()
-    |> Repo.preload(:language)
-    |> Enum.each(fn datum ->
-      {:ok, language} = Repo.get_or_create_by(Language, name: datum.name)
-      datum
-      |> LanguageHistory.changeset()
-      |> Ecto.Changeset.put_assoc(:language, language)
-      |> Repo.insert_or_update()
-    end)
-
-    Krihelinator.Periodic.update_languages_stats()
   end
 
   def down do
