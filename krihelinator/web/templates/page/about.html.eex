@@ -7,17 +7,17 @@ The krihelimeter of each repository is calculated using the number of authors, c
   <tr>
     <td>Krihelimeter =&nbsp;</td>
     <td>20</td>
-    <td>&nbsp;* authors</td>
+    <td>&nbsp;* authors +</td>
   </tr>
   <tr>
     <td></td>
     <td>8</td>
-    <td>&nbsp;* merged and proposed pull requests</td>
+    <td>&nbsp;* merged and proposed pull requests +</td>
   </tr>
   <tr>
     <td></td>
     <td>8</td>
-    <td>&nbsp;* new and closed issues</td>
+    <td>&nbsp;* new and closed issues +</td>
   </tr>
   <tr>
     <td></td>
