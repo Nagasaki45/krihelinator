@@ -79,6 +79,11 @@ nav img {
 	-webkit-column-gap: 1em;
 }
 
+.wide-input-group {
+    width: 100%;
+    margin-bottom: 1em;
+}
+
 /* Costumizations for desktop. Mobile first! */
 @media (min-width: 768px) {
   .container {

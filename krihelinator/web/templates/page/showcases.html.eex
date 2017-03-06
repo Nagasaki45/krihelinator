@@ -3,11 +3,18 @@
   <h4 class="text-center">Browse popular repositories based on the topic that interests you most.</h4>
 </div>
 
-<div class="row tiles">
-  <%= for showcase <- @showcases do %>
-    <div class="tile well">
-      <h2><%= link showcase.name, to: page_path(@conn, :showcase, showcase.href) %></h2>
-      <p><%= showcase.description %></p>
+<div id="showcases">
+
+    <div class="input-group wide-input-group">
+        <input type="text" class="form-control search" placeholder="Search for...">
+    </div><!-- /input-group -->
+
+    <div class="tiles list">
+    <%= for showcase <- @showcases do %>
+        <div class="tile well">
+        <h2 class="name"><%= link showcase.name, to: page_path(@conn, :showcase, showcase.href) %></h2>
+        <p class="description"><%= showcase.description %></p>
+        </div>
+    <%= end %>
     </div>
-  <%= end %>
 </div>

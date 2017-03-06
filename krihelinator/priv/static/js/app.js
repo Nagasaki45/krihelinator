@@ -17,3 +17,10 @@ new Vue({
     }
   }
 })
+
+new List(
+    'showcases',
+    {
+        valueNames: ['name', 'description']
+    }
+);
