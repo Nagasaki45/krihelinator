@@ -1,10 +1,14 @@
 <div id="languages-app">
 
-  <div class="header">
-    <button v-on:click="see_history" :disabled="checkedLanguages.length == 0" class="btn btn-primary btn-block">
-      Show selected languages history
-    </button>
+  <div class="input-group wide-input-group">
+      <button v-on:click="see_history" :disabled="checkedLanguages.length == 0" class="btn btn-primary btn-block">
+          Show selected languages history
+      </button>
   </div>
+  <div class="input-group wide-input-group">
+      <input type="text" class="form-control search" placeholder="Search for...">
+  </div>
+
 
   <table class="table table-hover">
     <thead>
@@ -25,11 +29,11 @@
         <th>Select</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="list">
       <%= for {language, index} <- Enum.with_index(@languages) do %>
       <tr>
         <td><b><%= index + 1 %>.</b></td>
-        <td><%= link language.name, to: page_path(@conn, :language, language.name) %></td>
+        <td class="name"><%= link language.name, to: page_path(@conn, :language, language.name) %></td>
         <td><%= language.krihelimeter %></td>
         <td><%= language.num_of_repos %></td>
         <td><input type="checkbox" value="<%= language.name %>" v-model="checkedLanguages"></td>

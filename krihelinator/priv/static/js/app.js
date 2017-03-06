@@ -24,3 +24,10 @@ new List(
         valueNames: ['name', 'description']
     }
 );
+
+new List(
+    'languages-app',
+    {
+        valueNames: ['name']
+    }
+);
