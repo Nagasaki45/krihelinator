@@ -62,6 +62,13 @@ nav img {
 .header {
   padding-top: 10px;
   padding-bottom: 50px;
+  text-align: center;
+}
+
+.header img {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
 }
 
 .tile {

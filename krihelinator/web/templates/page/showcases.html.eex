@@ -1,6 +1,6 @@
 <div class="header">
-  <h1 class="text-center">Open source showcases</h1>
-  <h4 class="text-center">Browse popular repositories based on the topic that interests you most.</h4>
+  <h1>Open source showcases</h1>
+  <h4>Browse popular repositories based on the topic that interests you most.</h4>
 </div>
 
 <div id="showcases">

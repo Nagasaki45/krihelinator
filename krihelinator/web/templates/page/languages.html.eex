@@ -1,14 +1,18 @@
+<div class="header">
+  <h1>Programming languages</h1>
+  <h4>See the languages with the highest contribution rates.</h4>
+</div>
+
 <div id="languages-app">
 
+  <div class="input-group wide-input-group">
+      <input type="text" class="form-control search" placeholder="Search for...">
+  </div>
   <div class="input-group wide-input-group">
       <button v-on:click="see_history" :disabled="checkedLanguages.length == 0" class="btn btn-primary btn-block">
           Show selected languages history
       </button>
   </div>
-  <div class="input-group wide-input-group">
-      <input type="text" class="form-control search" placeholder="Search for...">
-  </div>
-
 
   <table class="table table-hover">
     <thead>

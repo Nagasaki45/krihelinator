@@ -62,10 +62,10 @@ def test_language(driver, base_url):
     driver.get(base_url + '/repositories/Python')
 
     # The language name and summarized stats are there
-    language = driver.find_element_by_css_selector('.well')
+    language = driver.find_element_by_css_selector('.header')
     language_name = language.find_element_by_tag_name('h1').text
     assert language_name == 'Python'
-    language_stats = language.find_element_by_tag_name('div').text
+    language_stats = language.find_element_by_tag_name('h4').text
     assert 'Total Krihelimeter' in language_stats
 
     validate_page_contains_list_of_repositories(driver)

@@ -1,5 +1,10 @@
+<div class="header">
+  <h1>Claim a Krihelimeter badge</h1>
+  <h4>Let GitHub know how active is your project by adding a Krihelimeter badge to your README.</h4>
+  <img src="/media/badge_demo.png">
+</div>
+
 <div id="badge-app">
-  <h1>Claim a Krihelimeter badge for your project</h1>
   <div class="alert alert-warning" role="alert">
     <b>Note!</b> URLs for badges are case sensitive.
   </div>
