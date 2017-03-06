@@ -3,7 +3,6 @@
 
   <div>
     <p>Total Krihelimeter: <b><%= @language.krihelimeter %></b></p>
-    <p>Active repositories: <b><%= @language.num_of_repos %></b></p>
     <%= link "Show language history", to: language_history_path(@conn, @language.name), class: "btn btn-primary" %>
   </div>
 </div>

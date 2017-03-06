@@ -40,7 +40,7 @@ def test_languages(driver, base_url):
     # With correct headers
     thead = table.find_element_by_tag_name('thead')
     ths = thead.find_elements_by_tag_name('th')
-    expecteds = ['#', 'Language', 'Krihelimeter', '# of repos', 'Select']
+    expecteds = ['#', 'Language', 'Krihelimeter', 'Select']
     for th, expected in zip(ths, expecteds):
         assert th.text == expected
 
@@ -67,7 +67,6 @@ def test_language(driver, base_url):
     assert language_name == 'Python'
     language_stats = language.find_element_by_tag_name('div').text
     assert 'Total Krihelimeter' in language_stats
-    assert 'Active repositories' in language_stats
 
     validate_page_contains_list_of_repositories(driver)
 
