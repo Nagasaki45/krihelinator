@@ -16,11 +16,9 @@
         <th>#</th>
         <th>
           Language
-          <a href="<%= page_path(@conn, :languages, by: :name, dir: :asc) %>"><span class="glyphicon glyphicon-chevron-down"></span></a>
         </th>
         <th>
           Krihelimeter
-          <a href="<%= page_path(@conn, :languages, by: :krihelimeter) %>"><span class="glyphicon glyphicon-chevron-down"></span></a>
         </th>
         <th>Select</th>
       </tr>

@@ -30,16 +30,6 @@ defmodule Krihelinator.InputValidator do
 
   ###### Krihelinator specific ######
 
-  def verify_by(params) do
-    allowed_by = ~w(krihelimeter num_of_repos name)
-    allowed_dir = ~w(asc desc)
-    with {:ok, by} <- verify_field(params, "by", allowed_by, :krihelimeter),
-         {:ok, dir} <- verify_field(params, "dir", allowed_dir, :desc)
-    do
-      {:ok, by, dir}
-    end
-  end
-
   def verify_languages_list(languages) do
     if is_list(languages) do
       {:ok, languages}
@@ -56,13 +46,10 @@ defmodule Krihelinator.InputValidator do
   end
 
   def validate_history_query(params) do
-    allowed_values = ~w(krihelimeter num_of_repos)
-    with {:ok, value_field} <-
-           verify_field(params, "value", allowed_values, :krihelimeter),
-         {:ok, languages} <-
+    with {:ok, languages} <-
            verify_field(params, "languages", &nicer_poison_decode/1, []),
          {:ok, languages} <-
            verify_languages_list(languages),
-    do: {:ok, value_field, languages}
+    do: {:ok, languages}
   end
 end

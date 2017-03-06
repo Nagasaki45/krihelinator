@@ -31,25 +31,18 @@ defmodule Krihelinator.PageController do
     end
   end
 
-  def languages(conn, params) do
-    {conn, {by, dir}} = case verify_by(params) do
-      {:ok, by, dir} ->
-        {conn, {by, dir}}
-      _error ->
-        conn = put_flash(conn, :error, "The provided arguments are invalid!")
-        {conn, {:krihelimeter, :desc}}
-    end
+  def languages(conn, _params) do
     query = from(l in Language,
-                 order_by: [{^dir, ^by}],
+                 order_by: [{:desc, :krihelimeter}],
                  where: l.krihelimeter > 0)
     languages = Repo.all(query)
     render(conn, "languages.html", languages: languages)
   end
 
   def languages_history(conn, params) do
-    case validate_history_query(params) do
+    case Krihelinator.InputValidator.validate_history_query(params) do
 
-      {:ok, value_field, language_names} ->
+      {:ok, language_names} ->
 
         query = from(l in Language,
                      where: l.name in ^language_names,
@@ -57,9 +50,8 @@ defmodule Krihelinator.PageController do
         json =
           query
           |> Repo.all()
-          |> Krihelinator.PythonGenServer.process(value_field)
-        assigns = [json: json, value_field: value_field]
-        render conn, "languages_history.html", assigns
+          |> Krihelinator.PythonGenServer.process(:krihelimeter)
+        render conn, "languages_history.html", json: json
 
       {:error, error} ->
 
