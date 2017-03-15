@@ -26,7 +26,7 @@ def test_homepage(driver, base_url):
     # Basic page properties
     assert 'krihelinator' in driver.title.lower()
     quote = driver.find_element_by_tag_name('blockquote')
-    assert 'Trendiness of OSS should be assessed by' in quote.text
+    assert 'Trendiness of open source software should be assessed by' in quote.text
 
     validate_page_contains_list_of_repositories(driver)
 

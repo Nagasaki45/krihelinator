@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="/favicon.png">
-    <meta name="description" content="Trendingness of OSS should be assessed by contribution rate, not by stars">
+    <meta name="description" content="Trendingness of open source software should be assessed by contribution rate, not by stars">
     <meta name="author" content="Tom Gurion">
 
     <title><%= page_title(assigns) %></title>
@@ -21,7 +21,7 @@
       <%= render("navbar.html", conn: @conn) %>
 
       <blockquote>
-        <p><i>"Trendiness of OSS should be assessed by contribution rate, not by stars"</i></p>
+        <p><i>"Trendiness of open source software should be assessed by contribution rate, not by stars"</i></p>
         <p>- Meir Kriheli</p>
       </blockquote>
 

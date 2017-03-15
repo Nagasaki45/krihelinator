@@ -1,6 +1,6 @@
 # The Krihelinator
 
-> *"Trendiness of OSS should be assessed by contribution rate, not by stars"*
+> *"Trendiness of open source software should be assessed by contribution rate, not by stars"*
 >
 > \- Meir Kriheli
 
