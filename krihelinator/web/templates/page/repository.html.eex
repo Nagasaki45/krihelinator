@@ -1,0 +1,68 @@
+<div class="header">
+  <h1><%= split_and_bold(@repo.name) %></h1>
+
+  <h4>
+    <p class="repo-description"><%= @repo.description %></p>
+  </h4>
+
+  <div>
+    <p><%= {:safe, Krihelinator.BadgeView.render("badge.svg", %{repo: @repo})} %></p>
+    <%= link "GitHub", to: "http://github.com/#{@repo.name}", class: "label label-info badge-item"%>
+    <%= if @repo.language do %>
+        <%= link @repo.language.name, to: page_path(@conn, :language, @repo.language.name), class: "label label-default"%>
+    <%= end %>
+    <%= if @repo.trending do %>
+        <div class="label label-warning">Trending on github!</div>
+    <%= end %>
+  </div>
+</div>
+
+<div class="row">
+    <div class="stat-block col-md-4 col-xs-6">
+        <span class="octicon octicon-organization"></span>
+        <b><%= @repo.authors %></b>
+        <div class="stat-block-text">Authors</div>
+    </div>
+    <div class="stat-block col-md-4 col-xs-6">
+        <span class="octicon octicon-git-commit"></span>
+        <b><%= @repo.commits %></b>
+        <div class="stat-block-text">Commits</div>
+    </div>
+    <div class="stat-block col-md-4 col-xs-6">
+        <span class="octicon octicon-git-pull-request"></span>
+        <b><%= @repo.merged_pull_requests %></b>
+        <div class="stat-block-text">Merged Pull Requests</div>
+    </div>
+    <div class="stat-block col-md-4 col-xs-6">
+        <span class="octicon octicon-git-branch"></span>
+        <b><%= @repo.proposed_pull_requests %></b>
+        <div class="stat-block-text">Proposed Pull Requests</div>
+    </div>
+    <div class="stat-block col-md-4 col-xs-6">
+        <span class="octicon octicon-issue-closed"></span>
+        <b><%= @repo.closed_issues %></b>
+        <div class="stat-block-text">Closed Issues</div>
+    </div>
+    <div class="stat-block col-md-4 col-xs-6">
+        <span class="octicon octicon-issue-opened"></span>
+        <b><%= @repo.new_issues %></b>
+        <div class="stat-block-text">New Issues</div>
+    </div>
+</div>
+
+<div class="header">
+  <h1>Get a badge</h1>
+  <h4>Let GitHub know how active is your project by adding a Krihelimeter badge to your README.</h4>
+  <img src="/media/badge_demo.png">
+</div>
+
+<div>
+    <h3>Image URL</h3>
+    http://<%= @conn.host %>/badge/<%= @repo.name %>
+    <h3>Markdown</h3>
+    [![Krihelimeter](http://<%= @conn.host %>/badge/<%= @repo.name %>)](http://<%= @conn.host %>/repositories/<%= @repo.name %>)
+    <h3>ReStructuredText</h3>
+    .. image:: http://<%= @conn.host %>/badge/<%= @repo.name %><br />
+     &nbsp;&nbsp;:target: http://<%= @conn.host %>/repositories/<%= @repo.name %>
+  </div>
+</div>

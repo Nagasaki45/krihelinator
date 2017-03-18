@@ -9,6 +9,19 @@ defmodule Krihelinator.PageController do
     render conn, "repositories.html", repos: repos
   end
 
+  def repository(conn, %{"repository" => repository_name}) do
+    repository_name = Enum.join(repository_name, "/")
+    case get_from_db_or_scrape(repository_name) do
+      {:error, _whatever} ->
+        conn
+        |> put_flash(:error, "The repository \"#{repository_name}\" does not exist. Note that search is case sensitive.")
+        |> redirect(to: page_path(conn, :repositories))
+      {:ok, model} ->
+        model = Repo.preload(model, :language)
+        render(conn, "repository.html", repo: model)
+    end
+  end
+
   def language(conn, %{"language" => language_name}) do
     repos_query = from(r in GithubRepo,
                        order_by: [desc: r.krihelimeter],
@@ -96,10 +109,6 @@ defmodule Krihelinator.PageController do
         render(conn, "showcase.html", showcase: showcase)
 
     end
-  end
-
-  def badge(conn, _params) do
-    render conn, "badge.html"
   end
 
   def about(conn, _params) do

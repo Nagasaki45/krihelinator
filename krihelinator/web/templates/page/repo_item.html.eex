@@ -1,52 +1,18 @@
 <li class="list-group-item">
 
-  <h3><%= link split_and_bold(@repo.name), to: "http://github.com/#{@repo.name}" %></h3>
+  <h3><%= link split_and_bold(@repo.name), to: page_path(@conn, :repository, [@repo.name]) %></h3>
 
   <p class="repo-description"><%= @repo.description %></p>
 
   <span class="krihelimeter-badge badge-item">
     <%= {:safe, Krihelinator.BadgeView.render("badge.svg", %{repo: @repo})} %>
   </span>
-  <a href="# "data-toggle="collapse" data-target="#<%= @repo.id %>" class="label label-info badge-item">Details</a>
+  <%= link "GitHub", to: "http://github.com/#{@repo.name}", class: "label label-info badge-item"%>
   <%= if @language do %>
     <%= link @language.name, to: page_path(@conn, :language, @language.name), class: "label label-default badge-item"%>
   <%= end %>
   <%= if @repo.trending do %>
-    <div class="label label-warning badge-item">Trending on github!</div>
+    <div class="label label-warning badge-item">Trending on GitHub!</div>
   <%= end %>
 
-  <p></p>
-
-  <div id="<%= @repo.id %>" class="row collapse">
-    <div class="stat-block col-md-4 col-xs-6">
-      <span class="octicon octicon-organization"></span>
-      <b><%= @repo.authors %></b>
-      <div class="stat-block-text">Authors</div>
-    </div>
-    <div class="stat-block col-md-4 col-xs-6">
-      <span class="octicon octicon-git-commit"></span>
-      <b><%= @repo.commits %></b>
-      <div class="stat-block-text">Commits</div>
-    </div>
-    <div class="stat-block col-md-4 col-xs-6">
-      <span class="octicon octicon-git-pull-request"></span>
-      <b><%= @repo.merged_pull_requests %></b>
-      <div class="stat-block-text">Merged Pull Requests</div>
-    </div>
-    <div class="stat-block col-md-4 col-xs-6">
-      <span class="octicon octicon-git-branch"></span>
-      <b><%= @repo.proposed_pull_requests %></b>
-      <div class="stat-block-text">Proposed Pull Requests</div>
-    </div>
-    <div class="stat-block col-md-4 col-xs-6">
-      <span class="octicon octicon-issue-closed"></span>
-      <b><%= @repo.closed_issues %></b>
-      <div class="stat-block-text">Closed Issues</div>
-    </div>
-    <div class="stat-block col-md-4 col-xs-6">
-      <span class="octicon octicon-issue-opened"></span>
-      <b><%= @repo.new_issues %></b>
-      <div class="stat-block-text">New Issues</div>
-    </div>
-  </div>
 </li>

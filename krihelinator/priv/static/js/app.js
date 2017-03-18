@@ -1,11 +1,4 @@
 new Vue({
-  el: '#badge-app',
-  data: {
-    badge_repo: "your-user-name/awesome-project"
-  }
-})
-
-new Vue({
   el: '#languages-app',
   data: {
     checkedLanguages: []
@@ -31,3 +24,8 @@ new List(
         valueNames: ['name']
     }
 );
+
+$('#search-form').submit(function( event ) {
+    event.preventDefault();
+    window.location.href = '/repositories/' + $('#search-input')[0].value;
+});

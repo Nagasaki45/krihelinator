@@ -40,10 +40,6 @@ body {
   color: #767676;
 }
 
-.list-group-item {
-  padding-bottom: 0px
-}
-
 .navbar-header {
   min-height: 60px;
 }
@@ -57,6 +53,10 @@ body {
 nav img {
   height: 42px;
   margin-top: 10px;
+}
+
+nav .input-group {
+    margin-top: 5px;
 }
 
 .header {
@@ -94,7 +94,7 @@ nav img {
 /* Costumizations for desktop. Mobile first! */
 @media (min-width: 768px) {
   .container {
-    max-width: 730px;
+    max-width: 850px;
   }
 
   .krihelimeter-badge {
