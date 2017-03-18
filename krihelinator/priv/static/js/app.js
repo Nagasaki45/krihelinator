@@ -13,7 +13,7 @@ new Vue({
   methods: {
     see_history: function() {
       var json = encodeURIComponent(JSON.stringify(this.checkedLanguages));
-      window.location.href = 'languages/history?languages=' + json;
+      window.location.href = 'languages-history?languages=' + json;
     }
   }
 })

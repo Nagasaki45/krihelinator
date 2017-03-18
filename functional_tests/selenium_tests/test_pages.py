@@ -59,7 +59,7 @@ def test_about(driver, base_url):
 
 
 def test_language(driver, base_url):
-    driver.get(base_url + '/repositories/Python')
+    driver.get(base_url + '/languages/Python')
 
     # The language name and summarized stats are there
     language = driver.find_element_by_css_selector('.header')

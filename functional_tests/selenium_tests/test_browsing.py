@@ -34,7 +34,7 @@ def test_browsing(driver, base_url):
     driver.execute_script('arguments[0].click();', button)
 
     url_params = f'languages=["{language_name}"]'
-    driver.assert_current_url(base_url + '/languages/history?' + url_params)
+    driver.assert_current_url(base_url + '/languages-history?' + url_params)
 
     # Going back to languages to select one
     go_to(driver, 'Languages')
@@ -42,9 +42,9 @@ def test_browsing(driver, base_url):
     driver.assert_current_url(base_url + '/languages')
     tbody = driver.find_element_by_tag_name('tbody')
     tbody.find_element_by_link_text(language_name).click()
-    driver.assert_current_url(f'{base_url}/repositories/{language_name}')
+    driver.assert_current_url(f'{base_url}/languages/{language_name}')
 
     # Click on the "show history" button
     driver.find_element_by_link_text('Show language history').click()
     url_params = f'languages=["{language_name}"]'
-    driver.assert_current_url(base_url + '/languages/history?' + url_params)
+    driver.assert_current_url(base_url + '/languages-history?' + url_params)
