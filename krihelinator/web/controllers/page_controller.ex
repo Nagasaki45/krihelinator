@@ -26,22 +26,13 @@ defmodule Krihelinator.PageController do
     repos_query = from(r in GithubRepo,
                        order_by: [desc: r.krihelimeter],
                        limit: 50)
-    language = Repo.one from(l in Language,
-                             where: l.name == ^language_name,
-                             preload: [repos: ^repos_query])
 
-    case language do
+    language =
+      Language
+      |> Repo.get_by!(name: language_name)
+      |> Repo.preload([repos: repos_query])
 
-      nil ->
-        conn
-        |> put_status(:not_found)
-        |> put_layout(false)
-        |> render(Krihelinator.ErrorView, "404.html", [])
-
-      _otherwise ->
-        render(conn, "language.html", language: language)
-
-    end
+    render(conn, "language.html", language: language)
   end
 
   def languages(conn, _params) do
@@ -93,22 +84,13 @@ defmodule Krihelinator.PageController do
                        order_by: [desc: r.krihelimeter],
                        preload: :language,
                        limit: 50)
-    showcase = Repo.one from(s in Showcase,
-                             where: s.href == ^showcase_href,
-                             preload: [repos: ^repos_query])
 
-    case showcase do
+    showcase =
+      Showcase
+      |> Repo.get_by!(href: showcase_href)
+      |> Repo.preload([repos: repos_query])
 
-      nil ->
-        conn
-        |> put_status(:not_found)
-        |> put_layout(false)
-        |> render(Krihelinator.ErrorView, "404.html", [])
-
-      _otherwise ->
-        render(conn, "showcase.html", showcase: showcase)
-
-    end
+    render(conn, "showcase.html", showcase: showcase)
   end
 
   def about(conn, _params) do
