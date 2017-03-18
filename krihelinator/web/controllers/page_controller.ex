@@ -44,13 +44,20 @@ defmodule Krihelinator.PageController do
 
       {:ok, language_names} ->
 
-        query = from(l in Language,
-                     where: l.name in ^language_names,
-                     preload: :history)
+        query = from(h in Krihelinator.LanguageHistory,
+                     order_by: :timestamp,
+                     preload: :language)
+
         json =
           query
           |> Repo.all()
-          |> Krihelinator.PythonGenServer.process(:krihelimeter)
+          |> Stream.filter(&(&1.language.name in language_names))
+          |> Stream.map(&(
+              %{name: &1.language.name,
+                timestamp: &1.timestamp,
+                value: &1.krihelimeter}
+          ))
+          |> Poison.encode!()
         render conn, "languages_history.html", json: json
 
       {:error, error} ->

@@ -21,8 +21,6 @@ defmodule Krihelinator do
       worker(Krihelinator.Periodic, []),
       # Start the background history keeper process
       worker(Krihelinator.HistoryKeeper, []),
-      # Start the python GenServer
-      worker(Krihelinator.PythonGenServer, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

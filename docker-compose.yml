@@ -9,7 +9,6 @@ web:
     - ./krihelinator/config:/opt/app/config
     - ./krihelinator/lib:/opt/app/lib
     - ./krihelinator/priv:/opt/app/priv
-    - ./krihelinator/python:/opt/app/python
     - ./krihelinator/test:/opt/app/test
     - ./krihelinator/web:/opt/app/web
     - ./krihelinator/mix.exs:/opt/app/mix.exs

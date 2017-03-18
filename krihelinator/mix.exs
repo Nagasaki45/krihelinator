@@ -43,7 +43,6 @@ defmodule Krihelinator.Mixfile do
       {:poison, "~> 2.2", override: true},
       {:floki, "~> 0.9.0"},
       {:timex, "~> 3.1"},
-      {:erlport, github: "hdima/erlport", manager: :make},
       {:big_query, "~> 0.0.7"},
       {:credo, "~> 0.5.3", only: [:dev, :test]},
     ]
