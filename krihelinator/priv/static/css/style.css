@@ -71,6 +71,10 @@ nav .input-group {
   width: 100%;
 }
 
+.modal img {
+  width: 100%;
+}
+
 .tile {
   display: inline-block;
 	width: 100%;

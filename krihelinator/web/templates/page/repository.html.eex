@@ -14,7 +14,40 @@
     <%= if @repo.trending do %>
         <div class="label label-warning">Trending on github!</div>
     <%= end %>
+    <a class="label label-success" data-toggle="modal" data-target="#badge-modal">
+        Get Krihelimeter badge
+    </a>
   </div>
+</div>
+
+<!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal" id="badge-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Let GitHub know how active is your project by adding a Krihelimeter badge to your README.
+                </h4>
+            </div>
+
+            <div class="modal-body">
+                <img src="/media/badge_demo.png">
+
+                <h3>Image URL</h3>
+                http://<%= @conn.host %>/badge/<%= @repo.name %>
+                <h3>Markdown</h3>
+                [![Krihelimeter](http://<%= @conn.host %>/badge/<%= @repo.name %>)](http://<%= @conn.host %>/repositories/<%= @repo.name %>)
+                <h3>ReStructuredText</h3>
+                .. image:: http://<%= @conn.host %>/badge/<%= @repo.name %><br />
+                    &nbsp;&nbsp;:target: http://<%= @conn.host %>/repositories/<%= @repo.name %>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row">
@@ -48,21 +81,4 @@
         <b><%= @repo.new_issues %></b>
         <div class="stat-block-text">New Issues</div>
     </div>
-</div>
-
-<div class="header">
-  <h1>Get a badge</h1>
-  <h4>Let GitHub know how active is your project by adding a Krihelimeter badge to your README.</h4>
-  <img src="/media/badge_demo.png">
-</div>
-
-<div>
-    <h3>Image URL</h3>
-    http://<%= @conn.host %>/badge/<%= @repo.name %>
-    <h3>Markdown</h3>
-    [![Krihelimeter](http://<%= @conn.host %>/badge/<%= @repo.name %>)](http://<%= @conn.host %>/repositories/<%= @repo.name %>)
-    <h3>ReStructuredText</h3>
-    .. image:: http://<%= @conn.host %>/badge/<%= @repo.name %><br />
-     &nbsp;&nbsp;:target: http://<%= @conn.host %>/repositories/<%= @repo.name %>
-  </div>
 </div>
