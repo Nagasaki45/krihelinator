@@ -39,12 +39,15 @@
                 <img src="/media/badge_demo.png">
 
                 <h3>Image URL</h3>
-                http://<%= @conn.host %>/badge/<%= @repo.name %>
+                <tt>
+                    http://<%= @conn.host %>/badge/<%= @repo.name %></tt>
                 <h3>Markdown</h3>
-                [![Krihelimeter](http://<%= @conn.host %>/badge/<%= @repo.name %>)](http://<%= @conn.host %>/repositories/<%= @repo.name %>)
+                <tt>
+                [![Krihelimeter](http://<%= @conn.host %>/badge/<%= @repo.name %>)](http://<%= @conn.host %>/repositories/<%= @repo.name %>)</tt>
                 <h3>ReStructuredText</h3>
+                <tt>
                 .. image:: http://<%= @conn.host %>/badge/<%= @repo.name %><br />
-                    &nbsp;&nbsp;:target: http://<%= @conn.host %>/repositories/<%= @repo.name %>
+                    &nbsp;&nbsp;:target: http://<%= @conn.host %>/repositories/<%= @repo.name %></tt>
             </div>
         </div>
     </div>
