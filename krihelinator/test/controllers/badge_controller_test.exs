@@ -3,7 +3,7 @@ defmodule Krihelinator.BadgeControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/badge/nAgAsAkI45/krihelinator"
-    assert json_response(conn, 404)
+    assert response(conn, 200)
   end
 
 end

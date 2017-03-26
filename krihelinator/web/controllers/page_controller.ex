@@ -1,25 +1,32 @@
 defmodule Krihelinator.PageController do
   use Krihelinator.Web, :controller
 
-  def repositories(conn, _params) do
-    repos = Repo.all from(r in GithubRepo,
-                          order_by: [desc: r.krihelimeter],
-                          limit: 50,
-                          preload: :language)
+  def repositories(conn, %{"query" => query_string, "type" => "github"}) do
+    case get_from_db_or_scrape(query_string) do
+      {:error, _whatever} ->
+        conn
+        |> put_flash(:error, "The repository \"#{query_string}\" does not exist.")
+        |> repositories(%{})
+      {:ok, model} ->
+        redirect(conn, to: repository_path(conn, model.name))
+    end
+  end
+  def repositories(conn, params) do
+    query_string = Map.get(params, "query")
+    query = from(r in GithubRepo,
+      where: ilike(r.name, ^"%#{query_string}%"),
+      order_by: [desc: r.krihelimeter],
+      limit: 50,
+      preload: :language)
+    repos = Repo.all(query)
     render conn, "repositories.html", repos: repos
   end
 
   def repository(conn, %{"user" => user, "repo" => repo}) do
     repository_name = "#{user}/#{repo}"
-    case get_from_db_or_scrape(repository_name) do
-      {:error, _whatever} ->
-        conn
-        |> put_flash(:error, "The repository \"#{repository_name}\" does not exist. Note that search is case sensitive.")
-        |> redirect(to: page_path(conn, :repositories))
-      {:ok, model} ->
-        model = Repo.preload(model, :language)
-        render(conn, "repository.html", repo: model)
-    end
+    repo = Repo.get_by!(GithubRepo, name: repository_name)
+    repo = Repo.preload(repo, :language)
+    render(conn, "repository.html", repo: repo)
   end
 
   def language(conn, %{"language" => language_name}) do

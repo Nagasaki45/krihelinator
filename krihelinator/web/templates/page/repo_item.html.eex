@@ -1,6 +1,6 @@
 <li class="list-group-item">
 
-  <h3><%= link split_and_bold(@repo.name), to: repository_path(@conn, @repo) %></h3>
+  <h3><%= link split_and_bold(@repo.name), to: repository_path(@conn, @repo.name) %></h3>
 
   <p class="repo-description"><%= @repo.description %></p>
 

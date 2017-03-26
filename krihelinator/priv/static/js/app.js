@@ -24,8 +24,3 @@ new List(
         valueNames: ['name']
     }
 );
-
-$('#search-form').submit(function( event ) {
-    event.preventDefault();
-    window.location.href = '/repositories/' + $('#search-input')[0].value;
-});

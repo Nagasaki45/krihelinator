@@ -20,13 +20,29 @@
         <%= navbar_link conn: @conn, action: :showcases, text: "Showcases" %>
         <%= navbar_link conn: @conn, action: :about, text: "About" %>
       </ul>
-      <form id="search-form" class="navbar-form navbar-right">
+      <form id="searchForm" class="navbar-form navbar-right" action="<%= page_path(@conn, :repositories) %>">
         <div class="input-group">
-          <input id="search-input" type="text" name="query" class="form-control" placeholder="Search repository">
+          <input type="text" name="query" class="form-control" placeholder="Search repository">
+          <input id="type" name="type" type="hidden" value="local">
           <span class="input-group-btn">
-              <button type="submit" class="btn btn-default">
-                  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
               </button>
+              <ul class="dropdown-menu dropdown-menu-right">
+                  <li>
+                      <a onclick="$('#searchForm').submit()">
+                          <span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp;
+                          Local search
+                      </a>
+                  </li>
+                  <li>
+                      <a onclick="$('#type').val('github'); $('#searchForm').submit()">
+                          <span class="octicon octicon-mark-github"></span>&nbsp;
+                          Search on GitHub
+                      </a>
+                  </li>
+              </ul>
           </span>
         </div>
       </form>
