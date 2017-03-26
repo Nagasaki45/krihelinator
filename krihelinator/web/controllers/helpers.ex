@@ -18,4 +18,9 @@ defmodule Krihelinator.Controllers.Helpers do
         {:ok, model}
     end
   end
+
+  def repository_path(conn, repo) do
+    [user, repo] = String.split(repo.name, "/")
+    Krihelinator.Router.Helpers.page_path(conn, :repository, user, repo)
+  end
 end

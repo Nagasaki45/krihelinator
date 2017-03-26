@@ -13,7 +13,7 @@ defmodule Krihelinator.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :repositories
-    get "/repositories/*repository", PageController, :repository
+    get "/repositories/:user/:repo", PageController, :repository
     get "/languages", PageController, :languages
     get "/languages/:language", PageController, :language
     get "/languages-history", PageController, :languages_history

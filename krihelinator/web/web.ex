@@ -52,6 +52,7 @@ defmodule Krihelinator.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
+      import Krihelinator.Controllers.Helpers
       import Krihelinator.Router.Helpers
       import Krihelinator.ErrorHelpers
       import Krihelinator.Gettext

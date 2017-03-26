@@ -9,8 +9,8 @@ defmodule Krihelinator.PageController do
     render conn, "repositories.html", repos: repos
   end
 
-  def repository(conn, %{"repository" => repository_name}) do
-    repository_name = Enum.join(repository_name, "/")
+  def repository(conn, %{"user" => user, "repo" => repo}) do
+    repository_name = "#{user}/#{repo}"
     case get_from_db_or_scrape(repository_name) do
       {:error, _whatever} ->
         conn
