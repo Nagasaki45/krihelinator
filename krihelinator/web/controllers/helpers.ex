@@ -4,6 +4,7 @@ defmodule Krihelinator.Controllers.Helpers do
   """
 
   alias Krihelinator.{GithubRepo, Repo, Scraper}
+  require Logger
 
   def get_from_db_or_scrape(name) do
     case Repo.get_by(GithubRepo, name: name) do
@@ -14,9 +15,18 @@ defmodule Krihelinator.Controllers.Helpers do
         |> GithubRepo.finalize_changeset()
         |> Ecto.Changeset.validate_inclusion(:name, [name])
         |> Repo.insert()
+        |> log_new_user_requested_repo()
       model ->
         {:ok, model}
     end
+  end
+
+  defp log_new_user_requested_repo({:ok, repo}) do
+    Logger.info("New user_requested repo: #{repo.name}")
+    {:ok, repo}
+  end
+  defp log_new_user_requested_repo(otherwise) do
+    otherwise
   end
 
   def repository_path(conn, repo) do
