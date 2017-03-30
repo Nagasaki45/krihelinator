@@ -5,7 +5,7 @@ Test pages that should lead to errors.
 import requests
 
 
-def test_repositories_wihtout_arguments(base_url):
+def test_repositories_without_arguments(base_url):
     """
     Get /repositories without mentioning a repo name. Bug #140.
     """
