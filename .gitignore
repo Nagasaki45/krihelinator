@@ -1,13 +1,15 @@
 # App artifacts
 _build
 deps
+.mix
+
+# Release BEAM cookie
+krihelinator/rel/cookie.txt
 
 # Generated on crash by the VM
 erl_crash.dump
 
 # Dont track my secrets
-secrets
-production/secrets
 bigquery_private_key.json
 
 __pycache__

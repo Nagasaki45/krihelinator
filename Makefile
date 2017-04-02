@@ -1,18 +1,19 @@
-build:
-	docker-compose build
+VERSION = `cd krihelinator && mix project_info.version`
+RELEASE_TAR = krihelinator/_build/prod/rel/krihelinator/releases/$(VERSION)/krihelinator.tar.gz
 
-deploy: build
-	docker tag `docker images -q krihelinator_web` nagasaki45/krihelinator_web
-	docker push nagasaki45/krihelinator_web
-	scp production/docker-compose.yml bigquery_private_key.json krihelinator.xyz:
+release:
+	docker run --rm -v `pwd`/krihelinator:/opt/app/ -e MIX_ENV=prod bitwalker/alpine-elixir-phoenix mix local.hex --force
+	docker run --rm -v `pwd`/krihelinator:/opt/app/ -e MIX_ENV=prod bitwalker/alpine-elixir-phoenix mix release
+
+deploy: release
+	scp $(RELEASE_TAR) krihelinator.xyz:
+	scp -r production/* krihelinator.xyz:
+	scp krihelinator/bigquery_private_key.json krihelinator.xyz:
 	ssh krihelinator.xyz " \
-		docker-compose pull && \
-		docker-compose run --rm web mix ecto.migrate && \
+		tar xf krihelinator.tar.gz && \
+		docker-compose run --rm web /opt/app/bin/krihelinator migrate && \
 		docker-compose up -d \
 	"
-
-logs:
-	docker logs -f krihelinator_web_1 | less +F
 
 functional_tests:
 	cd functional_tests && source env/bin/activate && pytest

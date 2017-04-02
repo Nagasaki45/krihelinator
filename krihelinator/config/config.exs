@@ -25,6 +25,15 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+# Configure your database
+config :krihelinator, Krihelinator.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
+  password: "postgres",
+  database: "krihelinator_prod",
+  hostname: "localhost",
+  pool_size: 10
+
 config :big_query,
   bigquery_private_key_path: "bigquery_private_key.json"
 

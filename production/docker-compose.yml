@@ -1,14 +1,13 @@
 web:
-  image: nagasaki45/krihelinator_web
-  environment:
-    - MIX_ENV=prod
+  build: .
+  command: /opt/app/bin/krihelinator foreground
+  volumes:
+    - .:/opt/app/  # read only
   ports:
-    - 80:4000
+    - 80:80
   links:
     - db
   restart: always
-  volumes:
-    - ./bigquery_private_key.json:/opt/app/bigquery_private_key.json:ro  # read only
 
 db:
   image: postgres:9.5

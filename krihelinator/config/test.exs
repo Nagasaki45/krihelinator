@@ -11,9 +11,5 @@ config :logger, level: :warn
 
 # Configure your database
 config :krihelinator, Krihelinator.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
   database: "krihelinator_test",
-  hostname: "db",
   pool: Ecto.Adapters.SQL.Sandbox
