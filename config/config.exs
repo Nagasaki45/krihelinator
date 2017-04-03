@@ -35,7 +35,8 @@ config :krihelinator, Krihelinator.Repo,
   pool_size: 10
 
 config :big_query,
-  bigquery_private_key_path: "bigquery_private_key.json"
+  bigquery_private_key_hosted_by_app: :krihelinator,
+  bigquery_private_key_path: "priv/bigquery_private_key.json"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

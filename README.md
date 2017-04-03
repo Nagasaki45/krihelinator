@@ -12,10 +12,10 @@ This project proposes an alternative to github's [trending page](http://github.c
 
 Before starting, make sure PostgreSQL and Elixir are installed. Follow the [phoenix installation guide](http://www.phoenixframework.org/docs/installation) for more details. Note that you won't need node.js for this project.
 
-To start your app, `cd krihelinator` (make sure you are in the folder containing the `mix.exs` file), and run:
+To start your app:
 
   * Get a google [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials) json file by following instructions 1a - 1f under the title "How the Application Default Credentials work" in the link.
-  * Name the file you just downloaded `bigquery_private_key.json`.
+  * Rename and move the file you just downloaded to `priv/bigquery_private_key.json`.
   * Create the DB: `mix ecto.create`.
   * Migrate to the latest DB scheme: `mix ecto.migrate`.
   * Spin the server `mix phoenix.server`.

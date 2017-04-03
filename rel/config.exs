@@ -21,6 +21,9 @@ use Mix.Releases.Config,
 # when building in that environment, this combination of release
 # and environment configuration is called a profile
 
+# Create a cookie file with
+# openssl rand -base64 48 > rel/cookie.txt
+
 cookie =
   ["rel", "cookie.txt"]
   |> Path.join()
@@ -42,10 +45,6 @@ release :krihelinator do
   set version: current_version(:krihelinator)
   set applications: [
     :runtime_tools
-  ]
-  set commands: [
-    "migrate": "rel/commands/migrate.sh",
-    "create-db": "rel/commands/create-db.sh"
   ]
 end
 

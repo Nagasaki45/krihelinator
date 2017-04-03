@@ -1,0 +1,16 @@
+APP="krihelinator"
+
+BUILD_HOST="build.krihelinator.xyz"
+BUILD_USER="ubuntu"
+BUILD_AT="/tmp/edeliver/krihelinator/builds"
+
+PRODUCTION_HOSTS="krihelinator.xyz"
+PRODUCTION_USER="ubuntu"
+DELIVER_TO="/home/ubuntu"
+
+# scp secrets to the build server
+pre_erlang_get_and_update_deps() {
+  scp config/prod.secret.exs $BUILD_USER@$BUILD_HOST:$BUILD_AT/config/prod.secret.exs
+  scp priv/bigquery_private_key.json $BUILD_USER@$BUILD_HOST:$BUILD_AT/priv/bigquery_private_key.json
+  scp rel/cookie.txt $BUILD_USER@$BUILD_HOST:$BUILD_AT/rel/cookie.txt
+}

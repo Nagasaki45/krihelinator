@@ -2,14 +2,14 @@
 _build
 deps
 .mix
-
-# Release BEAM cookie
-krihelinator/rel/cookie.txt
+.deliver/releases
 
 # Generated on crash by the VM
 erl_crash.dump
 
 # Dont track my secrets
+prod.secret.exs
 bigquery_private_key.json
+cookie.txt
 
 __pycache__
