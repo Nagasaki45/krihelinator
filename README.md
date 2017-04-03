@@ -10,21 +10,14 @@ This project proposes an alternative to github's [trending page](http://github.c
 
 ## Development
 
-The only dependencies are docker and docker-compose. To start your app:
+Before starting, make sure PostgreSQL and Elixir are installed. Follow the [phoenix installation guide](http://www.phoenixframework.org/docs/installation) for more details. Note that you won't need node.js for this project.
+
+To start your app, `cd krihelinator` (make sure you are in the folder containing the `mix.exs` file), and run:
 
   * Get a google [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials) json file by following instructions 1a - 1f under the title "How the Application Default Credentials work" in the link.
-  * Name the file you just downloaded `bigquery_private_key.json` and put it in the project root directory.
-  * Build the docker image: `docker-compose build`.
-  * Create the DB: `docker-compose run --rm web mix ecto.create`.
-  * Migrate to the latest DB scheme: `docker-compose run --rm web mix ecto.migrate`.
-  * Spin up everything `docker-compose up -d`.
+  * Name the file you just downloaded `bigquery_private_key.json`.
+  * Create the DB: `mix ecto.create`.
+  * Migrate to the latest DB scheme: `mix ecto.migrate`.
+  * Spin the server `mix phoenix.server`.
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-## Makefile
-
-Some tasks are automated in the `Makefile`. During development `docker-compose run --rm web <whatever>` is used a lot! However, I prefer not to automate these one-liners unless they are used by other tasks.
-
-## Scripts
-
-If you messed things up there are several useful scripts in `priv/scripts` with relatively self explanatory names. Run them with `docker-compose run --rm web mix run path/to/script.exs`.
