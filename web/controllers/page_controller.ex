@@ -87,7 +87,11 @@ defmodule Krihelinator.PageController do
   end
 
   def showcases(conn, _params) do
-    showcases = Repo.all(Showcase)
+    query = from(p in Showcase,
+                 join: r in GithubRepo, on: [showcase_id: p.id],
+                 group_by: p.id,
+                 having: count(r.id) > 0)
+    showcases = Repo.all(query)
     render conn, "showcases.html", showcases: showcases
   end
 
