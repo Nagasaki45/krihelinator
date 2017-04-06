@@ -1,6 +1,11 @@
 defmodule Krihelinator.PageController do
   use Krihelinator.Web, :controller
 
+  def repositories(conn, %{"query" => ""}) do
+    conn
+    |> put_flash(:error, "No search query was provided.")
+    |> repositories(%{})
+  end
   def repositories(conn, %{"query" => query_string, "type" => "github"}) do
     case get_from_db_or_scrape(query_string) do
       {:error, _whatever} ->

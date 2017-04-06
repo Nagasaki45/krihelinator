@@ -19,3 +19,11 @@ def test_repos_of_unexisting_language(base_url):
     """
     response = requests.get(base_url + '/languages/moshe')
     assert response.status_code == 404
+
+
+def test_search_github_without_giving_a_repo_name(base_url):
+    """
+    Bug #145.
+    """
+    resp = requests.get(base_url + '/?query=&type=github')
+    assert resp.status_code == 200
