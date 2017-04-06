@@ -1,7 +1,6 @@
 # App artifacts
 _build
 deps
-.mix
 .deliver/releases
 
 # Generated on crash by the VM
@@ -11,5 +10,3 @@ erl_crash.dump
 prod.secret.exs
 bigquery_private_key.json
 cookie.txt
-
-__pycache__
