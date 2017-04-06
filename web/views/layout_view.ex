@@ -7,10 +7,10 @@ defmodule Krihelinator.LayoutView do
 
   def page_title(assigns) do
     case action_name(assigns.conn) do
-      :languages -> "Krihelinator/languages"
-      :about -> "Krihelinator/about"
-      :language -> "Krihelinator/#{assigns.language.name}"
-      :languages_history -> "Krihelinator/history"
+      :languages -> "Languages | the Krihelinator"
+      :about -> "About | the Krihelinator"
+      :language -> "#{assigns.language.name} | the Krihelinator"
+      :languages_history -> "Languages history | the Krihelinator"
       _whatever -> "the Krihelinator"
     end
   end
