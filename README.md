@@ -23,6 +23,33 @@ To start your app:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
+## Production
+
+Deployment is managed by [edeliver](https://github.com/boldpoker/edeliver).
+
+```bash
+mix edeliver build release
+mix edeliver deploy release to production
+```
+
+On the server, the process is monitored by systemd.
+First, `scp` the `krihelinator.service` to `/etc/systemd/system/`, start, and enable to service.
+Later, after each deployment:
+
+``` bash
+ssh ubuntu@krihelinator.xyz sudo systemctl restart krihelinator.service
+```
+
+To see the logs:
+
+```bash
+ssh -t ubuntu@krihelinator.xyz journalctl -u krihelinator.service
+```
+
+Find more info about using systemd in these [blog post](https://mfeckie.github.io/Phoenix-In-Production-With-Systemd/) and [forum thread](https://elixirforum.com/t/elixir-apps-as-systemd-services/2400).
+
+Lastly, I used [this](https://gist.github.com/kentbrew/776580) incredibly stupid solution to redirect communication on port 80 to port 4000, where the server is listening.
+
 ## Similar projects
 
 - [GitHut](http://githut.info/) and [GitHut 2](https://madnight.github.io/githut/)

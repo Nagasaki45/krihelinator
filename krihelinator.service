@@ -1,0 +1,13 @@
+[Unit]
+Description=Runner for the Krihelinator server
+After=network.target
+
+[Service]
+WorkingDirectory=/home/ubuntu/krihelinator
+ExecStart=/home/ubuntu/krihelinator/bin/krihelinator foreground
+ExecStop=/home/ubuntu/krihelinator/bin/krihelinator stop
+User=ubuntu
+Environment=LANG=en_US.UTF-8
+
+[Install]
+WantedBy=multi-user.target
