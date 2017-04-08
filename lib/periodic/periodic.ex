@@ -135,6 +135,7 @@ defmodule Krihelinator.Periodic do
       changeset
       |> Ecto.Changeset.validate_number(:forks, greater_than_or_equal_to: 10)
       |> Ecto.Changeset.validate_number(:krihelimeter, greater_than_or_equal_to: 30)
+      |> Ecto.Changeset.validate_number(:authors, greater_than_or_equal_to: 2)
     end
   end
 
