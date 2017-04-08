@@ -143,7 +143,7 @@ defmodule Krihelinator.Periodic do
   """
   def log_changeset_errors({:ok, _struct}), do: :ok
   def log_changeset_errors({:error, changeset}) do
-    repo_name = GithubRepo.fetch_name(changeset)
+    {_data_or_changes, repo_name} = Ecto.Changeset.fetch_field(changeset, :name)
     case Enum.into(changeset.errors, %{}) do
       %{scraping_error: {"page_not_found", []}} -> :ok
       %{scraping_error: error} ->

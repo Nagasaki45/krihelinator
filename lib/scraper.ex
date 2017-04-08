@@ -10,8 +10,8 @@ defmodule Krihelinator.Scraper do
   """
   def scrape_repo(changeset) do
     changeset
-    |> Krihelinator.Scraper.scrape_repo_page()
-    |> Krihelinator.Scraper.scrape_pulse_page()
+    |> scrape_repo_page()
+    |> scrape_pulse_page()
     |> add_error_if_fork()
     |> combine_full_name()
   end
@@ -77,17 +77,17 @@ defmodule Krihelinator.Scraper do
     changeset
   end
   def scrape(changeset, suffix, elements) do
-    repo_name = Krihelinator.GithubRepo.fetch_name(changeset)
-    new_data =
-      "https://github.com/#{repo_name}#{suffix}"
-      |> http_get
-      |> handle_response(elements)
-    case new_data do
-      %{error: error} ->
-        Ecto.Changeset.add_error(changeset, :scraping_error, error)
-      _otherwise ->
-        Ecto.Changeset.change(changeset, new_data)
-    end
+    {_data_or_changes, repo_name} = Ecto.Changeset.fetch_field(changeset, :name)
+
+    "https://github.com/#{repo_name}#{suffix}"
+    |> http_get
+    |> handle_response(elements)
+    |> case do
+         %{error: error} ->
+           Ecto.Changeset.add_error(changeset, :scraping_error, error)
+         new_data ->
+           Ecto.Changeset.change(changeset, new_data)
+       end
   end
 
   @doc """
@@ -146,14 +146,14 @@ defmodule Krihelinator.Scraper do
     end
   end
   def general_extractor(floki, css_selector, regex_pattern) do
-    text =
-      floki
-      |> basic_text_extraction(css_selector)
-      |> String.replace(",", "")  # Numbers are comma separated
-    case Regex.named_captures(regex_pattern, text) do
-      %{"value" => value} -> String.to_integer(value)
-      _ -> 0
-    end
+    floki
+    |> basic_text_extraction(css_selector)
+    |> String.replace(",", "")  # Numbers are comma separated
+    |> (&Regex.named_captures(regex_pattern, &1)).()
+    |> case do
+         %{"value" => value} -> String.to_integer(value)
+         _ -> 0
+       end
   end
 
   def basic_text_extraction(floki, css_selector) do

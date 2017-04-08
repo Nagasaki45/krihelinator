@@ -112,13 +112,4 @@ defmodule Krihelinator.GithubRepo do
   def clear_dirty_bit(changeset) do
     put_change(changeset, :dirty, false)
   end
-
-  @doc """
-  Get the repo name from the changeset
-  """
-  def fetch_name(changeset) do
-    changeset
-    |> Ecto.Changeset.fetch_field(:name)
-    |> elem(1)  # {data_or_changes, value}
-  end
 end
