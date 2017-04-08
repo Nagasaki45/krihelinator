@@ -21,3 +21,9 @@ To start your app:
   * Spin the server `mix phoenix.server`.
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+
+## Similar projects
+
+- [GitHut](http://githut.info/) and [GitHut 2](https://madnight.github.io/githut/)
+- [IsItMaintained](http://isitmaintained.com/)
+- [GitHub profiler](http://www.datasciencecentral.com/profiles/blogs/github-profiler-a-tool-for-repository-evaluation)
