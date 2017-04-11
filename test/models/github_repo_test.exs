@@ -22,4 +22,14 @@ defmodule Krihelinator.GithubRepoTest do
     changeset = GithubRepo.changeset(model, %{})
     assert Map.has_key?(changeset.changes, :krihelimeter)
   end
+
+  test "unlimited description length" do
+    description = String.duplicate("a", 257)
+    changes = Map.put(@valid_attrs, :description, description)
+    {:ok, model} =
+      %GithubRepo{}
+      |> GithubRepo.changeset(changes)
+      |> Krihelinator.Repo.insert()
+    assert model.description == description
+  end
 end

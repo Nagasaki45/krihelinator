@@ -65,7 +65,6 @@ defmodule Krihelinator.GithubRepo do
     |> unique_constraint(:name)
     |> set_krihelimeter
     |> put_language_assoc()
-    |> trim_description(max_length: 255)
     |> clear_dirty_bit()
   end
 
@@ -80,24 +79,6 @@ defmodule Krihelinator.GithubRepo do
   def set_krihelimeter(%{data: data, changes: changes} = changeset) do
     new_data = Map.merge(data, changes)
     put_change(changeset, :krihelimeter, Krihelimeter.calculate(new_data))
-  end
-
-  @doc """
-  Trim the description string to `max_length` chars.
-  """
-  def trim_description(%{changes: %{description: description}} = changeset,
-                       max_length: max_length)
-                       when is_binary(description) do
-    description = if String.length(description) > max_length do
-      String.slice(description, 0, 255 - 1 - 3) <> "..."
-    else
-      description
-    end
-    put_change(changeset, :description, description)
-  end
-
-  def trim_description(changeset, _opts) do
-    changeset
   end
 
   def put_language_assoc(%{changes: %{language_name: lang}} = changeset) do
