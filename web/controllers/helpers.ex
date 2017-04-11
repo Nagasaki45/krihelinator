@@ -12,10 +12,10 @@ defmodule Krihelinator.Controllers.Helpers do
                  where: ilike(r.name, ^name))
     case Repo.one(query) do
       :nil ->
+        {:ok, data} = Scraper.scrape(name)
+        data = Map.put(data, :user_requested, true)
         %GithubRepo{}
-        |> GithubRepo.cast_allowed(%{name: name, user_requested: true})
-        |> Scraper.scrape_repo()
-        |> GithubRepo.finalize_changeset()
+        |> GithubRepo.changeset(data)
         |> Repo.insert()
         |> log_new_user_requested_repo()
       model ->

@@ -8,34 +8,12 @@ defmodule Krihelinator.Scraper do
   @doc """
   Scrape repo home and pulse pages.
   """
-  def scrape_repo(changeset) do
-    changeset
-    |> scrape_repo_page()
-    |> scrape_pulse_page()
-    |> add_error_if_fork()
-    |> combine_full_name()
-  end
-
-  @doc """
-  If a repo is a fork (indicated near the repo name on github) add an error.
-  """
-  def add_error_if_fork(%{valid?: false} = changeset), do: changeset
-  def add_error_if_fork(changeset) do
-    case Ecto.Changeset.get_change(changeset, :fork_of) do
-      :nil -> changeset
-      fork_text -> Ecto.Changeset.add_error(changeset, :is_fork, fork_text)
+  def scrape(name) do
+    with {:ok, map} <- scrape_repo_page(%{name: name}),
+         {:ok, map} <- scrape_pulse_page(map)
+    do
+      {:ok, %{map | name: "#{map.user_name}/#{map.repo_name}"}}
     end
-  end
-
-  @doc """
-  Scraping the repo page will return the user name and the repo name.
-  Combine them together to get the full name.
-  """
-  def combine_full_name(%{valid?: false} = changeset), do: changeset
-  def combine_full_name(changeset) do
-    {:changes, user_name} = Ecto.Changeset.fetch_field(changeset, :user_name)
-    {:changes, repo_name} = Ecto.Changeset.fetch_field(changeset, :repo_name)
-    Ecto.Changeset.put_change(changeset, :name, "#{user_name}/#{repo_name}")
   end
 
   @basic_elements [
@@ -59,43 +37,38 @@ defmodule Krihelinator.Scraper do
   @doc """
   Scrape statistics about a repository from it's homepage.
   """
-  def scrape_repo_page(changeset) do
-    scrape(changeset, "", @basic_elements)
+  def scrape_repo_page(map) do
+    scrape(map, "", @basic_elements)
   end
 
   @doc """
   Scrape statistics about a repository from github's pulse page.
   """
-  def scrape_pulse_page(changeset) do
-    scrape(changeset, "/pulse", @pulse_elements)
+  def scrape_pulse_page(map) do
+    scrape(map, "/pulse", @pulse_elements)
   end
 
   @doc """
   Common scraping function.
   """
-  def scrape(%Ecto.Changeset{valid?: false} = changeset, _suffix, _elements) do
-    changeset
-  end
-  def scrape(changeset, suffix, elements) do
-    {_data_or_changes, repo_name} = Ecto.Changeset.fetch_field(changeset, :name)
-
-    "https://github.com/#{repo_name}#{suffix}"
-    |> http_get
-    |> handle_response(elements)
-    |> case do
-         %{error: error} ->
-           Ecto.Changeset.add_error(changeset, :scraping_error, error)
-         new_data ->
-           Ecto.Changeset.change(changeset, new_data)
-       end
+  def scrape(map, suffix, elements) do
+    with {:ok, resp} <- http_get("https://github.com/#{map.name}#{suffix}"),
+         {:ok, new_data} <- handle_response(resp, elements)
+    do
+      {:ok, Map.merge(map, new_data)}
+    end
   end
 
   @doc """
-  A wrapper around `HTTPoison.get` with extra timeout.
+  A wrapper around `HTTPoison.get` with extra options.
   """
   def http_get(url) do
     headers = []
-    HTTPoison.get(url, headers, recv_timeout: 10_000)
+    options = [recv_timeout: 10_000, follow_redirect: true]
+    case HTTPoison.get(url, headers, options) do
+      {:ok, resp} -> {:ok, resp}
+      {:error, error} -> {:error, Atom.to_string(error.reason)}
+    end
   end
 
   @doc """
@@ -103,29 +76,19 @@ defmodule Krihelinator.Scraper do
   Several errors are ignorable, collect them, the callers will have to decide
   what to do with them.
   """
-  def handle_response({:ok, %{status_code: 200, body: body}}, elements) do
-    parse(body, elements)
+  def handle_response(%{status_code: 200, body: body}, elements) do
+    {:ok, parse(body, elements)}
   end
-  def handle_response({:ok, %{status_code: 301, headers: headers}}, elements) do
-    headers
-    |> Enum.into(%{})
-    |> Map.fetch!("Location")
-    |> http_get
-    |> handle_response(elements)
-  end
-  def handle_response({:ok, %{status_code: 404}}, _elements), do: %{error: "page_not_found"}
-  def handle_response({:ok, %{status_code: 451}}, _elements), do: %{error: "dmca_takedown"}
-  def handle_response({:ok, %{status_code: 500}}, _elements), do: %{error: "github_server_error"}
-  def handle_response({:ok, %{status_code: code, body: body}}, _elements) do
+  def handle_response(%{status_code: 404}, _elements), do: {:error, "page_not_found"}
+  def handle_response(%{status_code: 451}, _elements), do: {:error, "dmca_takedown"}
+  def handle_response(%{status_code: 500}, _elements), do: {:error, "github_server_error"}
+  def handle_response(%{status_code: code, body: body}, _elements) do
     # Some unknown failure: elaborate!
-    %{error: "Request failed with status_code #{code}:\n#{Floki.text(body)}"}
-  end
-  def handle_response({:error, %{reason: reason}}, _elements) do
-    %{error: Atom.to_string(reason)}
+    {:error, "Request failed with status_code #{code}:\n#{Floki.text(body)}"}
   end
 
   @doc """
-  Use [floki](https://github.com/philss/floki) to parse the page and return
+  Use [floki](https://github.com/philss/floki) to parse the page and return
   a map for that repo.
   """
   def parse(body, elements) do
@@ -136,7 +99,7 @@ defmodule Krihelinator.Scraper do
   end
 
   @doc """
-  Extracts information from the "floki-parsed" html using css selectors and
+  Extracts information from the "floki-parsed" html using css selectors and
   regex matching on the resulting text.
   """
   def general_extractor(floki, css_selector, :string) do
@@ -168,7 +131,7 @@ defmodule Krihelinator.Scraper do
   end
 
   @doc """
-  Remove new lines and extra spaces from strings.
+  Remove new lines and extra spaces from strings.
 
   Example:
 

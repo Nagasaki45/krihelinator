@@ -10,6 +10,7 @@ defmodule Krihelinator.GithubRepo do
     field :name, :string
     field :description, :string
     field :language_name, :string, virtual: true
+    field :fork_of, :string, virtual: true
     belongs_to :language, Krihelinator.Language
     belongs_to :showcase, Krihelinator.Showcase
     field :merged_pull_requests, :integer
@@ -27,7 +28,7 @@ defmodule Krihelinator.GithubRepo do
     timestamps()
   end
 
-  @allowed ~w(name description language_name merged_pull_requests
+  @allowed ~w(name description language_name fork_of merged_pull_requests
               proposed_pull_requests closed_issues new_issues commits authors
               forks trending user_requested dirty)a
   @required ~w(name merged_pull_requests proposed_pull_requests

@@ -117,12 +117,25 @@ defmodule Krihelinator.Periodic do
     max_concurrency = Application.fetch_env!(:krihelinator, :scrapers_pool_size)
     async_params = [max_concurrency: max_concurrency, timeout: 60_000]
     changesets
-    |> Task.async_stream(&Scraper.scrape_repo/1, async_params)
+    |> Task.async_stream(&scrape_changeset/1, async_params)
     |> Stream.map(fn {:ok, cs} -> cs end)
     |> Stream.map(&GithubRepo.finalize_changeset/1)
     |> Stream.map(&apply_restrictive_validations/1)
     |> Stream.map(&Repo.insert_or_update/1)
     |> Enum.each(&log_changeset_errors/1)
+  end
+
+  @doc """
+  Scrape and update changeset with new data.
+  """
+  def scrape_changeset(changeset) do
+    {_data_or_changes, repo_name} = Ecto.Changeset.fetch_field(changeset, :name)
+    case Scraper.scrape(repo_name) do
+      {:ok, data} ->
+        Ecto.Changeset.change(changeset, data)
+      {:error, error} ->
+        Ecto.Changeset.add_error(changeset, :scraping_error, error)
+    end
   end
 
   @doc """
@@ -136,6 +149,7 @@ defmodule Krihelinator.Periodic do
       |> Ecto.Changeset.validate_number(:forks, greater_than_or_equal_to: 10)
       |> Ecto.Changeset.validate_number(:krihelimeter, greater_than_or_equal_to: 30)
       |> Ecto.Changeset.validate_number(:authors, greater_than_or_equal_to: 2)
+      |> Ecto.Changeset.validate_inclusion(:fork_of, [nil])
     end
   end
 
