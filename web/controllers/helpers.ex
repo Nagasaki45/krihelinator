@@ -10,16 +10,14 @@ defmodule Krihelinator.Controllers.Helpers do
   def get_from_db_or_scrape(name) do
     query = from(r in GithubRepo,
                  where: ilike(r.name, ^name))
-    case Repo.one(query) do
-      :nil ->
-        {:ok, data} = Scraper.scrape(name)
-        data = Map.put(data, :user_requested, true)
-        %GithubRepo{}
-        |> GithubRepo.changeset(data)
-        |> Repo.insert()
-        |> log_new_user_requested_repo()
-      model ->
-        {:ok, model}
+    with {:ok, :nil} <- {:ok, Repo.one(query)},
+         {:ok, data} <- Scraper.scrape(name)
+    do
+      data = Map.put(data, :user_requested, true)
+      %GithubRepo{}
+      |> GithubRepo.changeset(data)
+      |> Repo.insert()
+      |> log_new_user_requested_repo()
     end
   end
 
