@@ -70,6 +70,15 @@ defmodule Krihelinator.GithubRepo do
     end
   end
 
+  @krihelimeter_coefficients [
+    merged_pull_requests: 8,
+    proposed_pull_requests: 8,
+    closed_issues: 8,
+    new_issues: 8,
+    commits: 1,
+    authors: 20,
+  ]
+
   @doc """
   Use the existing data, and the expected changes, to calculate and set the
   krihelimeter.
@@ -77,10 +86,14 @@ defmodule Krihelinator.GithubRepo do
   def set_krihelimeter(%{valid?: false} = changeset) do
     changeset
   end
-
-  def set_krihelimeter(%{data: data, changes: changes} = changeset) do
-    new_data = Map.merge(data, changes)
-    put_change(changeset, :krihelimeter, Krihelimeter.calculate(new_data))
+  def set_krihelimeter(changeset) do
+    krihelimeter = Enum.sum(
+      for {field, coefficient} <- @krihelimeter_coefficients do
+        {_change_or_data, value} = fetch_field(changeset, field)
+        value * coefficient
+      end
+    )
+    put_change(changeset, :krihelimeter, krihelimeter)
   end
 
   def put_language_assoc(%{changes: %{language_name: lang}} = changeset) do
