@@ -58,7 +58,7 @@ defmodule Krihelinator.Periodic do
   end
 
   def set_dirty_bit() do
-    Logger.info "Setting dirty bit for all..."
+    Logger.info "Setting dirty bit for all"
     Repo.update_all(GithubRepo, set: [dirty: true])
   end
 
@@ -66,34 +66,26 @@ defmodule Krihelinator.Periodic do
   Scrape the github trending page and update repos.
   """
   def scrape_trending() do
-    Logger.info "Resetting trendingness for all..."
+    Logger.info "Resetting trendiness for all"
     Repo.update_all(GithubRepo, set: [trending: false])
-    Logger.info "Scraping trending..."
+    Logger.info "Scraping trending"
     Periodic.GithubTrending.scrape()
-    |> Stream.map(&prepare_changeset/1)
-    |> Stream.map(fn cs -> Ecto.Changeset.put_change(cs, :trending, true) end)
-    |> handle_changesets
+    |> async_scrape()
+    |> Stream.map(fn
+      {:ok, data} -> {:ok, Map.put(data, :trending, true)}
+      otherwise -> otherwise
+    end)
+    |> handle_scraped_data()
   end
 
   @doc """
-  Request repos to scrape from google BigQuery. See the moduledoc for more info.
+  Request repos from google BigQuery, scrape, and persist.
   """
   def scrape_from_bigquery() do
-    Logger.info "Getting repositories from BigQuery to scrape..."
+    Logger.info "Getting repositories from BigQuery to scrape"
     Periodic.BigQuery.query()
-    |> Stream.map(&prepare_changeset/1)
-    |> handle_changesets
-  end
-
-  @doc """
-  Create changeset to work with. If the name already in the DB use that,
-  otherwise create changeset from `params`.
-  """
-  def prepare_changeset(name) do
-    case Repo.get_by(GithubRepo, name: name) do
-      :nil -> GithubRepo.cast_allowed(%GithubRepo{}, %{name: name})
-      struct -> GithubRepo.changeset(struct)
-    end
+    |> async_scrape()
+    |> handle_scraped_data()
   end
 
   @doc """
@@ -101,70 +93,56 @@ defmodule Krihelinator.Periodic do
   or BigQuery and rescrape.
   """
   def rescrape_still_dirty() do
-    Logger.info "Rescraping still dirty repositories..."
-    query = from(r in GithubRepo, where: r.dirty)
-    query
-    |> Repo.all()
-    |> Stream.map(fn struct -> GithubRepo.cast_allowed(struct) end)
-    |> handle_changesets
+    query = from(r in GithubRepo, where: r.dirty, select: r.name)
+    names = Repo.all(query)
+    Logger.info "Rescraping #{length(names)} still dirty repositories"
+    names
+    |> async_scrape
+    |> handle_scraped_data()
   end
 
+  @async_params [max_concurrency: 20, timeout: 60_000]
+
   @doc """
-  Run the changesets asyncronously through the scraper, apply extra validations,
-  push to the DB and log issues.
+  Scrape repositories concurrently with `Task.async_stream`.
   """
-  def handle_changesets(changesets) do
-    max_concurrency = Application.fetch_env!(:krihelinator, :scrapers_pool_size)
-    async_params = [max_concurrency: max_concurrency, timeout: 60_000]
-    changesets
-    |> Task.async_stream(&scrape_changeset/1, async_params)
+  def async_scrape(names) do
+    names
+    |> Task.async_stream(&Scraper.scrape/1, @async_params)
     |> Stream.map(fn {:ok, cs} -> cs end)
-    |> Stream.map(&GithubRepo.finalize_changeset/1)
-    |> Stream.map(&apply_restrictive_validations/1)
-    |> Stream.map(&Repo.insert_or_update/1)
-    |> Enum.each(&log_changeset_errors/1)
   end
 
   @doc """
-  Scrape and update changeset with new data.
+  Persist the scraped data and log results statistics.
   """
-  def scrape_changeset(changeset) do
-    {_data_or_changes, repo_name} = Ecto.Changeset.fetch_field(changeset, :name)
-    case Scraper.scrape(repo_name) do
-      {:ok, data} ->
-        Ecto.Changeset.change(changeset, data)
-      {:error, error} ->
-        Ecto.Changeset.add_error(changeset, :scraping_error, error)
-    end
+  def handle_scraped_data(data_stream) do
+    data_stream
+    |> Stream.map(fn
+      {:ok, data} -> update_or_create_from_data(data)
+      otherwise -> otherwise
+    end)
+    |> Enum.reduce(%{}, &collect_results/2)
+    |> Enum.each(&log_aggregated_results/1)
   end
 
-  @doc """
-  If not user_requested make sure stats are above thresholds.
-  """
-  def apply_restrictive_validations(changeset) do
-    if Ecto.Changeset.get_field(changeset, :user_requested) do
-      changeset
-    else
-      changeset
-      |> Ecto.Changeset.validate_number(:forks, greater_than_or_equal_to: 10)
-      |> Ecto.Changeset.validate_number(:krihelimeter, greater_than_or_equal_to: 30)
-      |> Ecto.Changeset.validate_number(:authors, greater_than_or_equal_to: 2)
-      |> Ecto.Changeset.validate_inclusion(:fork_of, [nil])
+  def update_or_create_from_data(data) do
+    GithubRepo
+    |> Repo.get_by(name: data.name)
+    |> case do
+      :nil -> %GithubRepo{}
+      struct -> struct
     end
+    |> GithubRepo.changeset(data)
+    |> Repo.insert_or_update()
   end
 
-  @doc """
-  Log scraping errors. Other changeset errors are supposed to be OK.
-  """
-  def log_changeset_errors({:ok, _struct}), do: :ok
-  def log_changeset_errors({:error, changeset}) do
-    {_data_or_changes, repo_name} = Ecto.Changeset.fetch_field(changeset, :name)
-    case Enum.into(changeset.errors, %{}) do
-      %{scraping_error: {"page_not_found", []}} -> :ok
-      %{scraping_error: error} ->
-        Logger.error "Scraping error for #{repo_name}: #{inspect(error)}"
-      _otherwise -> :ok
-    end
+  def collect_results({:error, %Ecto.Changeset{}}, acc), do: collect_results(:validation_error, acc)
+  def collect_results({:error, error}, acc), do: collect_results(error, acc)
+  def collect_results({:ok, _whatever}, acc), do: collect_results(:ok, acc)
+  def collect_results(something, acc), do: Map.update(acc, something, 1, &(&1 + 1))
+
+  def log_aggregated_results({key, count}) do
+    Logger.info "#{count} operations ended with #{inspect(key)}"
   end
 
   @doc """
@@ -172,7 +150,7 @@ defmodule Krihelinator.Periodic do
   periodic loop.
   """
   def clean_dirty do
-    Logger.info "Cleaning dirty repos..."
+    Logger.info "Cleaning dirty repos"
     query = from(r in GithubRepo, where: r.dirty)
     {num, _whatever} = Repo.delete_all(query)
     Logger.info "Cleaned #{num} dirty repos"
@@ -182,7 +160,7 @@ defmodule Krihelinator.Periodic do
   Update the total krihelimeter and num_of_repos for all languages.
   """
   def update_languages_stats() do
-    Logger.info "Updating languages statistics..."
+    Logger.info "Updating languages statistics"
     Language
     |> Repo.all()
     |> Repo.preload(:repos)
@@ -198,7 +176,7 @@ defmodule Krihelinator.Periodic do
   end
 
   def scrape_showcases() do
-    Logger.info "Scraping showcases and updating repos..."
+    Logger.info "Scraping showcases and updating repos"
     maps = Periodic.GithubShowcases.scrape()
     for map <- maps do
       params = [name: map.name, href: map.href]

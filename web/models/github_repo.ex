@@ -39,22 +39,7 @@ defmodule Krihelinator.GithubRepo do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast_allowed(params)
-    |> finalize_changeset
-  end
-
-  @doc """
-  Create basic changeset from struct and params.
-  """
-  def cast_allowed(struct, params \\ %{}) do
-    cast(struct, params, @allowed)
-  end
-
-  @doc """
-  Run all validations and set calculated fields on a changeset.
-  """
-  def finalize_changeset(changeset) do
-    changeset
+    |> cast(params, @allowed)
     |> validate_required(@required)
     |> validate_number(:merged_pull_requests, greater_than_or_equal_to: 0)
     |> validate_number(:proposed_pull_requests, greater_than_or_equal_to: 0)
@@ -63,6 +48,7 @@ defmodule Krihelinator.GithubRepo do
     |> validate_number(:commits, greater_than_or_equal_to: 0)
     |> validate_number(:authors, greater_than_or_equal_to: 0)
     |> validate_number(:forks, greater_than_or_equal_to: 0)
+    |> apply_restrictive_validations()
     |> unique_constraint(:name)
     |> set_krihelimeter
     |> put_language_assoc()
@@ -70,7 +56,22 @@ defmodule Krihelinator.GithubRepo do
   end
 
   @doc """
-  Use the existing data, and the expected changes, to calculate and set the
+  If not user_requested make sure stats are above thresholds.
+  """
+  def apply_restrictive_validations(changeset) do
+    if Ecto.Changeset.get_field(changeset, :user_requested) do
+      changeset
+    else
+      changeset
+      |> Ecto.Changeset.validate_number(:forks, greater_than_or_equal_to: 10)
+      |> Ecto.Changeset.validate_number(:krihelimeter, greater_than_or_equal_to: 30)
+      |> Ecto.Changeset.validate_number(:authors, greater_than_or_equal_to: 2)
+      |> Ecto.Changeset.validate_inclusion(:fork_of, [nil])
+    end
+  end
+
+  @doc """
+  Use the existing data, and the expected changes, to calculate and set the
   krihelimeter.
   """
   def set_krihelimeter(%{valid?: false} = changeset) do
@@ -94,4 +95,5 @@ defmodule Krihelinator.GithubRepo do
   def clear_dirty_bit(changeset) do
     put_change(changeset, :dirty, false)
   end
+
 end

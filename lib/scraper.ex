@@ -5,6 +5,8 @@ defmodule Krihelinator.Scraper do
   scraping.
   """
 
+  require Logger
+
   @doc """
   Scrape repo home and pulse pages.
   """
@@ -67,7 +69,7 @@ defmodule Krihelinator.Scraper do
     options = [recv_timeout: 10_000, follow_redirect: true]
     case HTTPoison.get(url, headers, options) do
       {:ok, resp} -> {:ok, resp}
-      {:error, error} -> {:error, Atom.to_string(error.reason)}
+      {:error, error} -> {:error, error.reason}
     end
   end
 
@@ -79,12 +81,12 @@ defmodule Krihelinator.Scraper do
   def handle_response(%{status_code: 200, body: body}, elements) do
     {:ok, parse(body, elements)}
   end
-  def handle_response(%{status_code: 404}, _elements), do: {:error, "page_not_found"}
-  def handle_response(%{status_code: 451}, _elements), do: {:error, "dmca_takedown"}
-  def handle_response(%{status_code: 500}, _elements), do: {:error, "github_server_error"}
-  def handle_response(%{status_code: code, body: body}, _elements) do
-    # Some unknown failure: elaborate!
-    {:error, "Request failed with status_code #{code}:\n#{Floki.text(body)}"}
+  def handle_response(%{status_code: 404}, _elements), do: {:error, :page_not_found}
+  def handle_response(%{status_code: 451}, _elements), do: {:error, :dmca_takedown}
+  def handle_response(%{status_code: 500}, _elements), do: {:error, :github_server_error}
+  def handle_response(%{status_code: code}, _elements) do
+    Logger.error "Unknown scraping error occurred (#{code})."
+    {:error, :unknown_scraping_error}
   end
 
   @doc """
