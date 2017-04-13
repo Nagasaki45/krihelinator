@@ -118,22 +118,13 @@ defmodule Krihelinator.Periodic do
   def handle_scraped_data(data_stream) do
     data_stream
     |> Stream.map(fn
-      {:ok, data} -> update_or_create_from_data(data)
-      otherwise -> otherwise
+      {:ok, data} ->
+        Repo.update_or_create_from_data(GithubRepo, data, by: :name)
+      otherwise ->
+        otherwise
     end)
     |> Enum.reduce(%{}, &collect_results/2)
     |> Enum.each(&log_aggregated_results/1)
-  end
-
-  def update_or_create_from_data(data) do
-    GithubRepo
-    |> Repo.get_by(name: data.name)
-    |> case do
-      :nil -> %GithubRepo{}
-      struct -> struct
-    end
-    |> GithubRepo.changeset(data)
-    |> Repo.insert_or_update()
   end
 
   def collect_results({:error, %Ecto.Changeset{}}, acc), do: collect_results(:validation_error, acc)

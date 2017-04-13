@@ -16,4 +16,21 @@ defmodule Krihelinator.Repo do
       struct -> {:ok, struct}
     end
   end
+
+  @doc """
+  Update existing struct or create new one using data map. Return signature
+  is the same as Repo.insert_or_update.
+  Note that the the map passes through the model changeset.
+  """
+  def update_or_create_from_data(model, data, by: by) do
+    model
+    |> get_by([{by, Map.fetch!(data, by)}])
+    |> case do
+      :nil -> struct(model)
+      struct -> struct
+    end
+    |> model.changeset(data)
+    |> insert_or_update()
+  end
+
 end
