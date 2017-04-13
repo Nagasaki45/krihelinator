@@ -108,8 +108,25 @@ defmodule Krihelinator.Periodic do
   """
   def async_scrape(names) do
     names
-    |> Task.async_stream(&Scraper.scrape/1, @async_params)
+    |> Task.async_stream(&scrape_with_retries/1, @async_params)
     |> Stream.map(fn {:ok, cs} -> cs end)
+  end
+
+  @to_retry ~w(github_server_error timeout)a
+  @max_attempts 3
+
+  def scrape_with_retries(name, attempt \\ 1) do
+    case Scraper.scrape(name) do
+      {:error, error} when error in @to_retry ->
+        if attempt <= @max_attempts do
+          scrape_with_retries(name, attempt + 1)
+        else
+          Logger.error "Scraping #{name} failed with #{inspect(error)}"
+          {:error, error}
+        end
+      otherwise ->
+        otherwise
+    end
   end
 
   @doc """
