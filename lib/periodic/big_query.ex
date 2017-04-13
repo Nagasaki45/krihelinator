@@ -20,7 +20,7 @@ defmodule Krihelinator.Periodic.BigQuery do
   end
 
   defp run_query(start_date, end_date) do
-    query_string = "SELECT name, COUNT(DISTINCT author) AS authors, COUNT(*) AS pushes FROM (SELECT type, repo.name AS name, actor.id AS author, FROM TABLE_DATE_RANGE([githubarchive:day.], TIMESTAMP('#{start_date}'), TIMESTAMP('#{end_date}')) WHERE type = 'PushEvent') GROUP BY name HAVING (authors >= 2) AND (pushes >= 1) ORDER BY authors DESC;"
+    query_string = "SELECT name, COUNT(DISTINCT author) AS authors FROM (SELECT type, repo.name AS name, actor.id AS author, FROM TABLE_DATE_RANGE([githubarchive:day.], TIMESTAMP('#{start_date}'), TIMESTAMP('#{end_date}')) WHERE type = 'PushEvent') GROUP BY name HAVING authors >= 2 ORDER BY authors DESC;"
     query_struct = %BigQuery.Types.Query{query: query_string}
     BigQuery.Job.query("krihelinator", query_struct)
   end
