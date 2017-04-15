@@ -1,11 +1,10 @@
 defmodule Krihelinator.Periodic do
-  use GenServer
   require Logger
   import Ecto.Query, only: [from: 2]
   alias Krihelinator.{Periodic, Repo, GithubRepo, Language, Showcase, Scraper}
 
   @moduledoc """
-  Every `:periodic_schedule` do the following:
+  A background task that needs to run periodically on the Krihelinator server.
 
   - Mark all github repos as "dirty".
   - Scrape the github trending page for interesting, active, projects.
@@ -19,31 +18,8 @@ defmodule Krihelinator.Periodic do
   - Scrape showcases from github and update repos that belongs to showcases.
   """
 
-  def start_link do
-    GenServer.start_link(__MODULE__, [])
-  end
-
-  def init([]) do
-    reschedule_work()
-    {:ok, :nil}
-  end
-
-  def handle_info(:run, state) do
-    run()
-    reschedule_work()
-    {:noreply, state}
-  end
-
   @doc """
-  Schedule the next run in `:periodic_schedule` milliseconds.
-  """
-  def reschedule_work do
-    next_run = Application.fetch_env!(:krihelinator, :periodic_schedule)
-    Process.send_after(self(), :run, next_run)
-  end
-
-  @doc """
-  The tasks to run every periodic loop.
+  Main entry point.
   """
   def run() do
     Logger.info "Periodic process kicked in!"

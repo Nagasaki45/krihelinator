@@ -20,7 +20,7 @@ defmodule Krihelinator.Mixfile do
     [mod: {Krihelinator, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :httpoison, :big_query, :timex, :floki,
-                    :edeliver]]
+                    :quantum, :edeliver]]
   end
 
   # Specifies which paths to compile per environment.
@@ -47,6 +47,7 @@ defmodule Krihelinator.Mixfile do
       {:big_query, github: "nagasaki45/big_query"},
       {:credo, "~> 0.5.3", only: [:dev, :test]},
       {:distillery, "~> 1.3"},
+      {:quantum, "~> 1.9"},
       {:edeliver, "~> 1.4"},
     ]
   end

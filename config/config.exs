@@ -7,9 +7,23 @@ use Mix.Config
 
 # General application configuration
 config :krihelinator,
-  ecto_repos: [Krihelinator.Repo],
-  periodic_schedule: 6 * 60 * 60 * 1000,  # 6 hours
-  history_keeper_schedule: 3 * 24 * 60 * 60 * 1000  # 3 days
+  ecto_repos: [Krihelinator.Repo]
+
+# Configure background jobs
+config :quantum,
+  default_overlap: false
+
+config :quantum, :krihelinator,
+  cron: [
+    periodic: [
+      schedule: "0 */6 * * * *",  # Every 6 hours
+      task: {Krihelinator.Periodic, :run}
+    ],
+    keep_history: [
+      schedule: "0 5 */3 * * *",  # Every 3 days on 5am
+      task: {Krihelinator.HistoryKeeper, :run}
+    ]
+  ]
 
 # Configures the endpoint
 config :krihelinator, Krihelinator.Endpoint,

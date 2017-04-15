@@ -17,10 +17,6 @@ defmodule Krihelinator do
       supervisor(Krihelinator.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Krihelinator.Endpoint, []),
-      # Start the background periodic process
-      worker(Krihelinator.Periodic, []),
-      # Start the background history keeper process
-      worker(Krihelinator.HistoryKeeper, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
