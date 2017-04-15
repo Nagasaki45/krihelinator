@@ -47,7 +47,6 @@ defmodule Krihelinator.Mixfile do
       {:big_query, github: "nagasaki45/big_query"},
       {:credo, "~> 0.5.3", only: [:dev, :test]},
       {:distillery, "~> 1.3"},
-      {:project_info, "~> 1.0.0", only: :dev},
       {:edeliver, "~> 1.4"},
     ]
   end
