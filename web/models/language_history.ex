@@ -14,13 +14,15 @@ defmodule Krihelinator.LanguageHistory do
     field :timestamp, :utc_datetime
   end
 
+  @allowed ~w(krihelimeter num_of_repos timestamp)a
+  @required ~w(krihelimeter timestamp)a
+
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :krihelimeter, :num_of_repos])
-    |> validate_required([:krihelimeter, :num_of_repos])
-    |> put_change(:timestamp, DateTime.utc_now())
+    |> cast(params, @allowed)
+    |> validate_required(@required)
   end
 end

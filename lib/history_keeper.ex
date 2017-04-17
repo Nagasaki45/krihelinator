@@ -23,7 +23,8 @@ defmodule Krihelinator.HistoryKeeper do
   """
   def keep_language_history(language) do
     params = %{krihelimeter: language.krihelimeter,
-               num_of_repos: language.num_of_repos}
+               num_of_repos: language.num_of_repos,
+               timestamp: DateTime.utc_now()}
     %LanguageHistory{}
     |> LanguageHistory.changeset(params)
     |> Ecto.Changeset.put_assoc(:language, language)
