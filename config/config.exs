@@ -35,7 +35,7 @@ config :krihelinator, Krihelinator.Endpoint,
 
 # Configures Elixir's Logger
 config :logger, :console,
-  format: "$date $time $metadata[$level] $message\n",
+  format: "$metadata[$level] $message\n",
   metadata: [:request_id]
 
 # Configure your database
