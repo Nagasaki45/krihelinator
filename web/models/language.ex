@@ -5,6 +5,7 @@ defmodule Krihelinator.Language do
   A programming language found on Github.
   """
 
+  @derive {Poison.Encoder, only: ~w(id name krihelimeter)a}
   schema "languages" do
     field :name, :string
     field :krihelimeter, :integer

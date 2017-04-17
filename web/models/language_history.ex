@@ -6,6 +6,7 @@ defmodule Krihelinator.LanguageHistory do
   language trends.
   """
 
+  @derive {Poison.Encoder, only: ~w(id language_id krihelimeter timestamp)a}
   schema "languages_history" do
     field :name, :string
     belongs_to :language, Krihelinator.Language

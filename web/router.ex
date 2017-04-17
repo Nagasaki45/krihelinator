@@ -25,4 +25,8 @@ defmodule Krihelinator.Router do
   scope "/badge", Krihelinator do
     get "/:user/:repo", BadgeController, :badge
   end
+
+  scope "/data", Krihelinator do
+    get "/", DataController, :all
+  end
 end

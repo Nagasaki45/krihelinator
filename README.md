@@ -19,6 +19,7 @@ To start your app:
   * Rename and move the file you just downloaded to `priv/bigquery_private_key.json`.
   * Create the DB: `mix ecto.create`.
   * Migrate to the latest DB scheme: `mix ecto.migrate`.
+  * Optionally, get updated production data [from production](http://krihelinator.xyz/data) and: `mix krihelinator.import path/to/json/file`.
   * Spin the server `mix phoenix.server`.
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.

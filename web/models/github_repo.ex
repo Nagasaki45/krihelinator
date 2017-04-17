@@ -6,6 +6,12 @@ defmodule Krihelinator.GithubRepo do
   Ecto model of a repository on github.
   """
 
+  @derive {
+    Poison.Encoder, only:
+      ~w(id name description language_id showcase_id merged_pull_requests
+        proposed_pull_requests closed_issues new_issues commits authors
+        trending user_requested)a
+  }
   schema "repos" do
     field :name, :string
     field :description, :string

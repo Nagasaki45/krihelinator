@@ -5,6 +5,7 @@ defmodule Krihelinator.Showcase do
   Github's showcase category.
   """
 
+  @derive {Poison.Encoder, only: ~w(id name href description)a}
   schema "showcases" do
     field :name, :string
     field :href, :string

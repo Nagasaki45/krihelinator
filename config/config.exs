@@ -45,7 +45,8 @@ config :krihelinator, Krihelinator.Repo,
   password: "postgres",
   database: "krihelinator_prod",
   hostname: "localhost",
-  pool_size: 10
+  pool_size: 10,
+  ownership_timeout: 60_000
 
 config :big_query,
   bigquery_private_key_hosted_by_app: :krihelinator,
