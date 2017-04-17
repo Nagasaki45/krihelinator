@@ -3,7 +3,7 @@ defmodule Krihelinator.LanguageTest do
 
   alias Krihelinator.Language
 
-  @valid_attrs %{krihelimeter: 42, name: "some content", num_of_repos: 42}
+  @valid_attrs %{krihelimeter: 42, name: "some content"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

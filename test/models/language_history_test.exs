@@ -3,8 +3,7 @@ defmodule Krihelinator.LanguageHistoryTest do
 
   alias Krihelinator.LanguageHistory
 
-  @valid_attrs %{krihelimeter: 42, num_of_repos: 42,
-                 timestamp: DateTime.utc_now()}
+  @valid_attrs %{krihelimeter: 42, timestamp: DateTime.utc_now()}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

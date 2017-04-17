@@ -14,7 +14,7 @@ defmodule Krihelinator.Periodic do
     update stats.
   - Clean the remaining dirty repos. These repos failed to update or fell bellow
     activity threshold.
-  - Update the total krihelimeter and num_of_repos for all languages.
+  - Update the total krihelimeter for all languages.
   - Scrape showcases from github and update repos that belongs to showcases.
   """
 
@@ -141,7 +141,7 @@ defmodule Krihelinator.Periodic do
   end
 
   @doc """
-  Update the total krihelimeter and num_of_repos for all languages.
+  Update the total krihelimeter for all languages.
   """
   def update_languages_stats() do
     Logger.info "Updating languages statistics"
@@ -151,7 +151,6 @@ defmodule Krihelinator.Periodic do
     |> Enum.each(fn language ->
       changes = %{
         krihelimeter: Enum.sum(for r <- language.repos, do: r.krihelimeter),
-        num_of_repos: length(language.repos)
       }
       language
       |> Language.changeset(changes)

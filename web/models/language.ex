@@ -9,7 +9,6 @@ defmodule Krihelinator.Language do
   schema "languages" do
     field :name, :string
     field :krihelimeter, :integer
-    field :num_of_repos, :integer
     has_many :repos, Krihelinator.GithubRepo
     has_many :history, Krihelinator.LanguageHistory
 
@@ -21,7 +20,7 @@ defmodule Krihelinator.Language do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :krihelimeter, :num_of_repos])
+    |> cast(params, [:name, :krihelimeter])
     |> validate_required([:name])
     |> unique_constraint(:name)
   end
