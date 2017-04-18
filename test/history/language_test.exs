@@ -1,9 +1,9 @@
-defmodule Krihelinator.LanguageTest do
+defmodule Krihelinator.LanguageHistoryTest do
   use Krihelinator.ModelCase
 
-  alias Krihelinator.Language
+  alias Krihelinator.History.Language
 
-  @valid_attrs %{krihelimeter: 42, name: "some content"}
+  @valid_attrs %{krihelimeter: 42, timestamp: DateTime.utc_now()}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

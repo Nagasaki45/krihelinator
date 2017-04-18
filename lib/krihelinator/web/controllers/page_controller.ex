@@ -18,7 +18,7 @@ defmodule Krihelinator.PageController do
   end
   def repositories(conn, params) do
     query_string = Map.get(params, "query")
-    query = from(r in GithubRepo,
+    query = from(r in GH.Repo,
       where: ilike(r.name, ^"%#{query_string}%"),
       order_by: [desc: r.krihelimeter],
       limit: 50,
@@ -29,18 +29,18 @@ defmodule Krihelinator.PageController do
 
   def repository(conn, %{"user" => user, "repo" => repo}) do
     repository_name = "#{user}/#{repo}"
-    repo = Repo.get_by!(GithubRepo, name: repository_name)
+    repo = Repo.get_by!(GH.Repo, name: repository_name)
     repo = Repo.preload(repo, :language)
     render(conn, "repository.html", repo: repo)
   end
 
   def language(conn, %{"language" => language_name}) do
-    repos_query = from(r in GithubRepo,
+    repos_query = from(r in GH.Repo,
                        order_by: [desc: r.krihelimeter],
                        limit: 50)
 
     language =
-      Language
+      GH.Language
       |> Repo.get_by!(name: language_name)
       |> Repo.preload([repos: repos_query])
 
@@ -48,7 +48,7 @@ defmodule Krihelinator.PageController do
   end
 
   def languages(conn, _params) do
-    query = from(l in Language,
+    query = from(l in GH.Language,
                  order_by: [{:desc, :krihelimeter}],
                  where: l.krihelimeter > 0)
     languages = Repo.all(query)
@@ -60,7 +60,7 @@ defmodule Krihelinator.PageController do
 
       {:ok, language_names} ->
 
-        query = from(h in Krihelinator.LanguageHistory,
+        query = from(h in Krihelinator.History.Language,
                      order_by: :timestamp,
                      preload: :language)
 
@@ -87,8 +87,8 @@ defmodule Krihelinator.PageController do
   end
 
   def showcases(conn, _params) do
-    query = from(p in Showcase,
-                 join: r in GithubRepo, on: [showcase_id: p.id],
+    query = from(p in GH.Showcase,
+                 join: r in GH.Repo, on: [showcase_id: p.id],
                  group_by: p.id,
                  having: count(r.id) > 0)
     showcases = Repo.all(query)
@@ -96,13 +96,13 @@ defmodule Krihelinator.PageController do
   end
 
   def showcase(conn, %{"showcase" => showcase_href}) do
-    repos_query = from(r in GithubRepo,
+    repos_query = from(r in GH.Repo,
                        order_by: [desc: r.krihelimeter],
                        preload: :language,
                        limit: 50)
 
     showcase =
-      Showcase
+      GH.Showcase
       |> Repo.get_by!(href: showcase_href)
       |> Repo.preload([repos: repos_query])
 

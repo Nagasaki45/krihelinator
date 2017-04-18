@@ -1,4 +1,4 @@
-defmodule Krihelinator.Showcase do
+defmodule Krihelinator.Github.Showcase do
   use Krihelinator.Web, :model
 
   @moduledoc """
@@ -10,7 +10,7 @@ defmodule Krihelinator.Showcase do
     field :name, :string
     field :href, :string
     field :description, :string
-    has_many :repos, Krihelinator.GithubRepo
+    has_many :repos, Krihelinator.Github.Repo
 
     timestamps()
   end

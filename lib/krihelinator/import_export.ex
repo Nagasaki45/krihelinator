@@ -48,8 +48,8 @@ defmodule Krihelinator.ImportExport do
   repo.
   """
   def export_krihelinator_data() do
-    models = [Krihelinator.Language, Krihelinator.Showcase,
-              Krihelinator.GithubRepo, Krihelinator.LanguageHistory]
+    alias Krihelinator.Github, as: GH
+    models = [GH.Language, GH.Showcase, GH.Repo, Krihelinator.History.Language]
     repo = Krihelinator.Repo
     export_data(models, repo)
   end

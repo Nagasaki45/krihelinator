@@ -25,7 +25,7 @@ defmodule Krihelinator.ConnCase do
       import Ecto.Changeset
       import Ecto.Query
 
-      import Krihelinator.Router.Helpers
+      import Krihelinator.Web.Router.Helpers
 
       # The default endpoint for testing
       @endpoint Krihelinator.Endpoint

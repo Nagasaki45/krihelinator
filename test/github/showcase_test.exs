@@ -1,7 +1,7 @@
 defmodule Krihelinator.ShowcaseTest do
   use Krihelinator.ModelCase
 
-  alias Krihelinator.Showcase
+  alias Krihelinator.Github.Showcase
 
   @valid_attrs %{href: "some content", name: "some content"}
   @invalid_attrs %{}

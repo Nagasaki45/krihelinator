@@ -1,4 +1,4 @@
-defmodule Krihelinator.LanguageHistory do
+defmodule Krihelinator.History.Language do
   use Krihelinator.Web, :model
 
   @moduledoc """
@@ -9,7 +9,7 @@ defmodule Krihelinator.LanguageHistory do
   @derive {Poison.Encoder, only: ~w(id language_id krihelimeter timestamp)a}
   schema "languages_history" do
     field :name, :string
-    belongs_to :language, Krihelinator.Language
+    belongs_to :language, Krihelinator.Github.Language
     field :krihelimeter, :integer
     field :timestamp, :utc_datetime
   end

@@ -19,9 +19,9 @@ config :quantum, :krihelinator,
       schedule: "0 */6 * * * *",  # Every 6 hours
       task: {Krihelinator.Periodic, :run}
     ],
-    keep_history: [
+    keep_languages_history: [
       schedule: "0 5 */3 * * *",  # Every 3 days on 5am
-      task: {Krihelinator.HistoryKeeper, :run}
+      task: {Krihelinator.History, :keep_languages_history}
     ]
   ]
 

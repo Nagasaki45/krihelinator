@@ -1,6 +1,6 @@
-defmodule Krihelinator.GithubRepo do
+defmodule Krihelinator.Github.Repo do
   use Krihelinator.Web, :model
-  alias Krihelinator.{Repo, Language}
+  alias Krihelinator.Github, as: GH
 
   @moduledoc """
   Ecto model of a repository on github.
@@ -17,8 +17,8 @@ defmodule Krihelinator.GithubRepo do
     field :description, :string
     field :language_name, :string, virtual: true
     field :fork_of, :string, virtual: true
-    belongs_to :language, Krihelinator.Language
-    belongs_to :showcase, Krihelinator.Showcase
+    belongs_to :language, GH.Language
+    belongs_to :showcase, GH.Showcase
     field :merged_pull_requests, :integer
     field :proposed_pull_requests, :integer
     field :closed_issues, :integer
@@ -103,7 +103,7 @@ defmodule Krihelinator.GithubRepo do
   end
 
   def put_language_assoc(%{changes: %{language_name: lang}} = changeset) do
-    {:ok, language} = Repo.get_or_create_by(Language, name: lang)
+    {:ok, language} = Krihelinator.Repo.get_or_create_by(GH.Language, name: lang)
     changeset
     |> put_change(:language_id, language.id)
   end

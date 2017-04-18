@@ -1,4 +1,4 @@
-defmodule Krihelinator.Router do
+defmodule Krihelinator.Web.Router do
   use Krihelinator.Web, :router
 
   pipeline :browser do

@@ -39,5 +39,5 @@ defmodule Krihelinator.Endpoint do
     key: "_krihelinator_key",
     signing_salt: "lZoUI4Gb"
 
-  plug Krihelinator.Router
+  plug Krihelinator.Web.Router
 end

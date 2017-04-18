@@ -36,9 +36,10 @@ defmodule Krihelinator.ImportExportTest do
       list
       |> Enum.map(fn %{"model" => model_name} -> model_name end)
       |> Enum.into(MapSet.new())
-    for name <- ~w(GithubRepo Language LanguageHistory Showcase) do
-      assert MapSet.member?(model_names, "Elixir.Krihelinator." <> name)
+    for name <- ~w(Repo Language Showcase) do
+      assert MapSet.member?(model_names, "Elixir.Krihelinator.Github." <> name)
     end
+    assert MapSet.member?(model_names, "Elixir.Krihelinator.History.Language")
   end
 
   test "import fixture and then export create the same content" do
@@ -60,30 +61,31 @@ defmodule Krihelinator.ImportExportTest do
   end
 
   test "seed, export, delete all, and make sure import still works" do
-    alias Krihelinator.{Repo, GithubRepo, Language, LanguageHistory, Showcase}
+    alias Krihelinator.Github, as: GH
+    alias Krihelinator.History.Language, as: LanguageHistory
 
     # Seed
 
     elixir =
-      %Language{}
-      |> Language.changeset(%{name: "Elixir"})
-      |> Repo.insert!()
+      %GH.Language{}
+      |> GH.Language.changeset(%{name: "Elixir"})
+      |> Krihelinator.Repo.insert!()
 
     showcase =
-      %Showcase{}
-      |> Showcase.changeset(%{name: "Good to know!", href: "g-t-k"})
-      |> Repo.insert!()
+      %GH.Showcase{}
+      |> GH.Showcase.changeset(%{name: "Good to know!", href: "g-t-k"})
+      |> Krihelinator.Repo.insert!()
 
     repo_params = %{
       name: "my/repo", authors: 1, commits: 2,
       merged_pull_requests: 3, proposed_pull_requests: 4, closed_issues: 5,
       new_issues: 6, description: "my awesome project!", user_requested: true
     }
-    %GithubRepo{}
-    |> GithubRepo.changeset(repo_params)
+    %GH.Repo{}
+    |> GH.Repo.changeset(repo_params)
     |> Ecto.Changeset.put_assoc(:language, elixir)
     |> Ecto.Changeset.put_assoc(:showcase, showcase)
-    |> Repo.insert!()
+    |> Krihelinator.Repo.insert!()
 
     now = DateTime.utc_now()
     yesterday = Timex.shift(now, days: -1)
@@ -91,7 +93,7 @@ defmodule Krihelinator.ImportExportTest do
       %LanguageHistory{}
       |> LanguageHistory.changeset(%{krihelimeter: 100, timestamp: dt})
       |> Ecto.Changeset.put_assoc(:language, elixir)
-      |> Repo.insert!()
+      |> Krihelinator.Repo.insert!()
     end
 
     # Export
@@ -100,8 +102,8 @@ defmodule Krihelinator.ImportExportTest do
 
     # Delete all
 
-    for model <- [GithubRepo, LanguageHistory, Showcase, Language] do
-      Repo.delete_all(model)
+    for model <- [GH.Repo, LanguageHistory, GH.Showcase, GH.Language] do
+      Krihelinator.Repo.delete_all(model)
     end
 
     # Import
@@ -110,17 +112,17 @@ defmodule Krihelinator.ImportExportTest do
 
     # Basic asserts
 
-    histories = Repo.all(LanguageHistory)
+    histories = Krihelinator.Repo.all(LanguageHistory)
     assert length(histories) == 2
     [newer, older] = histories
     assert newer.timestamp == now
     assert older.timestamp == yesterday
 
     repo =
-      GithubRepo
-      |> Repo.get_by(name: "my/repo")
-      |> Repo.preload(:language)
-      |> Repo.preload(:showcase)
+      GH.Repo
+      |> Krihelinator.Repo.get_by(name: "my/repo")
+      |> Krihelinator.Repo.preload(:language)
+      |> Krihelinator.Repo.preload(:showcase)
 
     assert repo.language.name == "Elixir"
     assert repo.showcase.href == "g-t-k"

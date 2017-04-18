@@ -1,4 +1,4 @@
-defmodule Krihelinator.Language do
+defmodule Krihelinator.Github.Language do
   use Krihelinator.Web, :model
 
   @moduledoc """
@@ -9,8 +9,8 @@ defmodule Krihelinator.Language do
   schema "languages" do
     field :name, :string
     field :krihelimeter, :integer
-    has_many :repos, Krihelinator.GithubRepo
-    has_many :history, Krihelinator.LanguageHistory
+    has_many :repos, Krihelinator.Github.Repo
+    has_many :history, Krihelinator.History.Language
 
     timestamps()
   end
