@@ -7,23 +7,18 @@ defmodule Krihelinator.PageController do
     |> repositories(%{})
   end
   def repositories(conn, %{"query" => query_string, "type" => "github"}) do
-    case get_from_db_or_scrape(query_string) do
+    case GH.get_repo_by_name(query_string) do
       {:error, _whatever} ->
         conn
         |> put_flash(:error, "The repository \"#{query_string}\" does not exist.")
         |> repositories(%{})
       {:ok, model} ->
-        redirect(conn, to: repository_path(conn, model.name))
+        redirect(conn, to: GH.repo_path(conn, model.name))
     end
   end
   def repositories(conn, params) do
     query_string = Map.get(params, "query")
-    query = from(r in GH.Repo,
-      where: ilike(r.name, ^"%#{query_string}%"),
-      order_by: [desc: r.krihelimeter],
-      limit: 50,
-      preload: :language)
-    repos = Repo.all(query)
+    repos = GH.query_repos_by_name(query_string)
     render conn, "repositories.html", repos: repos
   end
 
@@ -35,23 +30,12 @@ defmodule Krihelinator.PageController do
   end
 
   def language(conn, %{"language" => language_name}) do
-    repos_query = from(r in GH.Repo,
-                       order_by: [desc: r.krihelimeter],
-                       limit: 50)
-
-    language =
-      GH.Language
-      |> Repo.get_by!(name: language_name)
-      |> Repo.preload([repos: repos_query])
-
+    language = GH.get_language_by_name!(language_name)
     render(conn, "language.html", language: language)
   end
 
   def languages(conn, _params) do
-    query = from(l in GH.Language,
-                 order_by: [{:desc, :krihelimeter}],
-                 where: l.krihelimeter > 0)
-    languages = Repo.all(query)
+    languages = GH.all_languages()
     render(conn, "languages.html", languages: languages)
   end
 
@@ -59,25 +43,10 @@ defmodule Krihelinator.PageController do
     case Krihelinator.InputValidator.validate_history_query(params) do
 
       {:ok, language_names} ->
-
-        query = from(h in Krihelinator.History.Language,
-                     order_by: :timestamp,
-                     preload: :language)
-
-        json =
-          query
-          |> Repo.all()
-          |> Stream.filter(&(&1.language.name in language_names))
-          |> Stream.map(&(
-              %{name: &1.language.name,
-                timestamp: &1.timestamp,
-                value: &1.krihelimeter}
-          ))
-          |> Poison.encode!()
+        json = Krihelinator.History.get_languages_history_json(language_names)
         render conn, "languages_history.html", json: json
 
       {:error, error} ->
-
         conn
         |> put_flash(:error, error)
         |> put_status(:bad_request)
@@ -87,25 +56,12 @@ defmodule Krihelinator.PageController do
   end
 
   def showcases(conn, _params) do
-    query = from(p in GH.Showcase,
-                 join: r in GH.Repo, on: [showcase_id: p.id],
-                 group_by: p.id,
-                 having: count(r.id) > 0)
-    showcases = Repo.all(query)
+    showcases = GH.all_showcases()
     render conn, "showcases.html", showcases: showcases
   end
 
   def showcase(conn, %{"showcase" => showcase_href}) do
-    repos_query = from(r in GH.Repo,
-                       order_by: [desc: r.krihelimeter],
-                       preload: :language,
-                       limit: 50)
-
-    showcase =
-      GH.Showcase
-      |> Repo.get_by!(href: showcase_href)
-      |> Repo.preload([repos: repos_query])
-
+    showcase = GH.get_showcase_by_href!(showcase_href)
     render(conn, "showcase.html", showcase: showcase)
   end
 

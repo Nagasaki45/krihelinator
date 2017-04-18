@@ -35,7 +35,6 @@ defmodule Krihelinator.Web do
       import Ecto
       import Ecto.Query
 
-      import Krihelinator.Web.Controllers.Helpers
       import Krihelinator.Web.Router.Helpers
     end
   end
@@ -50,7 +49,6 @@ defmodule Krihelinator.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import Krihelinator.Web.Controllers.Helpers
       import Krihelinator.Web.Router.Helpers
     end
   end

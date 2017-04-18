@@ -5,6 +5,8 @@ defmodule Krihelinator.History do
   A module to keep track of the history.
   """
 
+  import Ecto.Query, only: [from: 2]
+
   @doc """
   Create new History.Language record with stats for any language in the DB.
   """
@@ -23,5 +25,21 @@ defmodule Krihelinator.History do
     |> Krihelinator.History.Language.changeset(params)
     |> Ecto.Changeset.put_assoc(:language, language)
     |> Krihelinator.Repo.insert!()
+  end
+
+  def get_languages_history_json(language_names) do
+    query = from(h in Krihelinator.History.Language,
+                 order_by: :timestamp,
+                 preload: :language)
+
+    query
+    |> Krihelinator.Repo.all()
+    |> Stream.filter(&(&1.language.name in language_names))  # TODO in query
+    |> Stream.map(&(  # TODO simplify this with krihelimenter
+      %{name: &1.language.name,
+        timestamp: &1.timestamp,
+        value: &1.krihelimeter}
+    ))
+    |> Poison.encode!()
   end
 end
