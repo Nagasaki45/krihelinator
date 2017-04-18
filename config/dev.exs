@@ -15,8 +15,8 @@ config :krihelinator, Krihelinator.Web.Endpoint,
   live_reload: [
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
-      ~r{web/views/.*(ex)$},  # TODO check if still needed
-      ~r{web/templates/.*(eex)$}  # TODO check if still needed
+      ~r{lib/krihelinator/web/views/.*(ex)$},
+      ~r{lib/krihelinator/web/templates/.*(eex)$}
     ]
   ]
 
