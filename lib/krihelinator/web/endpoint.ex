@@ -1,4 +1,4 @@
-defmodule Krihelinator.Endpoint do
+defmodule Krihelinator.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :krihelinator
 
   # Serve at "/" the static files from "priv/static" directory.

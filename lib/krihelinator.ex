@@ -16,7 +16,7 @@ defmodule Krihelinator do
       # Start the Ecto repository
       supervisor(Krihelinator.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(Krihelinator.Endpoint, []),
+      supervisor(Krihelinator.Web.Endpoint, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
@@ -28,7 +28,7 @@ defmodule Krihelinator do
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
-    Krihelinator.Endpoint.config_change(changed, removed)
+    Krihelinator.Web.Endpoint.config_change(changed, removed)
     :ok
   end
 end

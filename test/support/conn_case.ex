@@ -28,7 +28,7 @@ defmodule Krihelinator.ConnCase do
       import Krihelinator.Web.Router.Helpers
 
       # The default endpoint for testing
-      @endpoint Krihelinator.Endpoint
+      @endpoint Krihelinator.Web.Endpoint
     end
   end
 
