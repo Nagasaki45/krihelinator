@@ -5,13 +5,6 @@ defmodule Krihelinator.ImportExport do
   """
 
   @doc """
-  A wrapper around the `import_data` function with relevant repo.
-  """
-  def import_krihelinator_data(data) do
-    import_data(data, Krihelinator.Repo)
-  end
-
-  @doc """
   Populate the DB with data from json string.
 
   json: A string.
