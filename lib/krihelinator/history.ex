@@ -29,16 +29,17 @@ defmodule Krihelinator.History do
 
   def get_languages_history_json(language_names) do
     query = from(h in Krihelinator.History.Language,
+                 join: l in assoc(h, :language),
+                 where: l.name in ^language_names,
                  order_by: :timestamp,
                  preload: :language)
 
     query
     |> Krihelinator.Repo.all()
-    |> Stream.filter(&(&1.language.name in language_names))  # TODO in query
-    |> Stream.map(&(  # TODO simplify this with krihelimenter
+    |> Stream.map(&(
       %{name: &1.language.name,
         timestamp: &1.timestamp,
-        value: &1.krihelimeter}
+        krihelimeter: &1.krihelimeter}
     ))
     |> Poison.encode!()
   end
