@@ -32,12 +32,11 @@ defmodule Krihelinator.Web do
 
       alias Krihelinator.Repo
       alias Krihelinator.Github, as: GH
-      import Krihelinator.Web.Controllers.Helpers
       import Ecto
       import Ecto.Query
 
+      import Krihelinator.Web.Controllers.Helpers
       import Krihelinator.Web.Router.Helpers
-      import Krihelinator.Gettext
     end
   end
 
@@ -53,8 +52,6 @@ defmodule Krihelinator.Web do
 
       import Krihelinator.Web.Controllers.Helpers
       import Krihelinator.Web.Router.Helpers
-      import Krihelinator.ErrorHelpers
-      import Krihelinator.Gettext
     end
   end
 

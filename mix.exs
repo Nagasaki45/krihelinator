@@ -6,7 +6,7 @@ defmodule Krihelinator.Mixfile do
      version: "0.0.1",
      elixir: "~> 1.2",
      elixirc_paths: elixirc_paths(Mix.env),
-     compilers: [:phoenix, :gettext] ++ Mix.compilers,
+     compilers: [:phoenix] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
@@ -18,7 +18,7 @@ defmodule Krihelinator.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Krihelinator, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger,
                     :phoenix_ecto, :postgrex, :httpoison, :big_query, :timex, :floki,
                     :quantum, :edeliver]]
   end
@@ -38,7 +38,6 @@ defmodule Krihelinator.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.6"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
-      {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:httpoison, "~> 0.11.0", override: true},
       {:poison, "~> 2.2", override: true},
