@@ -8,17 +8,37 @@ defmodule Krihelinator.ImportExport do
   Populate the DB with data from json string.
 
   json: A string.
-  repo: A module with `insert` and `transaction` functions. Sound familiar?
+  repo: An Ecto repo.
   """
   def import_data(data, repo) do
+    decoded = decode_data(data)
+    do_import_data(decoded, repo)
+    Enum.each(decoded, &fix_postgres_next_val(&1.model, repo))
+  end
+
+  defp decode_data(data) do
     data
     |> Poison.decode!(keys: :atoms!)
-    |> Stream.flat_map(fn %{model: model_name, items: items} ->
-      model = String.to_existing_atom(model_name)
+    |> Enum.map(fn model_data ->
+      %{model_data | model: String.to_existing_atom(model_data.model)}
+    end)
+  end
+
+  defp do_import_data(data, repo) do
+    data
+    |> Stream.flat_map(fn %{model: model, items: items} ->
       Stream.map(items, &create_changeset(model, &1))
     end)
     |> Enum.each(&repo.insert!/1)
   end
+
+  # Fix for #163, reset postgres next_val
+  defp fix_postgres_next_val(model, repo) do
+    table = model.__schema__(:source)
+    sql = "SELECT setval('#{table}_id_seq', (SELECT MAX(id) from \"#{table}\"));"
+    Ecto.Adapters.SQL.query(repo, sql, [])
+  end
+
 
   defp create_changeset(model, item) do
     associations = Enum.filter(item, fn {key, _} -> is_association_key?(key) end)

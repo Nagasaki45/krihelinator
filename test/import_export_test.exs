@@ -127,4 +127,26 @@ defmodule Krihelinator.ImportExportTest do
     assert repo.language.name == "Elixir"
     assert repo.showcase.href == "g-t-k"
   end
+
+  test "insert new language succeeds after import. Bug #163" do
+
+    # Reset the languages_id_seq to 1
+    Ecto.Adapters.SQL.query(Krihelinator.Repo, "SELECT setval('languages_id_seq', 1);", [])
+
+    # Import one language with id 2
+    [
+      %{
+        model: "Elixir.Krihelinator.Github.Language",
+        items: [
+          %{id: 2, name: "MosheLang", krihelimeter: 1000}
+        ]
+      }
+    ]
+    |> Poison.encode!()
+    |> import_data(Krihelinator.Repo)
+
+    # Try to create a language with auto generated id
+    jacob_lang_struct = %Krihelinator.Github.Language{name: "JacobLang"}
+    {:ok, _struct} = Krihelinator.Repo.insert(jacob_lang_struct)
+  end
 end
