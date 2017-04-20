@@ -9,7 +9,7 @@ defmodule Krihelinator.Github do
   alias Krihelinator.Repo
 
   @doc """
-  Fuzzy / scrapy get repo by name.
+  Case-insensitive / scrapy get repo by name.
   """
   def get_repo_by_name(name) do
     query = from(r in GH.Repo,
