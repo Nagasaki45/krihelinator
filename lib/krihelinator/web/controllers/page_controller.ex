@@ -25,7 +25,7 @@ defmodule Krihelinator.PageController do
   def repository(conn, %{"user" => user, "repo" => repo}) do
     repository_name = "#{user}/#{repo}"
     case GH.get_repo_by_name(repository_name) do
-      {:error, error} ->
+      {:error, _error} ->
         conn
         |> put_status(:not_found)
         |> render(Krihelinator.ErrorView, "404.html")
