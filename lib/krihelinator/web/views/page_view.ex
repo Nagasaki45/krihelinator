@@ -14,6 +14,7 @@ defmodule Krihelinator.PageView do
   Path to the language history page.
   """
   def language_history_path(conn, language) do
+    language = URI.encode_www_form(language)
     page_path(conn, :languages_history) <> "?languages=[\"#{language}\"]"
   end
 end

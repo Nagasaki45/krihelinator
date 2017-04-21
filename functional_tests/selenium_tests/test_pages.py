@@ -5,6 +5,8 @@ information properly.
 
 import random
 
+import requests
+
 
 def validate_page_contains_list_of_repositories(driver):
     list_element = driver.find_element_by_css_selector('.list-group')
@@ -69,6 +71,23 @@ def test_language(driver, base_url):
     assert 'Total Krihelimeter' in language_stats
 
     validate_page_contains_list_of_repositories(driver)
+
+
+def test_language_that_requires_encoding(driver, base_url):
+    """
+    Make sure the language page and history page for languages like C#
+    are working. Bug #165.
+    """
+    driver.get(base_url + '/languages')
+    driver.find_element_by_link_text("C#").click()
+    driver.assert_in_current_title("C#")
+
+    # Get info to get the history page with requests.
+    # We need the http code, which selenium won't give.
+    button = driver.find_element_by_link_text("Show language history")
+    history_page_url = button.get_attribute('href')
+    resp = requests.get(history_page_url)
+    assert resp.status_code == 200
 
 
 def test_history(driver, base_url):
