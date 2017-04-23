@@ -4,7 +4,7 @@ BUILD_HOST="build.krihelinator.xyz"
 BUILD_USER="ubuntu"
 BUILD_AT="/tmp/edeliver/krihelinator/builds"
 
-PRODUCTION_HOSTS="krihelinator.xyz"
+PRODUCTION_HOSTS="prod.krihelinator.xyz"
 PRODUCTION_USER="ubuntu"
 DELIVER_TO="/home/ubuntu"
 
