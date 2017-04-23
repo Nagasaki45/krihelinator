@@ -8,6 +8,7 @@ ExecStart=/home/ubuntu/krihelinator/bin/krihelinator foreground
 ExecStop=/home/ubuntu/krihelinator/bin/krihelinator stop
 User=ubuntu
 Environment=LANG=en_US.UTF-8
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
