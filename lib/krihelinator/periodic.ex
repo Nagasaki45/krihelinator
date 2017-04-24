@@ -117,14 +117,14 @@ defmodule Krihelinator.Periodic do
       otherwise ->
         otherwise
     end)
-    |> Enum.reduce(%{}, &collect_results/2)
+    |> Stream.map(&simplify_result/1)
+    |> Enum.reduce(%{}, fn x, acc -> Map.update(acc, x, 1, &(&1 + 1)) end)
     |> Enum.each(&log_aggregated_results/1)
   end
 
-  def collect_results({:error, %Ecto.Changeset{}}, acc), do: collect_results(:validation_error, acc)
-  def collect_results({:error, error}, acc), do: collect_results(error, acc)
-  def collect_results({:ok, _whatever}, acc), do: collect_results(:ok, acc)
-  def collect_results(something, acc), do: Map.update(acc, something, 1, &(&1 + 1))
+  def simplify_result({:error, %Ecto.Changeset{}}), do: :validation_error
+  def simplify_result({:error, error}), do: error
+  def simplify_result({:ok, _whatever}), do: :ok
 
   def log_aggregated_results({key, count}) do
     Logger.info "#{count} operations ended with #{inspect(key)}"
