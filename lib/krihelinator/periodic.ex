@@ -23,8 +23,10 @@ defmodule Krihelinator.Periodic do
     # This is an ugly hack to force GC every now and then on the periodic
     # process. TODO search for a better solution!
     Process.sleep(30_000)
-    true = :erlang.garbage_collect(pid)
-    periodically_gc(pid)
+    if Process.alive?(pid) do
+      :erlang.garbage_collect(pid)
+      periodically_gc(pid)
+    end
   end
 
   @doc """
