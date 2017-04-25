@@ -19,10 +19,20 @@ defmodule Krihelinator.Periodic do
   - Scrape showcases from github and update repos that belongs to showcases.
   """
 
+  defp periodically_gc(pid) do
+    # This is an ugly hack to force GC every now and then on the periodic
+    # process. TODO search for a better solution!
+    Process.sleep(30_000)
+    true = :erlang.garbage_collect(pid)
+    periodically_gc(pid)
+  end
+
   @doc """
   Main entry point.
   """
   def run() do
+    my_pid = self()
+    Task.async(fn -> periodically_gc(my_pid) end)
     Logger.info "Periodic process kicked in!"
     set_dirty_bit()
     scrape_trending()
