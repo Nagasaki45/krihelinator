@@ -90,7 +90,7 @@ defmodule Krihelinator.Periodic do
     |> handle_scraped_data()
   end
 
-  @async_params [max_concurrency: 20, timeout: 60_000]
+  @async_params [max_concurrency: 20, timeout: :infinity]
 
   @doc """
   Scrape repositories concurrently with `Task.async_stream`.
