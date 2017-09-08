@@ -49,6 +49,17 @@ ssh -t ubuntu@prod.krihelinator.xyz journalctl -u krihelinator.service
 
 Find more info about using systemd in these [blog post](https://mfeckie.github.io/Phoenix-In-Production-With-Systemd/) and [forum thread](https://elixirforum.com/t/elixir-apps-as-systemd-services/2400).
 
+### Setup port forwarding with iptables
+
+**Note: this is not permanent! Currently should run every restart.**
+
+```bash
+sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 4000
+sudo iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-ports 4040
+```
+
+More info about `iptables` [here](https://gist.github.com/kentbrew/776580).
+
 ## Similar projects
 
 - [GitHut](http://githut.info/) and [GitHut 2](https://madnight.github.io/githut/)
