@@ -27,7 +27,7 @@ config :quantum, :krihelinator,
 
 # Configures the endpoint
 config :krihelinator, Krihelinator.Web.Endpoint,
-  url: [host: "localhost"],
+  http: [compress: true, port: 4000],
   secret_key_base: "WCLRK3yAFCHMKEC5+0WtAjzkm1vaRmzk0duH19wW9xC/l3Tb5eLdI0RYl/R7xCTR",
   render_errors: [view: Krihelinator.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Krihelinator.PubSub,
