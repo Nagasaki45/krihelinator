@@ -58,13 +58,8 @@ defmodule Krihelinator.Periodic do
     Logger.info "Resetting trendiness for all"
     Repo.update_all(GH.Repo, set: [trending: false])
     Logger.info "Scraping trending"
-    Krihelinator.Periodic.GithubTrending.scrape()
-    |> async_scrape()
-    |> Stream.map(fn
-      {:ok, data} -> {:ok, Map.put(data, :trending, true)}
-      otherwise -> otherwise
-    end)
-    |> handle_scraped_data()
+    names = Krihelinator.Periodic.GithubTrending.scrape()
+    async_handle(names, trending: true)
   end
 
   @doc """
@@ -72,9 +67,8 @@ defmodule Krihelinator.Periodic do
   """
   def scrape_from_bigquery() do
     Logger.info "Getting repositories from BigQuery to scrape"
-    Krihelinator.Periodic.BigQuery.query()
-    |> async_scrape()
-    |> handle_scraped_data()
+    names = Krihelinator.Periodic.BigQuery.query()
+    async_handle(names)
   end
 
   @doc """
@@ -85,20 +79,31 @@ defmodule Krihelinator.Periodic do
     query = from(r in GH.Repo, where: r.dirty, select: r.name)
     names = Repo.all(query)
     Logger.info "Rescraping #{length(names)} still dirty repositories"
-    names
-    |> async_scrape
-    |> handle_scraped_data()
+    async_handle(names)
   end
 
   @async_params [max_concurrency: 20, timeout: :infinity]
 
   @doc """
-  Scrape repositories concurrently with `Task.async_stream`.
+  Scrape and persist repositories concurrently with `Task.async_stream`.
   """
-  def async_scrape(names) do
+  def async_handle(names, extra_params \\ []) do
     names
-    |> Task.async_stream(&scrape_with_retries/1, @async_params)
-    |> Stream.map(fn {:ok, cs} -> cs end)
+    |> Task.async_stream(&handle(&1, extra_params), @async_params)
+    |> Stream.map(fn {:ok, result} -> result end)
+    |> Enum.reduce(%{}, fn x, acc -> Map.update(acc, x, 1, &(&1 + 1)) end)
+    |> Enum.each(&log_aggregated_results/1)
+  end
+
+  @doc """
+  Scrape and persist a single repository by name.
+  """
+  def handle(name, extra_params) do
+    name
+    |> scrape_with_retries()
+    |> put_extra_params(extra_params)
+    |> persist()
+    |> simplify_result()
   end
 
   @to_retry ~w(github_server_error timeout)a
@@ -118,20 +123,18 @@ defmodule Krihelinator.Periodic do
     end
   end
 
-  @doc """
-  Persist the scraped data and log results statistics.
-  """
-  def handle_scraped_data(data_stream) do
-    data_stream
-    |> Stream.map(fn
-      {:ok, data} ->
-        Repo.update_or_create_from_data(GH.Repo, data, by: :name)
-      otherwise ->
-        otherwise
-    end)
-    |> Stream.map(&simplify_result/1)
-    |> Enum.reduce(%{}, fn x, acc -> Map.update(acc, x, 1, &(&1 + 1)) end)
-    |> Enum.each(&log_aggregated_results/1)
+  def put_extra_params({:error, error}, _extra_params) do
+    {:error, error}
+  end
+  def put_extra_params({:ok, data}, extra_params) do
+    {:ok, Map.merge(data, Map.new(extra_params))}
+  end
+
+  def persist({:error, error}) do
+    {:error, error}
+  end
+  def persist({:ok, data}) do
+    Repo.update_or_create_from_data(GH.Repo, data, by: :name)
   end
 
   def simplify_result({:error, %Ecto.Changeset{}}), do: :validation_error
