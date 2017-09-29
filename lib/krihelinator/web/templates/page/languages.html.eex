@@ -35,7 +35,7 @@
         <td><%= language.krihelimeter %></td>
         <td><input type="checkbox" value="<%= language.name %>" v-model="checkedLanguages"></td>
       </tr>
-      <%= end %>
+      <% end %>
     </tbody>
   </table>
 </div>

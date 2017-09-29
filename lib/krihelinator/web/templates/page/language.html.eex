@@ -10,5 +10,5 @@
 <ul class="list-group">
   <%= for repo <- @language.repos do %>
     <%= render("repo_item.html", conn: @conn, repo: repo, language: @language) %>
-  <%= end %>
+  <% end %>
 </ul>

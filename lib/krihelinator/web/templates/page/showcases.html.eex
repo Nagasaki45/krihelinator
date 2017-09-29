@@ -15,6 +15,6 @@
         <h2 class="name"><%= link showcase.name, to: page_path(@conn, :showcase, showcase.href) %></h2>
         <p class="description"><%= showcase.description %></p>
         </div>
-    <%= end %>
+    <% end %>
     </div>
 </div>

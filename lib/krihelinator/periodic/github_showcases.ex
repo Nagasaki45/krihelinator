@@ -79,14 +79,14 @@ defmodule Krihelinator.Periodic.GithubShowcases do
     html_tile
     |> Floki.find("h3")
     |> Floki.text()
-    |> String.strip()
+    |> String.trim()
   end
 
   def parse_showcase_description(html_tile) do
     html_tile
     |> Floki.find("p")
     |> Floki.text()
-    |> String.strip()
+    |> String.trim()
   end
 
   @doc """

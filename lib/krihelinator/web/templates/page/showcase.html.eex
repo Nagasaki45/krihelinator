@@ -6,5 +6,5 @@
 <ul class="list-group">
   <%= for repo <- @showcase.repos do %>
     <%= render("repo_item.html", conn: @conn, repo: repo, language: repo.language) %>
-  <%= end %>
+  <% end %>
 </ul>

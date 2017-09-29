@@ -50,6 +50,6 @@
         ga('create', 'UA-62733922-5', 'auto');
         ga('send', 'pageview');
       </script>
-    <%= end %>
+    <% end %>
   </body>
 </html>

@@ -10,9 +10,9 @@
   <%= link "GitHub", to: "http://github.com/#{@repo.name}", class: "label label-info badge-item"%>
   <%= if @language do %>
     <%= link @language.name, to: page_path(@conn, :language, @language.name), class: "label label-default badge-item"%>
-  <%= end %>
+  <% end %>
   <%= if @repo.trending do %>
     <div class="label label-warning badge-item">Trending on GitHub!</div>
-  <%= end %>
+  <% end %>
 
 </li>

@@ -1,7 +1,7 @@
 <%= if action_name(@conn) == @action do %>
 <li class="active">
-<%= else %>
+<% else %>
 <li>
-<%= end %>
+<% end %>
   <%= link @text, to: page_path(@conn, @action) %>
 </li>
