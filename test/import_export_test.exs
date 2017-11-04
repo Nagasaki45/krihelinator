@@ -36,7 +36,7 @@ defmodule Krihelinator.ImportExportTest do
       list
       |> Enum.map(fn %{"model" => model_name} -> model_name end)
       |> Enum.into(MapSet.new())
-    for name <- ~w(Repo Language Showcase) do
+    for name <- ~w(Repo Language) do
       assert MapSet.member?(model_names, "Elixir.Krihelinator.Github." <> name)
     end
     assert MapSet.member?(model_names, "Elixir.Krihelinator.History.Language")
@@ -71,11 +71,6 @@ defmodule Krihelinator.ImportExportTest do
       |> GH.Language.changeset(%{name: "Elixir"})
       |> Krihelinator.Repo.insert!()
 
-    showcase =
-      %GH.Showcase{}
-      |> GH.Showcase.changeset(%{name: "Good to know!", href: "g-t-k"})
-      |> Krihelinator.Repo.insert!()
-
     repo_params = %{
       name: "my/repo", authors: 1, commits: 2,
       merged_pull_requests: 3, proposed_pull_requests: 4, closed_issues: 5,
@@ -84,7 +79,6 @@ defmodule Krihelinator.ImportExportTest do
     %GH.Repo{}
     |> GH.Repo.changeset(repo_params)
     |> Ecto.Changeset.put_assoc(:language, elixir)
-    |> Ecto.Changeset.put_assoc(:showcase, showcase)
     |> Krihelinator.Repo.insert!()
 
     now = DateTime.utc_now()
@@ -102,7 +96,7 @@ defmodule Krihelinator.ImportExportTest do
 
     # Delete all
 
-    for model <- [GH.Repo, LanguageHistory, GH.Showcase, GH.Language] do
+    for model <- [GH.Repo, LanguageHistory, GH.Language] do
       Krihelinator.Repo.delete_all(model)
     end
 
@@ -122,10 +116,8 @@ defmodule Krihelinator.ImportExportTest do
       GH.Repo
       |> Krihelinator.Repo.get_by(name: "my/repo")
       |> Krihelinator.Repo.preload(:language)
-      |> Krihelinator.Repo.preload(:showcase)
 
     assert repo.language.name == "Elixir"
-    assert repo.showcase.href == "g-t-k"
   end
 
   test "insert new language succeeds after import. Bug #163" do

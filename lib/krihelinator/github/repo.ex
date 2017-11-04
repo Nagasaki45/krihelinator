@@ -8,7 +8,7 @@ defmodule Krihelinator.Github.Repo do
 
   @derive {
     Poison.Encoder, only:
-      ~w(id name description language_id showcase_id merged_pull_requests
+      ~w(id name description language_id merged_pull_requests
         proposed_pull_requests closed_issues new_issues commits authors
         trending user_requested)a
   }
@@ -18,7 +18,6 @@ defmodule Krihelinator.Github.Repo do
     field :language_name, :string, virtual: true
     field :fork_of, :string, virtual: true
     belongs_to :language, GH.Language
-    belongs_to :showcase, GH.Showcase
     field :merged_pull_requests, :integer
     field :proposed_pull_requests, :integer
     field :closed_issues, :integer

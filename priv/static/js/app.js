@@ -12,13 +12,6 @@ new Vue({
 })
 
 new List(
-    'showcases',
-    {
-        valueNames: ['name', 'description']
-    }
-);
-
-new List(
     'languages-app',
     {
         valueNames: ['name']

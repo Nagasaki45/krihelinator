@@ -17,8 +17,6 @@ defmodule Krihelinator.Web.Router do
     get "/languages", PageController, :languages
     get "/languages/:language", PageController, :language
     get "/languages-history", PageController, :languages_history
-    get "/showcases", PageController, :showcases
-    get "/showcases/:showcase", PageController, :showcase
     get "/about", PageController, :about
   end
 

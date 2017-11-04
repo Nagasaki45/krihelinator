@@ -69,31 +69,6 @@ defmodule Krihelinator.Github do
   end
 
   @doc """
-  Straight forward get by href (!) with preloaded repos.
-  """
-  def get_showcase_by_href!(showcase_href) do
-    repos_query = from(r in GH.Repo,
-                       order_by: [desc: r.krihelimeter],
-                       preload: :language,
-                       limit: 50)
-
-    GH.Showcase
-    |> Repo.get_by!(href: showcase_href)
-    |> Repo.preload([repos: repos_query])
-  end
-
-  @doc """
-  Straight forward all showcases with at least one repo.
-  """
-  def all_showcases() do
-    query = from(p in GH.Showcase,
-                 join: r in GH.Repo, on: [showcase_id: p.id],
-                 group_by: p.id,
-                 having: count(r.id) > 0)
-    Repo.all(query)
-  end
-
-  @doc """
   Local path to repo.
   """
   def repo_path(conn, full_name) do

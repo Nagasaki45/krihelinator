@@ -11,8 +11,6 @@ defmodule Krihelinator.LayoutView do
       :about -> "About | the Krihelinator"
       :language -> "#{assigns.language.name} | the Krihelinator"
       :languages_history -> "Languages history | the Krihelinator"
-      :showcases -> "Showcases | the Krihelinator"
-      :showcase -> "#{assigns.showcase.name} | the Krihelinator"
       _whatever -> "the Krihelinator"
     end
   end

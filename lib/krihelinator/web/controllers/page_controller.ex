@@ -61,16 +61,6 @@ defmodule Krihelinator.PageController do
 
   end
 
-  def showcases(conn, _params) do
-    showcases = GH.all_showcases()
-    render conn, "showcases.html", showcases: showcases
-  end
-
-  def showcase(conn, %{"showcase" => showcase_href}) do
-    showcase = GH.get_showcase_by_href!(showcase_href)
-    render(conn, "showcase.html", showcase: showcase)
-  end
-
   def about(conn, _params) do
     render conn, "about.html"
   end

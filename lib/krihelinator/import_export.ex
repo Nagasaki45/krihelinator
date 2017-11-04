@@ -4,6 +4,9 @@ defmodule Krihelinator.ImportExport do
   to populate the DB from an existing one.
   """
 
+  alias Krihelinator.Github, as: GH
+  @models [GH.Language, GH.Repo, Krihelinator.History.Language]
+
   @doc """
   Populate the DB with data from json string.
 
@@ -17,8 +20,10 @@ defmodule Krihelinator.ImportExport do
   end
 
   defp decode_data(data) do
+    model_strings = Enum.map(@models, &Atom.to_string/1)
     data
     |> Poison.decode!(keys: :atoms!)
+    |> Enum.filter(fn model_data -> model_data.model in model_strings end)
     |> Enum.map(fn model_data ->
       %{model_data | model: String.to_existing_atom(model_data.model)}
     end)
@@ -61,10 +66,7 @@ defmodule Krihelinator.ImportExport do
   repo.
   """
   def export_krihelinator_data() do
-    alias Krihelinator.Github, as: GH
-    models = [GH.Language, GH.Showcase, GH.Repo, Krihelinator.History.Language]
-    repo = Krihelinator.Repo
-    export_data(models, repo)
+    export_data(@models, Krihelinator.Repo)
   end
 
   @doc """

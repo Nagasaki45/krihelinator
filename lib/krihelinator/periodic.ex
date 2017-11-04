@@ -16,7 +16,6 @@ defmodule Krihelinator.Periodic do
   - Clean the remaining dirty repos. These repos failed to update or fell bellow
     activity threshold.
   - Update the total krihelimeter for all languages.
-  - Scrape showcases from github and update repos that belongs to showcases.
   """
 
   defp periodically_gc(pid) do
@@ -42,7 +41,6 @@ defmodule Krihelinator.Periodic do
     rescrape_still_dirty()
     clean_dirty()
     update_languages_stats()
-    scrape_showcases()
     Logger.info "Periodic process finished successfully!"
   end
 
@@ -172,20 +170,5 @@ defmodule Krihelinator.Periodic do
       |> GH.Language.changeset(changes)
       |> Repo.update()
     end)
-  end
-
-  def scrape_showcases() do
-    Logger.info "Scraping showcases and updating repos"
-    maps = Krihelinator.Periodic.GithubShowcases.scrape()
-    for map <- maps do
-      params = [name: map.name, href: map.href]
-      {:ok, showcase} = Repo.get_or_create_by(GH.Showcase, params)
-      query = from(r in GH.Repo, where: r.name in ^map.repos)
-      Repo.update_all(query, set: [showcase_id: showcase.id])
-      # Update the showcase description
-      showcase
-      |> GH.Showcase.changeset(%{description: map.description})
-      |> Repo.update
-    end
   end
 end
