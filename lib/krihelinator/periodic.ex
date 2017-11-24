@@ -103,12 +103,12 @@ defmodule Krihelinator.Periodic do
     |> simplify_result()
   end
 
-  @to_retry ~w(github_server_error timeout)a
+  @no_retry ~w(page_not_found dmca_takedown)a
   @max_attempts 3
 
   def scrape_with_retries(name, attempt \\ 1) do
     case Krihelinator.Scraper.scrape(name) do
-      {:error, error} when error in @to_retry ->
+      {:error, error} when error not in @no_retry ->
         if attempt <= @max_attempts do
           scrape_with_retries(name, attempt + 1)
         else
