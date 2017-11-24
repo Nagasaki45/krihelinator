@@ -80,7 +80,7 @@ defmodule Krihelinator.Periodic do
     async_handle(names)
   end
 
-  @async_params [max_concurrency: 20, timeout: :infinity]
+  @async_params [max_concurrency: 20, on_timeout: :kill_task]
 
   @doc """
   Scrape and persist repositories concurrently with `Task.async_stream`.
@@ -88,7 +88,6 @@ defmodule Krihelinator.Periodic do
   def async_handle(names, extra_params \\ []) do
     names
     |> Task.async_stream(&handle(&1, extra_params), @async_params)
-    |> Stream.map(fn {:ok, result} -> result end)
     |> Enum.reduce(%{}, fn x, acc -> Map.update(acc, x, 1, &(&1 + 1)) end)
     |> Enum.each(&log_aggregated_results/1)
   end
