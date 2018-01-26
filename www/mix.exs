@@ -43,7 +43,7 @@ defmodule Krihelinator.Mixfile do
       {:poison, "~> 2.2", override: true},
       {:floki, "~> 0.9.0"},
       {:timex, "~> 3.1"},
-      {:big_query, github: "nagasaki45/big_query"},
+      {:big_query, "~> 0.0.12"},
       {:credo, "~> 0.5.3", only: [:dev, :test]},
       {:distillery, "~> 1.3"},
       {:quantum, "~> 1.9"},
