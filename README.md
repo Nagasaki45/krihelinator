@@ -11,54 +11,29 @@ This project proposes an alternative to github's [trending page](http://github.c
 
 ## Development
 
-Before starting, make sure PostgreSQL and Elixir are installed. Follow the [phoenix installation guide](http://www.phoenixframework.org/docs/installation) for more details. Note that you won't need node.js for this project.
+Before starting make sure that docker and docker-compose are properly installed.
 
 To start your app:
 
+  * `mkdir secrets`.
   * Get a google [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials) json file by following instructions 1a - 1f under the title "How the Application Default Credentials work" in the link.
-  * Rename and move the file you just downloaded to `priv/bigquery_private_key.json`.
-  * Create the DB: `mix ecto.create`.
-  * Migrate to the latest DB scheme: `mix ecto.migrate`.
-  * Optionally, get updated production data [from production](http://krihelinator.xyz/data) and: `mix krihelinator.import path/to/json/file`.
-  * Spin the server `mix phoenix.server`.
+  * Rename and move the file you just downloaded to `secrets/bigquery_private_key.json`.
+  * Build: `docker-compose build`.
+  * Create the DB: `docker-compose run www mix ecto.create`.
+  * Migrate to the latest DB scheme: `docker-compose run www mix ecto.migrate`.
+  * Spin the server `docker-compose up`.
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 ## Production
 
-Deployment is managed by [edeliver](https://github.com/boldpoker/edeliver).
-
-```bash
-mix edeliver build release
-mix edeliver deploy release to production
-```
-
-On the server, the process is monitored by systemd.
-First, `scp` the `krihelinator.service` to `/etc/systemd/system/`, start, and enable to service.
-Later, after each deployment:
-
-``` bash
-ssh ubuntu@prod.krihelinator.xyz sudo systemctl restart krihelinator.service
-```
+To deploy run `./bin/deploy`.
 
 To see the logs:
 
 ```bash
-ssh -t ubuntu@prod.krihelinator.xyz journalctl -u krihelinator.service
+ssh krihelinator.xyz "cd krihelinator && docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs www""
 ```
-
-Find more info about using systemd in these [blog post](https://mfeckie.github.io/Phoenix-In-Production-With-Systemd/) and [forum thread](https://elixirforum.com/t/elixir-apps-as-systemd-services/2400).
-
-### Setup port forwarding with iptables
-
-**Note: this is not permanent! Currently should run every restart.**
-
-```bash
-sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 4000
-sudo iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-ports 4040
-```
-
-More info about `iptables` [here](https://gist.github.com/kentbrew/776580).
 
 ## Similar projects
 

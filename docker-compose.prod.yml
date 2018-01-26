@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  www:
+    image: nagasaki45/krihelinator_www
+    environment:
+      - MIX_ENV=prod
+    ports:
+      - 443:4040
+      - 80:4000
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt

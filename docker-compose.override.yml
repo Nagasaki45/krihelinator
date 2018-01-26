@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  www:
+    build:
+      context: './www'
+      dockerfile: 'Dockerfile'
+    ports:
+      - 4000:4000
+    volumes:
+      - ./www:/home/elixir/app

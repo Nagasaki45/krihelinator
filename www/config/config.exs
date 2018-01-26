@@ -44,13 +44,12 @@ config :krihelinator, Krihelinator.Repo,
   username: "postgres",
   password: "postgres",
   database: "krihelinator_prod",
-  hostname: "localhost",
+  hostname: "db",
   pool_size: 10,
   ownership_timeout: 60_000
 
 config :big_query,
-  bigquery_private_key_hosted_by_app: :krihelinator,
-  bigquery_private_key_path: "priv/bigquery_private_key.json"
+  bigquery_private_key_path: "/secrets/bigquery_private_key.json"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -7,6 +7,4 @@ deps
 erl_crash.dump
 
 # Dont track my secrets
-prod.secret.exs
-bigquery_private_key.json
-cookie.txt
+secrets/
