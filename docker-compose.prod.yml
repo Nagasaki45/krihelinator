@@ -1,8 +1,11 @@
 version: '3'
 
 services:
+  db:
+    restart: unless-stopped
   www:
     image: nagasaki45/krihelinator_www
+    restart: unless-stopped
     environment:
       - MIX_ENV=prod
     ports:
