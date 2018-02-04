@@ -2,6 +2,8 @@ version: '3'
 
 services:
   www:
+    environment:
+      - MIX_ENV=dev
     build:
       context: './www'
       dockerfile: 'Dockerfile'
