@@ -8,8 +8,10 @@ defmodule Krihelinator.Web.Endpoint do
   plug Plug.Static,
     at: "/", from: :krihelinator, gzip: true,
     only: ~w(css fonts images js media favicon.png robots.txt
-             .well-known
              loaderio-af9cda539c1b3a4a235147af21f0fe5d.txt)
+
+  plug Plug.Static,
+    at: "/", from: "/webroot", gzip: true
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
