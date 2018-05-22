@@ -1,8 +1,5 @@
 use Mix.Config
 
-config :krihelinator,
-  analytics: true
-
 # For production, we configure the host to read the PORT
 # from the system environment. Therefore, you will need
 # to set PORT=80 before running your server.
