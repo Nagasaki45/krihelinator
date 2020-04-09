@@ -1,39 +1,50 @@
 # The Krihelinator
 
+:warning: **This project reached its end-of-life! The info here is only for documentation. The project was shut down on April 2020. On July 2020 the [krihelinator.xyz](https://krihelinator.xyz) domain will stop working and this page will only be available on [nagasaki45.github.io/krihelinator](https://nagasaki45.github.io/krihelinator).**
+
+## About
+
 > *"Trendiness of open source software should be assessed by contribution rate, not by stars"*
 >
 > \- Meir Kriheli
 
-[![Krihelimeter](http://krihelinator.xyz/badge/Nagasaki45/krihelinator)](http://krihelinator.xyz)
-[![Build Status](https://travis-ci.org/Nagasaki45/krihelinator.svg?branch=master)](https://travis-ci.org/Nagasaki45/krihelinator)
+This project proposes an alternative to github's [trending page](http://github.com/trending), by exposing projects with high contribution rate, instead of daily stars.
+The krihelimeter of each repository is calculated using the commits, pull requests, and issues of that project, from the past week (based on github's pulse page).
 
-This project proposes an alternative to github's [trending page](http://github.com/trending), by exposing projects with highest "krihelimeter", instead of daily stars. The krihelimeter of each repository is calculated using the commits, pull requests, and issues of that project, from the past week (similarly to github's pulse page).
+<table align="center">
+    <tr>
+        <td>Krihelimeter =&nbsp;</td>
+        <td>20</td>
+        <td>&nbsp;* authors +</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>8</td>
+        <td>&nbsp;* merged and proposed pull requests +</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>8</td>
+        <td>&nbsp;* new and closed issues +</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>1</td>
+        <td>&nbsp;* commits</td>
+    </tr>
+</table>
 
-## Development
+During the development of this project I found out that people use github as a backup service, automating hundreds of commits per week.
+Therefor, to filter these projects out, only projects with more than one author enters the Krihelinator DB.
 
-Before starting make sure that docker and docker-compose are properly installed.
+Drop me a line at <a href="mailto:nagasaki45@gmail.com">nagasaki45@gmail.com</a> if you do somethig interesting with this project. Will be happy to hear about it and might be able to help.
 
-To start your app:
+## About the shutdown
 
-  * `mkdir secrets`.
-  * Get a google [Application Default Credentials](https://developers.google.com/identity/protocols/application-default-credentials) json file by following instructions 1a - 1f under the title "How the Application Default Credentials work" in the link.
-  * Rename and move the file you just downloaded to `secrets/bigquery_private_key.json`.
-  * Build: `docker-compose build`.
-  * Create the DB: `docker-compose run www mix ecto.create`.
-  * Migrate to the latest DB scheme: `docker-compose run www mix ecto.migrate`.
-  * Spin the server `docker-compose up`.
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-## Production
-
-To deploy run `./bin/deploy`.
-
-To see the logs:
-
-```bash
-ssh krihelinator.xyz "cd krihelinator && docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs www""
-```
+- On January 2019 github changed the way repo's pulse page is loading. Instead of having the entire HTML available at once, some info was fetched in subsequent calls. Specifically, the number of commits and authors were missing from the pulse page. This broke the calculation of the krihelimeter. Note that although the krihelimeter calculation was now different than the one intended, the information presented on the krihelinator was still relevant because it affected all projects / languages in the same way.
+- By the end of March 2020 github started to block scrapers like the krihelinator, returning HTTP error code 429 (Too Many Requests).
+- On early April 2020 I've decided to shutdown the project. The [krihelinator.xyz](https://krihelinator.xyz) domain now points to a page saying that the project is down. Links to badges return an end-of-life (EOL) badge.
+- On July 2020 the domain shut down. The end-of-life remained available on [nagasaki45.github.io/krihelinator](https://nagasaki45.github.io/krihelinator).
 
 ## Similar projects
 

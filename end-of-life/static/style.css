@@ -1,0 +1,20 @@
+/* For fixed navbar */
+body {
+  padding-top: 80px;
+}
+
+.my-navbar-header {
+  min-height: 60px;
+}
+
+nav img {
+  height: 42px;
+  margin-top: 10px;
+}
+
+/* Costumizations for desktop. Mobile first! */
+@media (min-width: 768px) {
+  .container {
+    max-width: 850px;
+  }
+}
